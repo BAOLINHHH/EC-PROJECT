@@ -1,12 +1,12 @@
 const publicCompanies = [
     {
-        publicCompanyName:'Kim Đồng',
+        publicCompanyName:'NXB Kim Đồng',
     },
     {
         publicCompanyName:'NXB Hội Nhà Văn',
     },
     {
-        publicCompanyName:'Văn Học',
+        publicCompanyName:'IPM',
     },
     {
         publicCompanyName:'Trẻ',
@@ -15,16 +15,10 @@ const publicCompanies = [
         publicCompanyName:'Dân Trí',
     },
     {
-        publicCompanyName:'Mỹ Thuật',
+        publicCompanyName:'Nhã Nam',
     },
     {
-        publicCompanyName:'Hồng Đức',
-    },
-    {
-        publicCompanyName:'Lao Động',
-    },
-    {
-        publicCompanyName:'NXB Thế Giới',
+        publicCompanyName:'AZ Việt Nam',
     },
   ];
   
