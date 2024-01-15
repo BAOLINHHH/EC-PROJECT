@@ -5,6 +5,7 @@ import imgicon from '../imageshome/empty-cart1.png'
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import {addToCart, removeFromCart} from '../slices/cartSlice'
 import { BsFillTrashFill } from "react-icons/bs";
+import { optionCurrency,transform } from "../componets/money";
 const CartScreen = () => {
    
     const navigate = useNavigate();
@@ -35,7 +36,7 @@ const CartScreen = () => {
   }
   const totalItem = {
     total: cartItems.reduce((acc,item) =>acc + item.qty *item.bookPrice ,0) || 0,
-    ship: ((cartItems.reduce((acc,item) =>acc + item.qty *item.bookPrice ,0))>300000 ? 150000 : 30000) || 0,
+    ship: ((cartItems.reduce((acc,item) =>acc + item.qty *item.bookPrice ,0)) > 300000 ? 150000 : 30000) || 0,
     totalcalc: 0,
   }
   totalItem.totalcalc = totalItem.total+totalItem.ship
@@ -67,12 +68,12 @@ const CartScreen = () => {
           <section className='home-wrapper-2 py-5'>
             <div className='container categories'>
                <div className="row d-flex justify-content-between">
-                      <div className="col-12 col-lg-8">
+                      <div className="col-lg-8">
                             {cartItems.map((item) =>(
                               
                               <div className="cart-item py-3" style={{borderBottom: '1px solid'}} key={item._id}>
                               <div className="row">
-                              <div className="col-4 col-lg-2">
+                              <div className="col-lg-2">
                               <Link to={`/product/${item._id}`}><img src={item.bookImage} alt="bookimg" height="115" width="115" /></Link>
                               </div>
 
@@ -81,10 +82,10 @@ const CartScreen = () => {
                                     {item.bookName}
                                     </Link>
                               </div>
-                              <div className="col-4 col-lg-2 mt-4 ">
-                                  <p id="card_item_price" style={{color: 'red', fontWeight: 'bold', fontSize: '1.2rem'}}>{item.bookPrice} VND</p>
+                              <div className="col-lg-2 mt-4 ">
+                                  <p id="card_item_price" style={{color: 'red', fontWeight: 'bold', fontSize: '1.2rem'}}>{transform(item.bookPrice,optionCurrency)}</p>
                               </div>
-                              <div className="col-4 col-lg-3 mt-4 ">
+                              <div className="col-lg-3 mt-4 ">
                                       <div className='input-group w-100' >
                                         <button className="btn btn-outline-secondary px-3 " type="button" onClick={() => decreaseNewQty(item, item.qty)} >
                                             <AiOutlineMinus/>
@@ -95,7 +96,7 @@ const CartScreen = () => {
                                         </button>
                                       </div>
                               </div>
-                              <div className="col-4 col-lg-1 mt-4 px-3">
+                              <div className="col-lg-1 mt-4 px-3">
                                 <i onClick={() => removeCartItem(item._id)}> <BsFillTrashFill /> </i>
                               </div>
 
@@ -104,7 +105,7 @@ const CartScreen = () => {
                             
                             )) }
                       </div>
-                      <div className="col-12 col-lg-3 my-4">
+                      <div className="col-lg-4 my-4">
                               <div id="order_summary">
                                   <h4>Chi tiết đơn hàng</h4>
                                   <hr />
@@ -114,7 +115,7 @@ const CartScreen = () => {
                                   </p>
                                   </div>
                                   <div className="col-4">
-                                  <span>{ totalItem.total } </span>
+                                  <span>{ transform(totalItem.total,optionCurrency) } </span>
                                   </div>
                                   </div>
                                   <div className="row">
@@ -123,7 +124,7 @@ const CartScreen = () => {
                                   </p>
                                   </div>
                                   <div className="col-4">
-                                  <span>{ totalItem.ship } </span>
+                                  <span>{ transform(totalItem.ship,optionCurrency) } </span>
                                   </div>
                                   </div>
                                   <div className="row" style={{ fontWeight: '650'}}>
@@ -132,7 +133,7 @@ const CartScreen = () => {
                                   </p>
                                   </div>
                                   <div className="col-4" style={{ fontSize: '20px', color: 'red' }}>
-                                  <span>{ totalItem.totalcalc } </span>
+                                  <span>{ transform(totalItem.totalcalc,optionCurrency) } </span>
                                   </div>
                                   </div>
                                   <hr />

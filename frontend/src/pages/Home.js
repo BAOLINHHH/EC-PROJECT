@@ -29,15 +29,13 @@ const Home = () => {
     const navigate = useNavigate();
     const categories = [{name:'Tiểu Thuyết',thumbnail:book5img},
     {name:'Văn Học',thumbnail:book6img},{name:'Thiếu Nhi',thumbnail:book7img},{name:'Kinh Tế',thumbnail:book8img},,{name:'Ngôn Tình',thumbnail:book9img},{name:'Tâm Lí',thumbnail:book10img},{name:'Manga',thumbnail:book11img}]
-    
+
+
     const setCategorys = (category) => {
-        if (category) {
-          navigate(`/all-product/filter/${category.trim()}`);
-        } else {
-          navigate('/');
-        }
+        navigate(`/all-product?category=${category}`);
       };
   
+
     return (
     <>
     <section className='home-wrapper-1 py-5'>

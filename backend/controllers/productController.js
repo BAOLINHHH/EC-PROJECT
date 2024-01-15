@@ -7,14 +7,40 @@ import Product from "../models/productModel.js";
 const getProducts = asyncHandler(async (req, res) => {
     const pageSize = process.env.PAGINATION_LIMIT;
     const page = Number(req.query.pageNumber) || 1;
-  
-    const keyword = req.query.keyword
+
+    const checkValue =  (value) => {
+      return !value || (!!value && typeof value=== 'string'&& value ==='null' )
+    }
+    const keyword = !checkValue(req.query.keyword)
       ? { bookName: { $regex: req.query.keyword, $options: 'i' } }
       : {};
-
-      const category = req.query.category
-      ? { category: { $regex: req.query.category, $options: 'i' } }
+    // console.log('requestKeyword',requestKeyword, !!requestKeyword , typeof requestKeyword, typeof requestKeyword=== 'string',requestKeyword ===null,requestKeyword==='null')
+      const category = !checkValue(req.query.category)
+      ? { category: { $regex: req.query.category , $options: 'i' } }
       : {};
+
+           //filter Price
+     const minPrice = req.query.minPrice;
+     const maxPrice = req.query.maxPrice;
+
+
+    // Kiểm tra xem minPrice và maxPrice có phải là số hợp lệ không
+    // if (isNaN(minPrice) || isNaN(maxPrice)) {
+    //   res.status(400);
+    //   throw new Error('Invalid minPrice or maxPrice, minPrice and maxPrice must to be a number.');
+    // }
+    // console.log('minPrice', minPrice)
+    // console.log('maxPrice',maxPrice)
+
+    const price = !checkValue(minPrice) && !checkValue(maxPrice) ? { bookPrice: { $gte: minPrice, $lte: maxPrice }}:{}
+      //Public Company filter
+    const publicCompany = !checkValue(req.query.publicCompany)
+    ? { publicCompany: { $regex: req.query.publicCompany, $options: 'i' } }
+    : {};
+    //Author filter
+    const form = req.query.form
+    ? { form: { $regex: req.query.form, $options: 'i' } }
+    : {};
       
       // const queryCopy = req.query.category;
       // console.log(queryCopy)
@@ -23,8 +49,8 @@ const getProducts = asyncHandler(async (req, res) => {
    
       
 
-    const count = await Product.countDocuments({...keyword,...category });
-    const products = await Product.find({...keyword,...category })
+    const count = await Product.countDocuments({...keyword,...category,...price,...publicCompany,...form });
+    const products = await Product.find({...keyword,...category,...price,...publicCompany,...form})
       .limit(pageSize)
       .skip(pageSize * (page - 1));
   

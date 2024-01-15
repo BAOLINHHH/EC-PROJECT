@@ -1,18 +1,23 @@
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Col } from 'react-bootstrap';
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
+import { useParams,useSearchParams } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { toast } from 'react-toastify';
 import Message from '../../componets/Message';
 import Loader from '../../componets/Loader';
-import Paginate from '../../componets/Paginate';
+
 import { useGetProductsQuery,useCreateProductMutation,useDeleteProductMutation} from '../../slices/productsApiSlice';
+import Paginate from '../../componets/Paginate';
 const ProductList = () => {
     const {pageNumber} = useParams()
-    const { data, isLoading, error, refetch } = useGetProductsQuery({pageNumber});
+    const [searchParams] = useSearchParams()
+    const pageParam = searchParams.get("pageNumber")||'';
+    const { data, isLoading, error, refetch } = useGetProductsQuery({pageNumber: (pageNumber||pageParam)});
+    
     const [ createProduct,{isLoading: loadingCreate}] = useCreateProductMutation();
     const [deleteProduct, { isLoading: loadingDelete }] =useDeleteProductMutation();
+
     const createProductHandler= async ()=> {
         if (window.confirm('Bạn có muốn thêm sản phẩm mới?')) {
             try {
@@ -103,7 +108,16 @@ const ProductList = () => {
             </tbody>
           </Table>
           <div className="d-flex justify-content-center mt-3">
-          <Paginate pages={data.pages} page={data.page} isAdmin={true}/>
+          <Paginate pages={data.pages} page={data.page} isAdmin={true} />
+          {/* <TablePagination
+              component="div"
+              count={data.pages}
+              page={data.page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+          /> */}
+          
           </div>
           </div>
         </>

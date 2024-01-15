@@ -11,10 +11,10 @@ import { useDispatch,useSelector } from 'react-redux';
 import {addToCart} from '../slices/cartSlice'
 import { addToFavorite } from '../slices/favoriteSlice';
 import { toast } from 'react-toastify';
+import { optionCurrency,transform } from '../componets/money';
 const ProductScreem = () => {
   const navigate = useNavigate();
   const dispatch =useDispatch(); 
-  
   const { userInfo } = useSelector((state) => state.auth);
   const [createReview, { isLoading: loadingProductReview }] =useCreateReviewMutation();
   const [rating, setRating] = useState(0);
@@ -108,7 +108,7 @@ const ProductScreem = () => {
                                             </div>
                                           </div>  
                                           <div className='product-price mb-3'>
-                                            <span>{product.bookPrice} VND </span>
+                                            <span>{transform(product.bookPrice,optionCurrency)}</span>
                                           </div>
                                           <div className='row mb-4'>
                                                 <div className="col-sm-2 d-flex align-items-center"><label> Số Lượng: </label></div>

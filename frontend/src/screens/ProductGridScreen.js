@@ -1,16 +1,60 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo ,useState} from "react";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import Product from "../componets/Product";
 import Loader from "../componets/Loader";
 import Message from "../componets/Message";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams,useNavigate, useSearchParams,useLocation } from "react-router-dom";
 import Paginate from "../componets/Paginate";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
 const ProductGridScreen = () => {
-  const {pageNumber,keyword,category} = useParams();
-  const { data: products, isLoading, error } = useGetProductsQuery({keyword,pageNumber,category});
+  const {pageNumber,keyword,category,publicCompany,minPrice,maxPrice,form} = useParams();
   const navigate = useNavigate();
-  const categories = [
+  const location = useLocation();
+
+
+  const [selectedCompany, setSelectedCompany] = useState(null)
+  const [searchParams] = useSearchParams()
+  // const keywordParam = searchParams.get("keyword")||'';  
+  const [colorCategory, setColorCategory] = useState(null);
+  // const categoryParam = searchParams.get("category")||'';
+
+  // const publicCompanyParam = searchParams.get("publicCompany")||'';
+  // const pageParam = searchParams.get("pageNumber")||'';
+  // const minPriceParam = searchParams.get("minPrice")||'';
+  // const maxPriceParam = searchParams.get("maxPrice")||'';
+  // const formParam = searchParams.get("form")||'';
+
+
+  // const[minPriceState, setMinPriceState] = useState('')
+  // const[maxPriceState, setMaxPriceState]= useState('')
+  const queryParams = new URLSearchParams(location.search)
+  // const [keywordParam, setKeywordParam] = useState(queryParams.get("keyword")|| "") 
+  const currentCategoryParam = queryParams.get("category") || "";
+  const currentPublicCompanyParam = queryParams.get("publicCompany") || "";
+  
+  const keywordParam = searchParams.get("keyword")||''; 
+  const [categoryParam, setCategoryParam] = useState(currentCategoryParam)
+  const [publicCompanyParam, setPublicCompanyParam] = useState(currentPublicCompanyParam)
+  // const { data: products, isLoading, error } = useGetProductsQuery({keyword: (keyword || keywordParam),
+  // pageNumber: (pageNumber||pageParam),category:(category||categoryParam),publicCompany:(publicCompany||publicCompanyParam),minPrice:(minPrice||minPriceParam),maxPrice:(maxPrice||maxPriceParam),form:(form||formParam)});
+  const { data: products, isLoading, error } = useGetProductsQuery({keyword:(keyword||keywordParam),publicCompany:(publicCompany||publicCompanyParam),
+   category:(category||categoryParam)});
+
+  useEffect(()=>{
+    // queryParams.set("keyword",keywordParam);
+    
+    // queryParams.set("category",categoryParam);
+    //navigate({search: queryParams.toString()})
+
+    if (currentCategoryParam !== categoryParam||currentPublicCompanyParam !== publicCompanyParam) {
+      setCategoryParam(currentCategoryParam);
+      setPublicCompanyParam(currentPublicCompanyParam);
+    }
+  },[currentPublicCompanyParam,publicCompanyParam,currentCategoryParam,categoryParam,queryParams]);
+ 
+  
+  const arrcategories = [
+    'Tất cả các sách',
     'Tiểu Thuyết',
     'Văn Học',
     'Thiếu Nhi',
@@ -19,14 +63,76 @@ const ProductGridScreen = () => {
     'Tâm Lí',
     "Manga",
 ]
-const setCategorys = (category) => {
-  if (category) {
-    navigate(`/all-product/filter/${category.trim()}`);
-  } else {
-    navigate('/');
-  }
-};
+const arrPublicCompany = [
+  'NXB Kim Đồng',
+  'NXB Hội Nhà Văn',
+  'IPM',
+  'AZ Việt Nam',
+  'Nhã Nam',
+  'Trẻ',
+  'Dân Trí',
+]
+const arrForm = [
+  'Bìa Cứng',
+  'Bìa Mềm',
+  'Bộ Hộp',
+]
+
+const setCategoryValue = (categoryValue) => {
+    setColorCategory(categoryValue)
+    if(categoryValue==='Tất cả các sách')
+        categoryValue=''
+    queryParams.set("category", categoryValue);
+    navigate({ search: queryParams.toString() });
+    // navigate(`/all-product?keyword=${keywordParam}&category=${categoryValue}&pageNumber=${pageParam}&publicCompany=${publicCompanyParam}&minPrice=${minPriceParam}&maxPrice=${maxPriceParam}`);
   
+  };
+  const handleCheckboxChange = (company)=>{
+  const publicCompany = company===selectedCompany ? '': company
+  setSelectedCompany(publicCompany)
+  queryParams.set("publicCompany", company);
+  navigate({ search: queryParams.toString() });
+}
+// const [selectedCompany, setSelectedCompany] = useState(null)
+// const [selectedForm, setSelectedForm] = useState(null)
+// const handleCheckboxChange = (company)=>{
+//   const publicCompany = company===selectedCompany ? '': company
+//   setSelectedCompany(publicCompany)
+//   navigate(`/all-product?publicCompany=${publicCompany}`);
+// }
+// const handleCheckboxFormChange = (formMap)=>{
+//   const form = formMap === selectedForm ? '' : formMap
+//   setSelectedForm(form)
+//   navigate(`/all-product?form=${form}`);
+// }
+// const categoryParams = new URLSearchParams('?category=${category}');
+// const [categoryValue,setcategory] = useState(categoryParams.get("category"));
+
+
+// const setCategoryValue = (categoryValue) => {
+//   // setColorCategory(categoryValue)
+//   if(categoryValue==='Tất cả các sách')
+//       categoryValue=''
+      
+//   navigate(`/all-product?keyword=${keywordParam}&category=${categoryValue}&pageNumber=${pageParam}&publicCompany=${publicCompanyParam}&minPrice=${minPriceParam}&maxPrice=${maxPriceParam}`);
+// };
+// const submitPrie =(e)=>{
+//   e.preventDefault();
+//   navigate(`/all-product?minPrice=${minPriceState}&maxPrice=${maxPriceState}`);
+// }
+// const ResetPrice = () => {
+//     setMinPriceState('')
+//     setMaxPriceState('')
+//     navigate(`/all-product?minPrice=${minPriceState}&maxPrice=${maxPriceState}`);
+// }
+
+// const setCategorys = (category) => {
+//   if (category) {
+//     navigate(`/all-product/filter/${category.trim()}`);
+//   } else {
+//     navigate('/');
+//   }
+// };
   const pages = useMemo(() => {
     if (!products) return 0;
     
@@ -85,15 +191,21 @@ const setCategorys = (category) => {
                     >
                       <div className="accordion-body">
                         <ul className="list-unstyled">
-                        {categories.map(category => (
+                          
+                        {arrcategories.map(categoryMap => (
+                          
                           <li
+              
                                 style={{
                                 cursor: 'pointer',
-                                 listStyleType: 'none'
+                                 listStyleType: 'none',
+                                 color: colorCategory===categoryMap? 'blue' : 'black'
                                 }}
-                                onClick={() => setCategorys(category)}
+                                onClick={() => setCategoryValue(categoryMap)}
                                 >
-                               {category}
+                               {categoryMap}
+                              
+                              
                             </li>
                             ))}
                         </ul>
@@ -120,95 +232,17 @@ const setCategorys = (category) => {
                     >
                       <div className="accordion-body">
                         <div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault1"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefault1"
-                            >
-                              Kim Đồng
-                            </label>
-                          </div>
+                        {arrPublicCompany.map(company =>(
 
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault2"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefault2"
-                            >
-                              NXB Hội Nhà Văn
-                            </label>
-                          </div>
 
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault3"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefault3"
-                            >
-                              Văn Học
-                            </label>
-                          </div>
-
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault4"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefault4"
-                            >
-                             Trẻ
-                            </label>
-                          </div>
-
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault5"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefault5"
-                            >
-                              Dân Trí
-                            </label>
-                          </div>
-
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault6"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefault6"
-                            >
-                              Nhã Nam
-                            </label>
-                          </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value={publicCompanyParam} checked={company===selectedCompany} onChange={()=>handleCheckboxChange(company)} />
+                          <label class="form-check-label" for="flexCheckDefault">
+                          {company}
+                          </label>
+                        </div>
+                        
+                        ))} 
                         </div>
                       </div>
                     </div>
@@ -226,6 +260,7 @@ const setCategorys = (category) => {
                         Giá
                       </button>
                     </h2>
+                    {/* <form onSubmit={submitPrie}>
                     <div
                       id="panelsStayOpen-collapseThree"
                       className="accordion-collapse collapse show"
@@ -238,11 +273,12 @@ const setCategorys = (category) => {
                             <div className="form-outline">
                               <input
                                 type="number"
-                                id="typeNumber"
+                                value={minPriceState}
                                 className="form-control"
+                                onChange={(e)=>setMinPriceState(e.target.value)}
                               />
                               <label className="form-label" for="typeNumber">
-                                $0
+                                0 VND
                               </label>
                             </div>
                           </div>
@@ -251,25 +287,32 @@ const setCategorys = (category) => {
                             <div className="form-outline">
                               <input
                                 type="number"
-                                id="typeNumber"
+                                value={maxPriceState}
+                                onChange={(e)=>setMaxPriceState(e.target.value)}
                                 className="form-control"
                               />
                               <label className="form-label" for="typeNumber">
-                                500,0000
+                                500,0000 VND
                               </label>
                             </div>
                           </div>
                         </div>
                         <div className="d-grid gap-2">
                           <button
-                            type="button"
+                            type="submit"
                             className="btn btn-outline-warning"
                           >
                             Chọn
                           </button>
+
+                          <button type="button" className="btn btn-outline-secondary"  onClick={ResetPrice}>
+                          Đạt lại giá tiền
+                          </button>
+                          
                         </div>
                       </div>
                     </div>
+                    </form> */}
                   </div>
                   <div className="accordion-item">
                     <h2 className="accordion-header" id="headingThree">
@@ -291,50 +334,17 @@ const setCategorys = (category) => {
                     >
                       <div className="accordion-body">
                         <div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefaultform1"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefaultform1"
-                            >
-                              Bìa Cứng 
-                            </label>
-                          </div>
+                            {/* {arrForm.map(formMap =>(
 
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefaultform2"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefaultform2"
-                            >
-                              Bìa Mềm
-                            </label>
-                          </div>
 
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefaultform3"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefaultform3"
-                            >
-                              Bộ Hộp
-                            </label>
-                          </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value={formMap} checked={formMap===selectedForm} onChange={()=>handleCheckboxFormChange(formMap)} />
+                              <label class="form-check-label" for="flexCheckDefault">
+                              {formMap}
+                              </label>
+                            </div>
+
+                            ))}  */}
                         </div>
                       </div>
                     </div>
@@ -577,7 +587,7 @@ const setCategorys = (category) => {
                 </>
               )}
               <div className="d-flex justify-content-center mt-3">
-            <Paginate pages={pages} page={page} keyword={keyword ? keyword : '' }/>
+            <Paginate pages={pages} page={page}/>
             </div>
             </div>
           </div>

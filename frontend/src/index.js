@@ -4,7 +4,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
-  RouterProvider
+  RouterProvider,
 } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 //import './assets/styles/bootstrap.custom.css';
@@ -35,17 +35,19 @@ import UpdateUserScreen from './screens/admin/UpdateUserScreen';
 import FavoriteScreen from './screens/FavoriteScreen';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
+
+
 const router = createBrowserRouter(
   createRoutesFromElements (
     <Route path="/" element = { <App />}>
       <Route  index = {true} path="/" element = { <Home />} />
       <Route  path="/product/:id" element = { <ProductScreem />} />
       <Route path="/all-product" element={< ProductGridScreen/>}/>
-      <Route path="/all-product/search/:keyword" element={< ProductGridScreen/>}/>
-      <Route path="/all-product/filter/:category" element={< ProductGridScreen/>}/>
-      <Route path="/all-product/page/:pageNumber" element={< ProductGridScreen/>}/>
-      <Route path="/all-product/search/:keyword/page/:pageNumber" element={< ProductGridScreen/>}/>
-      <Route path="/all-product/filter/:category/page/:pageNumber" element={< ProductGridScreen/>}/>
+      {/* <Route path="/all-product/search/:keyword" element={< ProductGridScreen/>}/> */}
+      {/* <Route path="/all-product/filter/:category" element={< ProductGridScreen/>}/> */}
+      {/* <Route path="/all-product/page/:pageNumber" element={< ProductGridScreen/>}/> */}
+      {/* <Route path="/all-product/search/:keyword/page/:pageNumber" element={< ProductGridScreen/>}/>
+      <Route path="/all-product/filter/:category/page/:pageNumber" element={< ProductGridScreen/>}/> */}
       <Route path="/login" element={< LoginScreen/>}/>
       <Route path="/register" element={< RegisterScreen/>}/>
       <Route path='/cart' element= { <CartScreen/>}/>
@@ -71,7 +73,9 @@ const router = createBrowserRouter(
 
       
     </Route>
+    
   )
+  
 )
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

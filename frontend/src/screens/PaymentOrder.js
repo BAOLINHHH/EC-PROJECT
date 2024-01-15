@@ -6,10 +6,11 @@ import { useCreateOrderMutation } from '../slices/ordersSlice';
 import { clearCartItems } from '../slices/cartSlice';
 import Loader from '../componets/Loader';
 import { toast } from 'react-toastify';
+import { optionCurrency,transform } from '../componets/money';
 const PaymentOrder = () => {
   
     const { cartItems, shippingAddress, paymentMethhod,itemsPrice,itemsShip,totalPrice} = useSelector((state) => state.cart)
-    console.log(itemsPrice)
+    
     const [createOrder, {isLoading}] = useCreateOrderMutation()
     const {userInfo} = useSelector((state) =>state.auth)
     const dispatch = useDispatch();
@@ -80,7 +81,7 @@ const PaymentOrder = () => {
 
 
                                     <div className="col-4 col-lg-4 mt-4 mt-lg-0">
-                                        <p>{item.qty} x {item.bookPrice} VND = <b>{item.qty * item.bookPrice} VND</b></p>
+                                        <p>{item.qty} x {transform(item.bookPrice,optionCurrency)} = <b>{transform((item.qty * item.bookPrice),optionCurrency)}</b></p>
                                     </div>
 
                                 </div>
@@ -103,7 +104,7 @@ const PaymentOrder = () => {
                                   </p>
                                   </div>
                                   <div className="col-4">
-                                  <span>{ totalItem.total } </span>
+                                  <span>{ transform(totalItem.total,optionCurrency) } </span>
                                   </div>
                                   </div>
                                   <div className="row">
@@ -112,7 +113,7 @@ const PaymentOrder = () => {
                                   </p>
                                   </div>
                                   <div className="col-4">
-                                  <span>{ totalItem.ship } </span>
+                                  <span>{ transform(totalItem.ship,optionCurrency) } </span>
                                   </div>
                                   </div>
                                   <div className="row" style={{ fontWeight: '650'}}>
@@ -121,7 +122,7 @@ const PaymentOrder = () => {
                                   </p>
                                   </div>
                                   <div className="col-4" style={{ fontSize: '20px', color: 'red' }}>
-                                  <span>{ totalItem.totalcalc } </span>
+                                  <span>{ transform(totalItem.totalcalc, optionCurrency) } </span>
                                   </div>
                                   </div>
                                   <hr />
