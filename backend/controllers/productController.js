@@ -23,7 +23,6 @@ const getProducts = asyncHandler(async (req, res) => {
      const minPrice = req.query.minPrice;
      const maxPrice = req.query.maxPrice;
 
-
     // Kiểm tra xem minPrice và maxPrice có phải là số hợp lệ không
     // if (isNaN(minPrice) || isNaN(maxPrice)) {
     //   res.status(400);
@@ -38,19 +37,21 @@ const getProducts = asyncHandler(async (req, res) => {
     ? { publicCompany: { $regex: req.query.publicCompany, $options: 'i' } }
     : {};
     //Author filter
-    const form = req.query.form
+    const form = !checkValue(req.query.form)
     ? { form: { $regex: req.query.form, $options: 'i' } }
     : {};
-      
-      // const queryCopy = req.query.category;
-      // console.log(queryCopy)
-      // // Removing fields from the query
-      // const removeFields = ['keyword', 'limit', 'page']
+
+     ///filter language
+     const language = !checkValue(req.query.language)
+     ? { language: { $regex: req.query.language , $options: 'i' } }
+     : {};
+      // filter rate
+      const rate = !checkValue(req.query.rate) ? { rating: { $lte: req.query.rate }}:{}
    
       
 
-    const count = await Product.countDocuments({...keyword,...category,...price,...publicCompany,...form });
-    const products = await Product.find({...keyword,...category,...price,...publicCompany,...form})
+    const count = await Product.countDocuments({...keyword,...category,...price,...publicCompany,...form, ...language,...rate });
+    const products = await Product.find({...keyword,...category,...price,...publicCompany,...form, ...language, ...rate})
       .limit(pageSize)
       .skip(pageSize * (page - 1));
   

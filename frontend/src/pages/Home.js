@@ -1,4 +1,3 @@
-import React from 'react'
 import book5img from '../imageshome/tieuthuyet.jpg'
 import book6img from '../imageshome/vanhoc.jpg'
 import book7img from '../imageshome/thieunhis.jpg'
@@ -22,15 +21,17 @@ import Marquee from "react-fast-marquee";
 import HomeScreen from '../screens/HomeScreen'
 import ProductCarousel from '../componets/ProductCarousel'
 import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
-
+import {useNavigate} from "react-router-dom";
+import { FaShippingFast } from "react-icons/fa";
+import { BsShieldPlus } from "react-icons/bs";
+import { BsBook } from "react-icons/bs";
+import { BsTagsFill } from "react-icons/bs";
 
 const Home = () => {
     const navigate = useNavigate();
+    
     const categories = [{name:'Tiểu Thuyết',thumbnail:book5img},
     {name:'Văn Học',thumbnail:book6img},{name:'Thiếu Nhi',thumbnail:book7img},{name:'Kinh Tế',thumbnail:book8img},,{name:'Ngôn Tình',thumbnail:book9img},{name:'Tâm Lí',thumbnail:book10img},{name:'Manga',thumbnail:book11img}]
-
-
     const setCategorys = (category) => {
         navigate(`/all-product?category=${category}`);
       };
@@ -64,6 +65,78 @@ const Home = () => {
         <ProductCarousel />
         </div>
     </section>
+
+
+    <section className='home-wrapper-2 py-5'>
+    <div className="container-fluid py-3">
+        <div className='container py-5'>
+            <div className='row g-4 '>
+                <div class=" col-lg-3 ">
+                    <div className='d-flex'>
+                        <div className='pe-3 '>
+                        <FaShippingFast size={30} />
+                        </div>
+                        <div>
+                            <h3 className='text-title text-uppercase text-dark'>
+                                Miễn phí vận chuyển
+                            </h3>
+                            <p>
+                                Đơn hàng trên 200.000đ sẽ được miễn vận chuyển.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class=" col-lg-3">
+                <div className='d-flex'>
+                        <div className='pe-3'>
+                        <BsShieldPlus size={30} />
+                        </div>
+                        <div>
+                            <h3 className='text-title text-uppercase text-dark'>
+                                An toàn khi thanh toán
+                            </h3>
+                            <p>
+                                100% bảo mật khi thanh toán.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                <div className='d-flex'>
+                        <div className='pe-3'>
+                        <BsBook  size= {30} />
+                        </div>
+                        <div>
+                            <h3 className='text-title text-uppercase text-dark'>
+                                Sản phẩm chính hãng
+                            </h3>
+                            <p>
+                                Nói không với sách lậu.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                <div className='d-flex'>
+                        <div className='pe-3'>
+                        <BsTagsFill size= {30} />
+                        </div>
+                        <div>
+                            <h3 className='text-title text-uppercase text-dark'>
+                                Ưu đãi hấp dẫn
+                            </h3>
+                            <p>
+                                Nhiều sự kiện khuyến mãi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+
     {/* <section className='home-wrapper-2 py-5'>
         <div className='container-xxl'>
             <div className='col-12 categories'>
@@ -142,7 +215,7 @@ const Home = () => {
                         </img>
                     </div>
                     </div>
-                ))}
+                ))} 
                     </div>
                 </div>
              </div>

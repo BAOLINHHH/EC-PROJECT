@@ -3,56 +3,58 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import Product from "../componets/Product";
 import Loader from "../componets/Loader";
 import Message from "../componets/Message";
-import { useParams,useNavigate, useSearchParams,useLocation } from "react-router-dom";
+import {useNavigate, useSearchParams } from "react-router-dom";
 import Paginate from "../componets/Paginate";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
+import CurrencyInput from 'react-currency-input-field';
 const ProductGridScreen = () => {
-  const {pageNumber,keyword,category,publicCompany,minPrice,maxPrice,form} = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
 
   const [selectedCompany, setSelectedCompany] = useState(null)
+  const [selectedForm, setSelectedForm] = useState(null)
+  const [selectedLanguage, setSelectedLanguage] = useState(null)
+  const [selectedRate, setSelectedRate]= useState(null)
   const [searchParams] = useSearchParams()
-  // const keywordParam = searchParams.get("keyword")||'';  
   const [colorCategory, setColorCategory] = useState(null);
-  // const categoryParam = searchParams.get("category")||'';
-
-  // const publicCompanyParam = searchParams.get("publicCompany")||'';
-  // const pageParam = searchParams.get("pageNumber")||'';
-  // const minPriceParam = searchParams.get("minPrice")||'';
-  // const maxPriceParam = searchParams.get("maxPrice")||'';
-  // const formParam = searchParams.get("form")||'';
-
-
-  // const[minPriceState, setMinPriceState] = useState('')
-  // const[maxPriceState, setMaxPriceState]= useState('')
-  const queryParams = new URLSearchParams(location.search)
-  // const [keywordParam, setKeywordParam] = useState(queryParams.get("keyword")|| "") 
-  const currentCategoryParam = queryParams.get("category") || "";
-  const currentPublicCompanyParam = queryParams.get("publicCompany") || "";
   
+  const currentCategoryParam = searchParams.get("category") || "";
+  const currentPublicCompanyParam = searchParams.get("publicCompany") || "";
+  const currentPageNumberParam = searchParams.get('pageNumber')||'';
   const keywordParam = searchParams.get("keyword")||''; 
+  const currentMinPrice = searchParams.get("minPrice")||'';
+  const currentMaxPrice = searchParams.get("maxPrice")||'';
+  const currentform = searchParams.get("form")||'';
+  const currentLanguage = searchParams.get('language')||'';
+  const currentRate = searchParams.get('rate')|| '';
+
+
+
   const [categoryParam, setCategoryParam] = useState(currentCategoryParam)
   const [publicCompanyParam, setPublicCompanyParam] = useState(currentPublicCompanyParam)
-  // const { data: products, isLoading, error } = useGetProductsQuery({keyword: (keyword || keywordParam),
-  // pageNumber: (pageNumber||pageParam),category:(category||categoryParam),publicCompany:(publicCompany||publicCompanyParam),minPrice:(minPrice||minPriceParam),maxPrice:(maxPrice||maxPriceParam),form:(form||formParam)});
-  const { data: products, isLoading, error } = useGetProductsQuery({keyword:(keyword||keywordParam),publicCompany:(publicCompany||publicCompanyParam),
-   category:(category||categoryParam)});
+  const [pageNumberParam, setPageNumberParam] = useState(currentPageNumberParam)
+  const [minPriceParam,setMinPriceParam] = useState(currentMinPrice);
+  const [maxPriceParam,setMaxPriceParam] = useState(currentMaxPrice);
+  const [formParam, setFormParam] = useState(currentform);
+  const [ languageParam,setLanguageParam] = useState(currentLanguage);
+  const [ rateParam, setRateParam] = useState(currentRate)
+ 
+  const { data: products, isLoading, error } = useGetProductsQuery({keyword: keywordParam ,pageNumber: pageNumberParam, category: categoryParam,publicCompany: publicCompanyParam,
+    minPrice: minPriceParam, maxPrice: maxPriceParam, form: formParam, language: languageParam, rate: rateParam });
 
-  useEffect(()=>{
-    // queryParams.set("keyword",keywordParam);
-    
-    // queryParams.set("category",categoryParam);
-    //navigate({search: queryParams.toString()})
+  useEffect(()=>{ 
 
-    if (currentCategoryParam !== categoryParam||currentPublicCompanyParam !== publicCompanyParam) {
+    if (currentCategoryParam !== categoryParam||currentPublicCompanyParam !== publicCompanyParam||currentPageNumberParam!==pageNumberParam||currentform !==formParam || currentLanguage !== languageParam ||currentRate !==rateParam) {
       setCategoryParam(currentCategoryParam);
       setPublicCompanyParam(currentPublicCompanyParam);
+      setPageNumberParam(currentPageNumberParam);
+      setFormParam(currentform);
+      setLanguageParam(currentLanguage);
+      setRateParam(currentRate);
     }
-  },[currentPublicCompanyParam,publicCompanyParam,currentCategoryParam,categoryParam,queryParams]);
+  },[currentPageNumberParam,pageNumberParam,currentPublicCompanyParam,publicCompanyParam,currentCategoryParam,categoryParam,currentform,formParam,currentLanguage,languageParam,currentRate,rateParam]);
  
-  
+
   const arrcategories = [
     'Tất cả các sách',
     'Tiểu Thuyết',
@@ -77,62 +79,60 @@ const arrForm = [
   'Bìa Mềm',
   'Bộ Hộp',
 ]
-
+const arrLanguage = [ 
+  'Tiếng Việt',
+  'Tiếng Anh',
+  'Tiếng Trung',
+]
+const fiveStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>];
+const fourStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>,<FaRegStar/>];
+const threeStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaRegStar/>,<FaRegStar/>];
+const twotar = [ <FaStar/>,<FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>];
+const oneStar = [ <FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>];
+const arrStarRate = [
+{name: '5',star: fiveStar}, {name: '4',star: fourStar},{ name: '3', star: threeStar}, {name: '2', star: twotar}, {name: '1', star: oneStar}
+]
+ const validateValueMin = (value) => {
+  setMinPriceParam(value);
+ }
+ const validateValueMax = (value) => {
+  setMaxPriceParam(value);
+ }
 const setCategoryValue = (categoryValue) => {
-    setColorCategory(categoryValue)
+    setColorCategory(categoryValue);
     if(categoryValue==='Tất cả các sách')
-        categoryValue=''
-    queryParams.set("category", categoryValue);
-    navigate({ search: queryParams.toString() });
-    // navigate(`/all-product?keyword=${keywordParam}&category=${categoryValue}&pageNumber=${pageParam}&publicCompany=${publicCompanyParam}&minPrice=${minPriceParam}&maxPrice=${maxPriceParam}`);
-  
+        categoryValue='';
+    searchParams.set("category", categoryValue);
+    navigate({ search: searchParams.toString() });
   };
+  const handleCheckboxFormChange = (formMap)=>{
+  const formcheck = formMap === selectedForm ? '': formMap
+  setSelectedForm(formcheck)
+  searchParams.set("form", formcheck);
+  navigate({ search: searchParams.toString() });
+}
+
+
   const handleCheckboxChange = (company)=>{
   const publicCompany = company===selectedCompany ? '': company
-  setSelectedCompany(publicCompany)
-  queryParams.set("publicCompany", company);
-  navigate({ search: queryParams.toString() });
-}
-// const [selectedCompany, setSelectedCompany] = useState(null)
-// const [selectedForm, setSelectedForm] = useState(null)
-// const handleCheckboxChange = (company)=>{
-//   const publicCompany = company===selectedCompany ? '': company
-//   setSelectedCompany(publicCompany)
-//   navigate(`/all-product?publicCompany=${publicCompany}`);
-// }
-// const handleCheckboxFormChange = (formMap)=>{
-//   const form = formMap === selectedForm ? '' : formMap
-//   setSelectedForm(form)
-//   navigate(`/all-product?form=${form}`);
-// }
-// const categoryParams = new URLSearchParams('?category=${category}');
-// const [categoryValue,setcategory] = useState(categoryParams.get("category"));
+  setSelectedCompany(publicCompany);
+  searchParams.set("publicCompany", publicCompany);
+  navigate({ search: searchParams.toString() });
+};
 
+const handleCheckboxLanguageChange= (languageArr) =>{
+  const languageFunction = languageArr === selectedLanguage ? '': languageArr
+  setSelectedLanguage(languageFunction);
+  searchParams.set('language', languageFunction);
+  navigate({ search: searchParams.toString() });
+};
+const handleCheckboxStarChange = (value) => {
+const rateFunction = value === selectedRate ? '': value
+setSelectedRate(rateFunction);
+searchParams.set('rate', rateFunction);
+navigate({ search: searchParams.toString()});
+};
 
-// const setCategoryValue = (categoryValue) => {
-//   // setColorCategory(categoryValue)
-//   if(categoryValue==='Tất cả các sách')
-//       categoryValue=''
-      
-//   navigate(`/all-product?keyword=${keywordParam}&category=${categoryValue}&pageNumber=${pageParam}&publicCompany=${publicCompanyParam}&minPrice=${minPriceParam}&maxPrice=${maxPriceParam}`);
-// };
-// const submitPrie =(e)=>{
-//   e.preventDefault();
-//   navigate(`/all-product?minPrice=${minPriceState}&maxPrice=${maxPriceState}`);
-// }
-// const ResetPrice = () => {
-//     setMinPriceState('')
-//     setMaxPriceState('')
-//     navigate(`/all-product?minPrice=${minPriceState}&maxPrice=${maxPriceState}`);
-// }
-
-// const setCategorys = (category) => {
-//   if (category) {
-//     navigate(`/all-product/filter/${category.trim()}`);
-//   } else {
-//     navigate('/');
-//   }
-// };
   const pages = useMemo(() => {
     if (!products) return 0;
     
@@ -199,7 +199,7 @@ const setCategoryValue = (categoryValue) => {
                                 style={{
                                 cursor: 'pointer',
                                  listStyleType: 'none',
-                                 color: colorCategory===categoryMap? 'blue' : 'black'
+                                 color: colorCategory===categoryMap ? 'blue' : 'black'
                                 }}
                                 onClick={() => setCategoryValue(categoryMap)}
                                 >
@@ -260,7 +260,7 @@ const setCategoryValue = (categoryValue) => {
                         Giá
                       </button>
                     </h2>
-                    {/* <form onSubmit={submitPrie}>
+                    {/* <form onSubmit={submitPrie}> */}
                     <div
                       id="panelsStayOpen-collapseThree"
                       className="accordion-collapse collapse show"
@@ -271,48 +271,33 @@ const setCategoryValue = (categoryValue) => {
                           <div className="col-6">
                             <p className="mb-0">Nhỏ</p>
                             <div className="form-outline">
-                              <input
-                                type="number"
-                                value={minPriceState}
+                              <CurrencyInput    
+                                allowDecimals={false}
+                                defaultValue={minPriceParam}
                                 className="form-control"
-                                onChange={(e)=>setMinPriceState(e.target.value)}
+                                onValueChange={validateValueMin}
+
+                                // onChange={(e)=>setMinPriceParam(e.target.value)}
                               />
-                              <label className="form-label" for="typeNumber">
-                                0 VND
-                              </label>
                             </div>
                           </div>
                           <div className="col-6">
                             <p className="mb-0">Lớn</p>
                             <div className="form-outline">
-                              <input
-                                type="number"
-                                value={maxPriceState}
-                                onChange={(e)=>setMaxPriceState(e.target.value)}
+                              <CurrencyInput
+                                allowDecimals={false}
+                                defaultValue={maxPriceParam}
+                                onValueChange={validateValueMax}
+                                // onChange={(e)=>setMaxPriceParam(e.target.value)}
                                 className="form-control"
                               />
-                              <label className="form-label" for="typeNumber">
-                                500,0000 VND
-                              </label>
                             </div>
                           </div>
                         </div>
-                        <div className="d-grid gap-2">
-                          <button
-                            type="submit"
-                            className="btn btn-outline-warning"
-                          >
-                            Chọn
-                          </button>
-
-                          <button type="button" className="btn btn-outline-secondary"  onClick={ResetPrice}>
-                          Đạt lại giá tiền
-                          </button>
-                          
-                        </div>
+                      
                       </div>
                     </div>
-                    </form> */}
+                    {/* </form> */}
                   </div>
                   <div className="accordion-item">
                     <h2 className="accordion-header" id="headingThree">
@@ -334,7 +319,7 @@ const setCategoryValue = (categoryValue) => {
                     >
                       <div className="accordion-body">
                         <div>
-                            {/* {arrForm.map(formMap =>(
+                            {arrForm.map(formMap =>(
 
 
                             <div class="form-check">
@@ -344,7 +329,7 @@ const setCategoryValue = (categoryValue) => {
                               </label>
                             </div>
 
-                            ))}  */}
+                            ))} 
                         </div>
                       </div>
                     </div>
@@ -368,36 +353,15 @@ const setCategoryValue = (categoryValue) => {
                       aria-labelledby="headingThree"
                     >
                       <div className="accordion-body">
-                        <div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefaultform1"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefaultform1"
-                            >
-                              Tiếng anh
-                            </label>
-                          </div>
-
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefaultform2"
-                            />
-                            <label
-                              className="form-check-label"
-                              for="flexRadioDefaultform2"
-                            >
-                              Tiếng việt
-                            </label>
-                          </div>
+                      <div>
+                            {arrLanguage.map(languageMap=>(
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value={languageMap} checked={languageMap===selectedLanguage} onChange={()=>handleCheckboxLanguageChange(languageMap)} />
+                              <label class="form-check-label" for="flexCheckDefault">
+                              {languageMap}
+                              </label>
+                            </div>
+                            ))} 
                         </div>
                       </div>
                     </div>
@@ -421,148 +385,15 @@ const setCategoryValue = (categoryValue) => {
                       aria-labelledby="headingThree"
                     >
                       <div className="accordion-body">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="flexRadioDefault"
-                            id="flexRadioDefaultrating1"
-                          />
-                          <label
-                            className="form-check-label rating"
-                            for="flexRadioDefaultrating1"
-                          >
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                          </label>
-                        </div>
-
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="flexRadioDefault"
-                            id="flexRadioDefaultrating2"
-                          />
-                          <label
-                            className="form-check-label rating"
-                            for="flexRadioDefaultrating2"
-                          >
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                          </label>
-                        </div>
-
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="flexRadioDefault"
-                            id="flexRadioDefaultrating3"
-                          />
-                          <label
-                            className="form-check-label rating"
-                            for="flexRadioDefaultrating3"
-                          >
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                          </label>
-                        </div>
-
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="flexRadioDefault"
-                            id="flexRadioDefaultrating4"
-                          />
-                          <label
-                            className="form-check-label rating"
-                            for="flexRadioDefaultrating4"
-                          >
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="flexRadioDefault"
-                            id="flexRadioDefaultrating5"
-                          />
-                          <label
-                            className="form-check-label rating"
-                            for="flexRadioDefaultrating5"
-                          >
-                            <span>
-                              <FaStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                            <span>
-                              <FaRegStar />
-                            </span>
-                          </label>
+                      <div>
+                            {arrStarRate.map(starRate=>(
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value={rateParam} checked={starRate.name ===selectedRate} onChange={()=>handleCheckboxStarChange(starRate.name)} />
+                              <label class="form-check-label rating " for="flexCheckDefault">
+                              <span>{starRate.star}</span>
+                              </label>
+                            </div>
+                            ))} 
                         </div>
                       </div>
                     </div>
