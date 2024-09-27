@@ -1,8 +1,7 @@
 import {useParams,useNavigate,Link } from 'react-router-dom'
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { Image, ListGroup, Button, Form,} from 'react-bootstrap';
-import Rating from '../componets/Rating';
-import {BsCart, BsFillHeartFill} from 'react-icons/bs';
+import {BsCart, BsSuitHeart} from 'react-icons/bs';
 import Loader from '../componets/Loader';
 import Message from '../componets/Message';
 import { useGetProductDetailQuery, useCreateReviewMutation } from '../slices/productsApiSlice';
@@ -11,10 +10,19 @@ import { useDispatch,useSelector } from 'react-redux';
 import {addToCart} from '../slices/cartSlice'
 import { addToFavorite } from '../slices/favoriteSlice';
 import { toast } from 'react-toastify';
+import Rating from '@mui/material/Rating';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 import { optionCurrency,transform } from '../componets/money';
 const ProductScreem = () => {
   const navigate = useNavigate();
   const dispatch =useDispatch(); 
+  const [value,setValue] = useState('1');
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   const { userInfo } = useSelector((state) => state.auth);
   const [createReview, { isLoading: loadingProductReview }] =useCreateReviewMutation();
   const [rating, setRating] = useState(0);
@@ -80,7 +88,422 @@ const ProductScreem = () => {
                 <Loader />
             ): error ? (<Message variant='danger'>{error?.data?.message || error.error}</Message>
             ) : (<>
-                <section className='home-wrapper-2 py-5'>
+
+                  <section>
+                          <div className="container-sm">
+                            <div className="row">
+                                <div className=' col-6 flex'>
+                                <div className=" relative left-[100px]">
+                                  <div className="max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
+                                    <Image src={product.bookImage} alt={product.bookName} fluid/>
+                                  </div>
+                                  <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1">
+                                    <Image src={product.bookImage} alt={product.bookName} fluid/></div>
+                                  <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
+                                    <Image src={product.bookImage} alt={product.bookName} fluid/></div>
+                                  <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
+                                    <Image src={product.bookImage} alt={product.bookName} fluid/></div>
+                                  <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
+                                    <Image src={product.bookImage} alt={product.bookName} fluid/></div>
+                                </div>
+                                <div className="max-h-[390px] max-w-[390px] border-[1px] border-solid border-[#e9e9e9] bg-[#f7f7f8] rounded-[5px] relative left-[150px]"> 
+                                  <Image src={product.bookImage} alt={product.bookName} fluid/>
+                                </div>
+                                </div>
+      
+                                <div className="col-6 pl-[20px]">
+                                  <h3 className="text-[#04070a] text-[22px] mb-[20px] leading-[35px] captitalize">{product.bookName}</h3>
+              
+                                  <div className="flex items-center mb-[15px]">
+                                 
+                                  <Rating  className="mr-[15px] text-[15px]" name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
+                                  <p className="text-[#7a7a7a] text-[15px] leading-[1.75]">({product.rating} đánh giá)</p>
+                                  </div>
+                                  <div className>
+                                    <span className="text-[#4b5966] text-[22px] font-bold mr-[7px]">{product.bookPrice}</span>
+                                    <span className="text-[17px] text-[#777] line-through mr-[7px]">7500</span>
+                                    <span className=" text-[20px] text-[hsl(9,80%,55%)]  ">25%</span>
+                                  </div>
+                                  <div className="mb-[15px]" >
+                                    <ul>
+                                        <li className="flex my-[10px] capitalize">
+                                          <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Thể loại <span>:</span></label>
+                                          {product.category}
+                                        </li>
+                                        <li className="flex my-[10px] capitalize"> 
+                                          <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Tên tác giả <span>:</span></label>
+                                          {product.author}
+                                        </li>
+                                        <li className="flex my-[10px] capitalize">
+                                          <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Nhà xuất bản <span>:</span></label>
+                                          {product.publicCompany}
+                                        </li>
+                                        <li className="flex my-[10px] capitalize">
+                                          <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Hình thức <span>:</span></label>
+                                          {product.form}
+                                        </li>
+                                        <li className="flex items-center my-[10px] capitalize">
+                                          <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Trạng thái<span>:</span></label>
+                                          <label className=" text-[#a6e157] font-semibold "> 
+                                            {product.bookQuaranty > 0 ? 'Còn Hàng': 'Hết Hàng' }
+                                          </label>
+                                        </li>                        
+                                    </ul>
+                                  </div>
+                                  <div className="flex flex-wrap">
+                                    <div className='input-group w-[150px] h-[40px] m-[5px]' >
+                                      <button className="btn btn-outline-secondary px-3 " type="button" onClick={decreaseQty} >
+                                        <AiOutlineMinus/>
+                                      </button>
+                                      <input type="number" className="form-control count text-center border border-secondary"  value={qty} readOnly/>
+                                      <button className="btn btn-outline-secondary px-3 " type="button" onClick={increaseQty}>
+                                          <AiOutlinePlus/>
+                                      </button>
+                                    </div>
+                                    {/* #62ab00 */}
+                                    <div className="h-[40px] m-[5px] flex">
+                                      <Button className='bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
+                                        type='button'
+                                        disabled= {product.bookQuaranty === 0}
+                                        onClick={addToCartAndBuyHandler}
+                                        >
+                                        Mua Ngay
+                                      </Button>
+                                    </div>
+                                    <div className='m-[5px] flex'>
+                                      <Button className=' bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
+                                        type='button'
+                                        disabled= {product.bookQuaranty === 0}
+                                        onClick={addToCartHandler}
+                                      >
+                                      <BsCart />   
+                                      </Button>
+                                    </div>
+                                    <div className="m-[5px] flex">
+                                      <Button className='bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
+                                        onClick={addToFavoriteHandler}
+                                        type='button'
+                                      >
+                                      <BsSuitHeart/>             
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+   
+                            </div>
+                          </div>
+                  </section> 
+                  <section>
+                    <div className="container-sm">
+                          <div className="row">
+                                <div className="col-12">   
+                                        {/* <ul className="flex flex-row border-b-[5px] border-solid border-[#251f98] " >
+                                          <li className="mr-4">
+                                            <button className="nav-link active mb-[20px] text-[#04070a] text-[17px] leading-[35px] captitalize"
+                                            type="button"
+
+                                            >
+                                               Mô tả sản phẩm 
+                                            </button>
+                                          </li>
+                                          <li className="mr-4">
+                                            <button className="mb-[20px] text-[#04070a] text-[17px] leading-[35px] captitalize active"
+                                             id="information-tab"
+                                             data-bs-toggle="tab"
+                                             data-bs-target ="#information-tab-pane"
+                                             type="button"
+                                            
+                                             aria-controls="information-tab-pane"
+                                             aria-selected= "flase"
+                
+                                            >
+                                              Thông tin chi tiết
+                                            </button>
+                                          </li>
+                                          <li className="mr-4" >
+                                            <button className="mb-[20px] text-[#04070a] text-[17px] leading-[35px] captitalize"
+                                             id="detail-tab"
+                                             data-bs-toggle="tab"
+                                             data-bs-target =""
+                                             type="button"
+                                             aria-controls=""
+                                             aria-selected= "true"
+                                            >
+                                              Đánh giá sản phẩm
+                                            </button>
+                                          </li>
+                                        </ul> */}
+                                        <TabContext value={value}>
+                                        <TabList onChange={handleChange} className="border-b-[1px] border-solid border-[#dfe2e1]">
+                                          <Tab value='1' label="Mô tả sản phẩm" />
+                                          <Tab value='2' label="Thông tin chi tiết" />
+                                          <Tab  value= '3' label=" Đánh giá sản phẩm"/>
+                                        </TabList>
+                                        <TabPanel value='1'>
+                                          <div className="detail-product py-3 " >
+                                            <h3 className="text-[#04070a] text-[22px] mb-[10px] leading-[35px] captitalize">{product.bookName}</h3>
+                                            <p className="text-[#666] text-[15px] font-semibold text-left leading-[26px]">{product.bookDetail}</p>
+                                          </div>
+                                        </TabPanel>
+                                        <TabPanel value='2'>
+                                          <div className="information-product">
+                                            <div className="col-12">
+                                              <table className="table">
+                                                <tbody>
+                                                  <tr>
+                                                    <th>Mã Hàng</th>
+                                                    <td>{product._id}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Tên tác giả</th>
+                                                    <td>{product.author}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Nhà xuất bản</th>
+                                                    <td>{product.publicCompany}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Thể loại</th>
+                                                    <td>{product.category}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Hình thức</th>
+                                                    <td>{product.form}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Ngôn Ngữ</th>
+                                                    <td>{product.language}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Số trang</th>
+                                                    <td>{product.pageNumber}</td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                              </div>
+                                            </div>
+                                        </TabPanel>
+                                        <TabPanel value='3'>
+                                        <div className="review-product">
+                                                <div className="row">
+                                                    <div className="col-12">   
+                                                        <section className='home-wrapper-2'>
+                     
+                                                          {userInfo ? 
+                                                          <div className='container'>
+                                                          <div className='col-12 categories'>
+                                                          <span className='header-tile' >ĐÁNH GIÁ SẢN PHẨM</span>
+                                                        
+                                                          </div>
+                                                            <div className='categories'> 
+                                                                  <div className='container'> 
+                                                                   {product.reviews.length === 0 && <Message>Không có đánh giá</Message>}
+                                                    <ListGroup variant='flush'>
+                                                      {product.reviews.map((review) => (
+                                                        <ListGroup.Item key={review._id}>
+                                                          <strong>{review.name}</strong>
+                                                          {/* <Rating value={review.rating} /> */}
+                                                          <p>{review.createdAt.substring(0, 10)}</p>
+                                                          <p>{review.comment}</p>
+                                                        </ListGroup.Item>
+                                                      ))}
+                                                    
+                                                      <ListGroup.Item>
+                                                        <div className='d-flex '>
+                                                        <h3>VIẾT ĐÁNH GIÁ SẢN PHẨM</h3>
+                                                        </div>
+                                                        {loadingProductReview && <Loader />}
+
+                                                        
+                                                          <Form onSubmit={submitHandler} >
+                                                            <Form.Group className='my-2' controlId='rating'>
+                                                              <Form.Label>Đánh giá</Form.Label>
+                                                              <Form.Control
+                                                                as='select'
+                                                                required
+                                                                value={rating}
+                                                                onChange={(e) => setRating(e.target.value)}
+                                                              >
+                                                                <option value=''>Lược chọn...</option>
+                                                                <option value='1'>1 - Kém</option>
+                                                                <option value='2'>2 - Khá</option>
+                                                                <option value='3'>3 - Tốt</option>
+                                                                <option value='4'>4 - Rất tốt</option>
+                                                                <option value='5'>5 - Xuất sác</option>
+                                                              </Form.Control>
+                                                            </Form.Group>
+                                                            <Form.Group className='my-2' controlId='comment'>
+                                                              <Form.Label>Bình luận</Form.Label>
+                                                              <Form.Control
+                                                                as='textarea'
+                                                                row='3'
+                                                                required
+                                                                value={comment}
+                                                                onChange={(e) => setComment(e.target.value)}
+                                                              ></Form.Control>
+                                                            </Form.Group>
+                                                            <Button
+                                                              disabled={loadingProductReview}
+                                                              type='submit'
+                                                              variant='primary'
+                                                            >
+                                                              Gửi đánh giá
+                                                            </Button>
+                                                          </Form>
+                                                  </ListGroup.Item>
+                                                </ListGroup>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      
+                                                                :
+                                                        <Message>
+                                                        Chỉ có thành viên mới có thể viết nhận xét.Vui lòng <Link to='/login'> đăng nhập </Link>hoặc <Link to='/register'> đăng kí</Link>
+                                                        </Message>
+                                                          }           
+                                                        
+                                                    </section> 
+                                                    </div>
+                                                </div>
+                                          </div>
+                                        </TabPanel>
+                                        </TabContext>
+                                     {/* <div>
+                                          <div className="detail-product py-3 tab-pane fade show active"  id="product-tab-pane" role aria-labelledby="product-tab" >
+                                            <h3 className="text-[#04070a] text-[22px] mb-[10px] leading-[35px] captitalize">{product.bookName}</h3>
+                                            <p className="text-[#666] text-[15px] font-semibold text-left leading-[26px]">{product.bookDetail}</p>
+                                          </div>
+                                          <div className="information-product">
+                                            <div className="col-12">
+                                              <table className="table">
+                                                <tbody>
+                                                  <tr>
+                                                    <th>Mã Hàng</th>
+                                                    <td>{product._id}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Tên tác giả</th>
+                                                    <td>{product.author}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Nhà xuất bản</th>
+                                                    <td>{product.publicCompany}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Thể loại</th>
+                                                    <td>{product.category}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Hình thức</th>
+                                                    <td>{product.form}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Ngôn Ngữ</th>
+                                                    <td>{product.language}</td>
+                                                  </tr>
+                                                  <tr>
+                                                    <th>Số trang</th>
+                                                    <td>{product.pageNumber}</td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                              </div>
+                                          </div>
+                                          <div className="review-product">
+                                                <div className="row">
+                                                    <div className="col-12">   
+                                                        <section className='home-wrapper-2'>
+                     
+                                                          {userInfo ? 
+                                                          <div className='container'>
+                                                          <div className='col-12 categories'>
+                                                          <span className='header-tile' >ĐÁNH GIÁ SẢN PHẨM</span>
+                                                        
+                                                          </div>
+                                                            <div className='categories'> 
+                                                                  <div className='container'> 
+                                                                   {product.reviews.length === 0 && <Message>Không có đánh giá</Message>}
+                                                    <ListGroup variant='flush'>
+                                                      {product.reviews.map((review) => (
+                                                        <ListGroup.Item key={review._id}>
+                                                          <strong>{review.name}</strong>
+                                                          <Rating value={review.rating} />
+                                                          <p>{review.createdAt.substring(0, 10)}</p>
+                                                          <p>{review.comment}</p>
+                                                        </ListGroup.Item>
+                                                      ))}
+                                                    
+                                                      <ListGroup.Item>
+                                                        <div className='d-flex '>
+                                                        <h3>VIẾT ĐÁNH GIÁ SẢN PHẨM</h3>
+                                                        </div>
+                                                        {loadingProductReview && <Loader />}
+
+                                                        
+                                                          <Form onSubmit={submitHandler} >
+                                                            <Form.Group className='my-2' controlId='rating'>
+                                                              <Form.Label>Đánh giá</Form.Label>
+                                                              <Form.Control
+                                                                as='select'
+                                                                required
+                                                                value={rating}
+                                                                onChange={(e) => setRating(e.target.value)}
+                                                              >
+                                                                <option value=''>Lược chọn...</option>
+                                                                <option value='1'>1 - Kém</option>
+                                                                <option value='2'>2 - Khá</option>
+                                                                <option value='3'>3 - Tốt</option>
+                                                                <option value='4'>4 - Rất tốt</option>
+                                                                <option value='5'>5 - Xuất sác</option>
+                                                              </Form.Control>
+                                                            </Form.Group>
+                                                            <Form.Group className='my-2' controlId='comment'>
+                                                              <Form.Label>Bình luận</Form.Label>
+                                                              <Form.Control
+                                                                as='textarea'
+                                                                row='3'
+                                                                required
+                                                                value={comment}
+                                                                onChange={(e) => setComment(e.target.value)}
+                                                              ></Form.Control>
+                                                            </Form.Group>
+                                                            <Button
+                                                              disabled={loadingProductReview}
+                                                              type='submit'
+                                                              variant='primary'
+                                                            >
+                                                              Gửi đánh giá
+                                                            </Button>
+                                                          </Form>
+                                                  </ListGroup.Item>
+                                                </ListGroup>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      
+                                                                :
+                                                        <Message>
+                                                        Chỉ có thành viên mới có thể viết nhận xét.Vui lòng <Link to='/login'> đăng nhập </Link>hoặc <Link to='/register'> đăng kí</Link>
+                                                        </Message>
+                                                          }           
+                                                        
+                                                    </section> 
+                                                    </div>
+                                                </div>
+                                          </div>
+                                     </div> */}
+                                </div>
+
+                          </div>
+                    </div>
+                  </section>
+
+
+
+
+
+
+                {/* <section className='home-wrapper-2 py-5'>
                           <div className='container'>
                             <div className='categories row'>
                                 <div className='col-md-6'>
@@ -213,12 +636,12 @@ const ProductScreem = () => {
                          
                           </div>
                             <div className='categories'> 
-                                  <div className='container'>
-                                  {/* <div className='col-12 d-flex justify-content-center'>
+                                  <div className='container'> */}
+                                  {/* lan 2 <div className='col-12 d-flex justify-content-center'>
                                   <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#ratingModal">Viết nhận xét của bạn</button>
                                   </div> */}
                           
-                  {product.reviews.length === 0 && <Message>Không có đánh giá</Message>}
+                  {/* {product.reviews.length === 0 && <Message>Không có đánh giá</Message>}
                   <ListGroup variant='flush'>
                     {product.reviews.map((review) => (
                       <ListGroup.Item key={review._id}>
@@ -283,7 +706,7 @@ const ProductScreem = () => {
                       </Message>
                         }           
                       
-                  </section>
+                  </section> */}
                   {/* <div className="row mt-2 mb-5">
                                 <div className="rating w-50">
                                     <div className="modal fade" id="ratingModal" tabIndex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">

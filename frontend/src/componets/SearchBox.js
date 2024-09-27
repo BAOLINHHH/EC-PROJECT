@@ -38,8 +38,8 @@ const SearchBox = () => {
   return (
     <>
     <form onSubmit={submitHandler}>
-     <div className="input-group input-group-sm px-3"  style={{width: '400px'}}>
-        <input type="text" className="form-control py-2"  onChange={(e) => setKeywordParam(e.target.value)} value={keywordParam} placeholder="Nhập tên sách" aria-label="Nhâp tên sách" aria-describedby="basic-addon2"/>
+     <div className="input-group "  style={{width: '600px'}}>
+        <input type="text" className="form-control"  onChange={(e) => setKeywordParam(e.target.value)} value={keywordParam} placeholder="Nhập tên sách" aria-label="Nhập tên sách" aria-describedby="basic-addon2"/>
         <button className="btn btn-danger" type="submit" id="button-addon2"> <BsSearch size={15}/> </button>
     </div>
     </form> 

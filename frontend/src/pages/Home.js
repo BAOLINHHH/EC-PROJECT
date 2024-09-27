@@ -5,19 +5,10 @@ import book8img from '../imageshome/kinhte.jpg'
 import book9img from '../imageshome/ngontinh.jpg'
 import book10img from '../imageshome/tamli.jpg'
 import book11img from '../imageshome/manga1.png'
-import book12img from '../imageshome/hikari-resized-img.png'
-import book13img from '../imageshome/ipm-resized-img.png'
-import book14img from '../imageshome/amak-resized-img.png'
-import book15img from '../imageshome/kimdong-resized-img.png'
-import book16img from '../imageshome/sakura-resized-img.png'
-import book17img from '../imageshome/skybook-resized-img.png'
-import book18img from '../imageshome/tsuki-resized-img.png'
-import book19img from '../imageshome/cambrig-resized-img.png'
-import book20img from '../imageshome/cengage-resized-img.png'
-import book21img from '../imageshome/hachitte-resized-img.png'
-import book22img from '../imageshome/oxford-resized-img.png'
-import book23img from '../imageshome/happerresized-img.png'
-import Marquee from "react-fast-marquee";
+import banner1 from '../imageshome/main_banner.png'
+import banner2 from '../imageshome/banner2.jpg'
+import banner3 from '../imageshome/banner3.jpg'
+import banner4 from '../imageshome/banner4.jpg'
 import HomeScreen from '../screens/HomeScreen'
 import ProductCarousel from '../componets/ProductCarousel'
 import { Link } from 'react-router-dom'
@@ -26,12 +17,18 @@ import { FaShippingFast } from "react-icons/fa";
 import { BsShieldPlus } from "react-icons/bs";
 import { BsBook } from "react-icons/bs";
 import { BsTagsFill } from "react-icons/bs";
-
+import NewProduct from '../componets/NewProduct'
+import FlashSale from '../componets/FlashSale'
+import TopProduct from '../componets/TopProduct'
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import 'swiper/css/pagination';
+// import { Pagination } from 'swiper/modules';
+import 'swiper/css';
 const Home = () => {
     const navigate = useNavigate();
     
     const categories = [{name:'Tiểu Thuyết',thumbnail:book5img},
-    {name:'Văn Học',thumbnail:book6img},{name:'Thiếu Nhi',thumbnail:book7img},{name:'Kinh Tế',thumbnail:book8img},,{name:'Ngôn Tình',thumbnail:book9img},{name:'Tâm Lí',thumbnail:book10img},{name:'Manga',thumbnail:book11img}]
+    {name:'Văn Học',thumbnail:book6img},{name:'Thiếu Nhi',thumbnail:book7img},{name:'Kinh Tế',thumbnail:book8img},{name:'Ngôn Tình',thumbnail:book9img},{name:'Tâm Lí',thumbnail:book10img},{name:'Manga',thumbnail:book11img}]
     const setCategorys = (category) => {
         navigate(`/all-product?category=${category}`);
       };
@@ -39,9 +36,9 @@ const Home = () => {
 
     return (
     <>
-    <section className='home-wrapper-1 py-5'>
-        <div className='container-xxl'>
-            {/* <div className='row'>
+    {/* <section className='home-wrapper-1 py-5'>
+        <div className='container-xxl'> */}
+            {/*  lan 2 <div className='row'>
                 <div className='col-6'>
                     <div className='main-banner position-relative'> 
                         <img src={bookimg} className ="img-fuild rounded-3"alt='main banner' />
@@ -62,70 +59,69 @@ const Home = () => {
                 </div>
             </div> */}
         
-        <ProductCarousel />
+        {/* <ProductCarousel />
         </div>
-    </section>
+    </section> */}
 
-
-    <section className='home-wrapper-2 py-5'>
-    <div className="container-fluid py-3">
-        <div className='container py-5'>
+    <ProductCarousel />
+    <section className='my-9'>
+        <div className='container-sm py-5'>
             <div className='row g-4 '>
                 <div class=" col-lg-3 ">
-                    <div className='d-flex'>
-                        <div className='pe-3 '>
+                    <div className='flex justify-center border-[#eee] rounded-[3px] border-[2px] border-solid w-[300px] h-[64px] '>
+                        <div className='pe-3 pt-2  '>
                         <FaShippingFast size={30} />
                         </div>
-                        <div>
-                            <h3 className='text-title text-uppercase text-dark'>
+                        <div className='pt-2'>
+                            <h3 className='text-[19px] leading-none text-uppercase text-[#282828] font-[400] mb-1'>
                                 Miễn phí vận chuyển
                             </h3>
-                            <p>
-                                Đơn hàng trên 200.000đ sẽ được miễn vận chuyển.
-                            </p>
+                            <p className=" text-[16px] leading-none text-[#777]">
+                                Đơn hàng trên 200.000đ .
+                            </p> 
                         </div>
                     </div>
                 </div>
                 <div class=" col-lg-3">
-                <div className='d-flex'>
-                        <div className='pe-3'>
+                <div className='flex justify-center border-[#eee] rounded-[3px] border-[2px] border-solid w-[300px] h-[64px]'>
+                        <div className='pe-3 pt-2'>
                         <BsShieldPlus size={30} />
                         </div>
-                        <div>
-                            <h3 className='text-title text-uppercase text-dark'>
+                        <div className=" pt-2">
+                            <h3 className='text-[19px] leading-none text-uppercase text-[#282828] font-[400] mb-1'>
                                 An toàn khi thanh toán
                             </h3>
-                            <p>
+                            <p className=" text-[16px] leading-none text-[#777]">
                                 100% bảo mật khi thanh toán.
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                <div className='d-flex'>
-                        <div className='pe-3'>
+                <div className='flex justify-center border-[#eee] rounded-[3px] border-[2px] border-solid w-[300px] h-[64px]'>
+                        <div className='pe-3 pt-2'>
                         <BsBook  size= {30} />
                         </div>
-                        <div>
-                            <h3 className='text-title text-uppercase text-dark'>
+                        <div className=" pt-2">
+                            <h3 className='text-[19px] leading-none text-uppercase text-[#282828] font-[400] mb-1'>
                                 Sản phẩm chính hãng
                             </h3>
-                            <p>
+                            <p className=" text-[16px] leading-none text-[#777]">
                                 Nói không với sách lậu.
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                <div className='d-flex'>
-                        <div className='pe-3'>
+                <div className='flex justify-center border-[#eee] rounded-[3px] border-[2px] border-solid w-[300px] h-[64px]'>
+                        <div className='pe-3 pt-2'>
                         <BsTagsFill size= {30} />
                         </div>
-                        <div>
-                            <h3 className='text-title text-uppercase text-dark'>
+                        <div className=" pt-2">
+                            <h3 className='text-[19px] leading-none text-uppercase text-[#282828] font-[400] mb-1'>
                                 Ưu đãi hấp dẫn
                             </h3>
-                            <p>
+                            <p className=" text-[16px] leading-none text-[#777]">
                                 Nhiều sự kiện khuyến mãi.
                             </p>
                         </div>
@@ -133,10 +129,72 @@ const Home = () => {
                 </div>
             </div>
         </div>
-    </div>
+    
     </section>
 
 
+    <section className="my-9">
+        <div className="container-sm">
+            <div className="col-12 mb-3">
+                <h3 className="mb-[19px] text-[20px] capitalize leading-[28px] font-normal">Danh Mục Sảm Phẩm</h3>
+            </div>
+            <Swiper
+                 slidesPerView={5}
+                 spaceBetween={20}
+                //  pagination={{
+                //    clickable: true,
+                //  }}
+                //  modules={[Pagination]}
+                 className="mySwiper"
+               >
+            { categories.map(item =>(
+              <SwiperSlide>
+            <div className=" rounded-[5px] border-[3px] flex justify-center hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] border-[#faf1ff]">
+                <div className=" flex flex-col justify-items-center items-center rounded-[5px] bg-[#fff] w-[166px] h-[140px] pt-[10px] ">
+                <img src={item.thumbnail}/>
+                <div>{item.name}</div>
+                </div>
+            </div>
+            </SwiperSlide>
+            ) )}
+              </Swiper>
+            </div>
+    </section>
+    <NewProduct />
+   
+    <section className="my-9">
+        <div className="container-sm">
+            <div className="flex justify-center">
+                <img  className="w-full h-[390px] rounded-[5px]" src={banner1} />
+            </div>
+        </div>
+    </section>
+    <FlashSale />
+    <section className="my-9">
+        <div className="container-sm">
+            <div className="row">
+                <div className="col-6">
+                    <div className>
+                    <img className="w-[600px] h-[320px]" src={banner2} />
+                    </div>
+                </div>
+                <div className="col-6">
+                    <div className="mb-[20px]">
+                        <img src={banner3} />
+                    </div>
+                    <div>
+                        <img src={banner4} />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <TopProduct />
+              
+  
+        <Link to={ '/all-product'}>
+    <button type="button" className="btn btn-primary d-flex justify-content-center ">Xem Thêm</button>
+        </Link>
     {/* <section className='home-wrapper-2 py-5'>
         <div className='container-xxl'>
             <div className='col-12 categories'>
@@ -195,7 +253,7 @@ const Home = () => {
            
         </div>
     </section> */}
-    <section className='home-wrapper-2 py-5'>
+    {/* <section className='home-wrapper-2 py-5'>
         <div className='container-xxl'>
         <div className='col-12 categories'>
             <span className='header-tile' >Danh Mục Sản Phẩm</span>
@@ -235,8 +293,8 @@ const Home = () => {
     <button type="button" className="btn btn-primary d-flex justify-content-center ">Xem Thêm</button>
         </Link>
     </div>
-    </section>
-    <section className='marque-wrapper py-5'>
+    </section> */}
+    {/* <section className='marque-wrapper py-5'>
         <div className='container-xxl'>
             <div className='row'>
                 <div className='col-12'>
@@ -283,7 +341,7 @@ const Home = () => {
                 </div>
             </div>
         </div>
-    </section>
+    </section> */}
     </>
   );
 }

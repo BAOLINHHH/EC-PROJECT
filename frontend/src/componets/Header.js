@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import {Badge,Navbar,Nav,Container, NavDropdown} from 'react-bootstrap';
 import { LinkContainer} from 'react-router-bootstrap'
-import {BsCart,BsFillPersonFill,BsFillHeartFill} from 'react-icons/bs';
+import {BsCart,BsPerson ,BsSuitHeart } from 'react-icons/bs';
+import logoBook from '../imageshome/pngwing.png'
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import {logout} from '../slices/authSlice';
 import SearchBox from './SearchBox';
+
 import { useSelector, useDispatch} from 'react-redux'; 
 const Header = () => {
     const { cartItems} = useSelector((state) => state.cart );
@@ -24,7 +26,7 @@ const Header = () => {
 }
   return (
     <header>
-        <Navbar bg = "dark" variant='dark' expand= "lg" collapseOnSelect>
+        {/* <Navbar bg = "dark" variant='dark' expand= "lg" collapseOnSelect>
             <Container className='justify-content-center align-items-center gap-3'>
                 <LinkContainer to = '/'>
                 <Navbar.Brand>
@@ -33,7 +35,9 @@ const Header = () => {
                 </LinkContainer>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
+                    <div className='ps-3'>
                        <SearchBox/>
+                    </div>
                     <Nav className="ms-auto">
                         <LinkContainer to = '/favorite'>
                         <Nav.Link title='Yêu thích'><BsFillHeartFill size={20}/>
@@ -72,9 +76,9 @@ const Header = () => {
                         <Nav.Link title='Tài khoản'><BsFillPersonFill size={20}/>
                         </Nav.Link>
                         </LinkContainer>)
-                        }
-                                        {/* Admin Links */}
-                            {userInfo && userInfo.isAdmin && (
+                        } */}
+                                        {/* comment lan 2 Admin Links */}
+                            {/* {userInfo && userInfo.isAdmin && (
                                 <NavDropdown  style={{paddingLeft: '10px'}} title='Admin' id='adminmenu'>
                                 <LinkContainer to='/admin/dashboard'>
                                     <NavDropdown.Item>Dasbord</NavDropdown.Item>
@@ -93,7 +97,33 @@ const Header = () => {
                     </Nav>
                 </Navbar.Collapse>
             </Container>
-        </Navbar>
+        </Navbar> */}
+
+    <div className="container-sm">
+          <div className="row align-items-sm-center">
+              <div className="col-2 heard-logo">
+                  <a href='/'>
+                    <img className ="h-20" src={logoBook} alt='brand'/>
+                  </a>
+              </div>
+              <div className="col-6 serch-bar">
+                  <SearchBox/>
+              </div>
+              <div className="col-4">
+                  <div className="flex justify-content-end">
+                      <div className="wishlist me-4">
+                         <i className="text-[24px]"> <BsSuitHeart  /></i>
+                      </div>
+                      <div className="order me-4">
+                        <i className="text-[24px]"><BsPerson  /></i>
+                      </div>
+                      <div className="cart me-4"> 
+                          <i className="text-[24px]"><BsCart /></i>
+                      </div>
+                  </div>
+              </div>
+          </div>
+    </div>
     </header>
   )
 }

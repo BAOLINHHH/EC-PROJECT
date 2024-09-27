@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 //import './assets/styles/bootstrap.custom.css';
 //import './assets/styles/index.css';
 import './App.css';
+import './index.css';
 import App from './App';
 import Home from './pages/Home';
 import { Provider } from 'react-redux';

@@ -3,19 +3,20 @@ import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { removeFromFavorite } from "../slices/favoriteSlice";
 import Rating from "../componets/Rating";
-import { BsFillTrashFill } from "react-icons/bs";
+
+import { BsFillTrashFill,BsCart } from "react-icons/bs";
 const FavoriteScreen = () => {
 
     const dispatch = useDispatch();
     const favorite = useSelector ((state) => state.favorite)
     const {favoriteItems} = favorite;
-
+    console.log('aaa',favoriteItems)
     const removefavoriteItem = (id) =>{
         dispatch(removeFromFavorite(id))
       }
   return (
     <>
-     <section className='py-5'>
+     {/* <section className='py-5'>
         <div className='container'>
           <div>
           <section className='home-wrapper-2 py-5'>
@@ -50,8 +51,6 @@ const FavoriteScreen = () => {
                             
                             )) }
                       </div>
-                    
-                    
                </div>
             </div>
         </section>
@@ -59,6 +58,59 @@ const FavoriteScreen = () => {
          
          
         </div>
+    </section> */}
+    <section className="pt-3">
+      <div className="container-sm"> 
+            <div className="row mb-8">
+                <div className="col-12 text-center">
+                <h1 className="leading-3 text-[20px] pt-4 capitalize">Danh sách yêu thích <span>(3 sản phẩm)</span></h1>
+                </div>
+            </div>
+            <table  class="table">
+              <thead className="table-light">
+                <tr>
+                  <th> </th>
+                  <th className="capitalize leading-3 text-[17px]">Sản phẩm</th>
+                  <th className="capitalize leading-3 text-[17px]">Giá</th>
+                  <th className="capitalize leading-3 text-[17px]">Trạng thái</th>
+                  <th className="capitalize leading-3 text-[17px]"></th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+              {favoriteItems.map((item) =>
+               <tr>
+                <td className="align-middle">
+                  <Link to={`/product/${item._id}`}>
+                  <img className="h-[80px] w-[80px]" src={item.bookImage} />
+                  </Link>
+                </td>
+                <td className="align-middle">
+                  <div>
+                    <h6 className="font-normal text-[#999] text-[14px] leading-[1.2] capitalize">{item.category}</h6>
+                    <Link to={`/product/${item._id}`}>
+                    <h2 className="font-normal text-[17px] h-[50px] py-3 line-clamp-2  leading-[28px] text-[#4b5966] capitalize">{item.bookName}</h2>
+                    </Link>
+                    <p className="font-normal text-[#999] text-[14px] leading-[1.2] capitalize">{item.language}</p>
+                  </div> 
+                </td>
+                <td className="align-middle">{item.bookPrice}</td>
+                <td className="align-middle">
+                  <span class="badge bg-success font-normal text-[14px] leading-[1.2] capitalize"> {item.bookQuaranty > 0 ? 'Còn Hàng': 'Hết Hàng' }</span>
+                  </td>
+                <td className="align-middle">
+                  <div className="flex ">
+                     {item.bookQuaranty >0 ?  ( <button className='bg-[#5caf90]  h-[43px] w-[46px] text-[#ffff] text-[14px] border-[1px]  border-solid rounded-lg transition-all duration-[0.3s] ease-in-out hover:bg-[#4b5966]'
+                      type='button'><BsCart style={{marginLeft:'10px'}}  size={'25px'} /></button> ): null}
+                    <button className="bg-[#4b5966] ml-[15px] h-[43px] w-[46px] text-[#ffff] text-[14px] border-[1px]  border-solid rounded-lg transition-all duration-[0.3s] ease-in-out hover:bg-[#5caf90]" ><BsFillTrashFill style={{marginLeft:'10px'}} size={'25px'}/></button>
+                  </div>
+                </td>
+               </tr>               
+              ) 
+              }
+              </tbody>
+            </table>
+      </div>
     </section>
     </>
   )

@@ -7,6 +7,7 @@ import {useNavigate, useSearchParams } from "react-router-dom";
 import Paginate from "../componets/Paginate";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
 import CurrencyInput from 'react-currency-input-field';
+import Rating from '@mui/material/Rating';
 const ProductGridScreen = () => {
   const navigate = useNavigate();
 
@@ -39,7 +40,7 @@ const ProductGridScreen = () => {
   const [ languageParam,setLanguageParam] = useState(currentLanguage);
   const [ rateParam, setRateParam] = useState(currentRate)
  
-  const { data: products, isLoading, error } = useGetProductsQuery({keyword: keywordParam ,pageNumber: pageNumberParam, category: categoryParam,publicCompany: publicCompanyParam,
+  const { data: items, isLoading, error } = useGetProductsQuery({keyword: keywordParam ,pageNumber: pageNumberParam, category: categoryParam,publicCompany: publicCompanyParam,
     minPrice: minPriceParam, maxPrice: maxPriceParam, form: formParam, language: languageParam, rate: rateParam });
 
   useEffect(()=>{ 
@@ -53,10 +54,13 @@ const ProductGridScreen = () => {
       setRateParam(currentRate);
     }
   },[currentPageNumberParam,pageNumberParam,currentPublicCompanyParam,publicCompanyParam,currentCategoryParam,categoryParam,currentform,formParam,currentLanguage,languageParam,currentRate,rateParam]);
- 
-
+  
+  // const arrCategories =[];
+  // for(let i = 0;  i<items.products.length; i++){
+  //     arrCategories.push(items.products[i].category)
+  // }
+  // const fitterArrCategory = [...new Set(arrCategories)]
   const arrcategories = [
-    'Tất cả các sách',
     'Tiểu Thuyết',
     'Văn Học',
     'Thiếu Nhi',
@@ -84,13 +88,13 @@ const arrLanguage = [
   'Tiếng Anh',
   'Tiếng Trung',
 ]
-const fiveStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>];
+// const fiveStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>];
 const fourStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>,<FaRegStar/>];
 const threeStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaRegStar/>,<FaRegStar/>];
 const twotar = [ <FaStar/>,<FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>];
 const oneStar = [ <FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>];
 const arrStarRate = [
-{name: '5',star: fiveStar}, {name: '4',star: fourStar},{ name: '3', star: threeStar}, {name: '2', star: twotar}, {name: '1', star: oneStar}
+{name: '5',star: <Rating value={5} readOnly />}, {name: '4',star: <Rating value={4} readOnly />},{ name: '3', star: <Rating value={3} readOnly />}, {name: '2', star: <Rating value={2} readOnly />}, {name: '1', star: <Rating value={1} readOnly />}
 ]
  const validateValueMin = (value) => {
   setMinPriceParam(value);
@@ -100,8 +104,9 @@ const arrStarRate = [
  }
 const setCategoryValue = (categoryValue) => {
     setColorCategory(categoryValue);
-    if(categoryValue==='Tất cả các sách')
+    if(categoryValue==='Tất cả các sách'){
         categoryValue='';
+    }
     searchParams.set("category", categoryValue);
     navigate({ search: searchParams.toString() });
   };
@@ -134,106 +139,66 @@ navigate({ search: searchParams.toString()});
 };
 
   const pages = useMemo(() => {
-    if (!products) return 0;
+    if (!items) return 0;
     
-    if(products.pages)
-       return products.pages 
+    if(items.pages)
+       return items.pages 
 
-  }, [products,]);
+  }, [items,]);
   const page = useMemo(() => {
-    if (!products) return 0;
+    if (!items) return 0;
          
-    if(products.page)
-    return products.page
-  }, [products]);
+    if(items.page)
+    return items.page
+  }, [items]);
 
   
   return (
     <>
-      <section className="list-products py-5 ">
-        <div className="container">
+      <section className="my-8 ">
+        <div className="container-sm">
           <div className="row">
             <div className="col-lg-3">
-              <button
-                className="btn btn-outline-secondary mb-3 w-100 d-lg-none"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span>Hiển thị bộ lọc</span>
-              </button>
-
-              <div
-                className="collapse card d-lg-block mb-5"
-                id="navbarSupportedContent"
-              >
-                <div className="accordion" id="accordionPanelsStayOpenExample">
-                  <div className="accordion-item">
-                    <h2 className="accordion-header" id="headingOne">
-                      <button
-                        className="accordion-button text-dark bg-light"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#panelsStayOpen-collapseOne"
-                        aria-expanded="false"
-                        aria-controls="panelsStayOpen-collapseOne"
-                      >
-                        Thể Loại
-                      </button>
-                    </h2>
-                    <div
-                      id="panelsStayOpen-collapseOne"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingOne"
-                    >
-                      <div className="accordion-body">
-                        <ul className="list-unstyled">
-                          
-                        {arrcategories.map(categoryMap => (
-                          
-                          <li
-              
-                                style={{
-                                cursor: 'pointer',
-                                 listStyleType: 'none',
-                                 color: colorCategory===categoryMap ? 'blue' : 'black'
-                                }}
-                                onClick={() => setCategoryValue(categoryMap)}
-                                >
-                               {categoryMap}
-                              
-                              
-                            </li>
-                            ))}
-                        </ul>
-                      </div>
-                    </div>
+              <div>
+                <div>
+                  <div>
+                    <h4 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2">
+                      Thể Loại
+                    </h4>
+                    <h4 className="font-normal text-[#444] capitalize leading-[1] cursor-pointer mb-2"
+                      style={{
+                        color: colorCategory==='Tất cả các sách' ? '#ff6162' : 'black',
+                        }}
+                    onClick={() => setCategoryValue('Tất cả các sách')}>
+                      Tất cả các loại sách
+                    </h4>
                   </div>
-                  <div className="accordion-item">
-                    <h2 className="accordion-header" id="headingTwo">
-                      <button
-                        className="accordion-button text-dark bg-light"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#panelsStayOpen-collapseTwo"
-                        aria-expanded="false"
-                        aria-controls="panelsStayOpen-collapseTwo"
-                      >
+                  <ul className="pl-[10px]">   
+                    {arrcategories.map(categoryMap => (      
+                      <li className="max-w-[100px] flex justify-center "
+                        style={{
+                        cursor: 'pointer',
+                        listStyleType: 'none',
+                        color: colorCategory===categoryMap ? '#fff' : 'black',
+                        border: colorCategory===categoryMap ? '1px solid black': '',
+                        borderRadius: colorCategory===categoryMap ? '30px': '',
+                        backgroundColor: colorCategory===categoryMap ? '#ff6162' : ''
+                        }}
+                        onClick={() => setCategoryValue(categoryMap)}
+                        >
+                        {categoryMap}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                  <div>
+                    <div>
+                      <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2">
                         Nhà xuất bản
-                      </button>
-                    </h2>
-                    <div
-                      id="panelsStayOpen-collapseTwo"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingTwo"
-                    >
-                      <div className="accordion-body">
-                        <div>
+                      </h2>
+                    </div>
+                      <div>
                         {arrPublicCompany.map(company =>(
-
 
                         <div class="form-check">
                           <input class="form-check-input" type="checkbox" value={publicCompanyParam} checked={company===selectedCompany} onChange={()=>handleCheckboxChange(company)} />
@@ -241,32 +206,18 @@ navigate({ search: searchParams.toString()});
                           {company}
                           </label>
                         </div>
-                        
                         ))} 
-                        </div>
                       </div>
-                    </div>
+                   
                   </div>
-                  <div className="accordion-item">
-                    <h2 className="accordion-header" id="headingThree">
-                      <button
-                        className="accordion-button text-dark bg-light"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#panelsStayOpen-collapseThree"
-                        aria-expanded="false"
-                        aria-controls="panelsStayOpen-collapseThree"
-                      >
+                  <div >
+                    <div>
+                      <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2" >
                         Giá
-                      </button>
-                    </h2>
-                    {/* <form onSubmit={submitPrie}> */}
-                    <div
-                      id="panelsStayOpen-collapseThree"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingThree"
-                    >
-                      <div className="accordion-body">
+                      </h2>
+                    </div>
+                    {/* lan 2 <form onSubmit={submitPrie}> */}
+                      <div >
                         <div className="row mb-3">
                           <div className="col-6">
                             <p className="mb-0">Nhỏ</p>
@@ -296,63 +247,30 @@ navigate({ search: searchParams.toString()});
                         </div>
                       
                       </div>
-                    </div>
-                    {/* </form> */}
+                    
+                    {/* lan 2</form> */}
                   </div>
-                  <div className="accordion-item">
-                    <h2 className="accordion-header" id="headingThree">
-                      <button
-                        className="accordion-button text-dark bg-light"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#panelsStayOpen-collapseFour"
-                        aria-expanded="false"
-                        aria-controls="panelsStayOpen-collapseFour"
-                      >
+                 <div>
+                    <div>
+                      <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2">
                         Hình thức
-                      </button>
-                    </h2>
-                    <div
-                      id="panelsStayOpen-collapseFour"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingThree"
-                    >
-                      <div className="accordion-body">
-                        <div>
-                            {arrForm.map(formMap =>(
-
-
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox" value={formMap} checked={formMap===selectedForm} onChange={()=>handleCheckboxFormChange(formMap)} />
-                              <label class="form-check-label" for="flexCheckDefault">
-                              {formMap}
-                              </label>
-                            </div>
-
-                            ))} 
-                        </div>
+                      </h2>
+                    </div>
+                    <div>
+                      {arrForm.map(formMap =>(
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value={formMap} checked={formMap===selectedForm} onChange={()=>handleCheckboxFormChange(formMap)} />
+                        <label class="form-check-label" for="flexCheckDefault">
+                        {formMap}
+                        </label>
                       </div>
+                      ))} 
                     </div>
                   </div>
-                  <div className="accordion-item">
-                    <h2 className="accordion-header" id="headingThree">
-                      <button
-                        className="accordion-button text-dark bg-light"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#panelsStayOpens-collapseFour"
-                        aria-expanded="false"
-                        aria-controls="panelsStayOpens-collapseFour"
-                      >
+                  <div>
+                    <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2" >
                         Hình thức
-                      </button>
-                    </h2>
-                    <div
-                      id="panelsStayOpens-collapseFour"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingThree"
-                    >
-                      <div className="accordion-body">
+                    </h2>   
                       <div>
                             {arrLanguage.map(languageMap=>(
                             <div class="form-check">
@@ -362,29 +280,13 @@ navigate({ search: searchParams.toString()});
                               </label>
                             </div>
                             ))} 
-                        </div>
                       </div>
-                    </div>
                   </div>
-                  <div className="accordion-item">
-                    <h2 className="accordion-header" id="headingThree">
-                      <button
-                        className="accordion-button text-dark bg-light"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#panelsStayOpen-collapseFive"
-                        aria-expanded="false"
-                        aria-controls="panelsStayOpen-collapseFive"
-                      >
+                  <div>
+                    <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2">
                         Đánh giá
-                      </button>
                     </h2>
-                    <div
-                      id="panelsStayOpen-collapseFive"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingThree"
-                    >
-                      <div className="accordion-body">
+                    <div>
                       <div>
                             {arrStarRate.map(starRate=>(
                             <div class="form-check">
@@ -394,11 +296,9 @@ navigate({ search: searchParams.toString()});
                               </label>
                             </div>
                             ))} 
-                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
               </div>
             </div>
             <div className="col-lg-9">
@@ -410,8 +310,8 @@ navigate({ search: searchParams.toString()});
                 </Message>
               ) : (
                 <>
-                  <div className="product-card row row-cols-4">
-                    {products.products && products.products.map((product) => (
+                  <div className="flex flex-wrap w-full gap-4">
+                    {items.products && items.products.map((product) => (
                       <Product product={product} />
                     ))}
                   </div>

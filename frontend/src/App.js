@@ -7,8 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
   return(
     <>
+    {/* style={{backgroundColor:'#f5f5f7'}} */}
       <Header />
-      <main className='py-3' style={{backgroundColor:'#f5f5f7'}}>
+      <main className='py-3'>
       <Container>
         <Outlet />
       </Container>

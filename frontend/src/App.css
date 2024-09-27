@@ -1,70 +1,14 @@
-/* this is begin css input*/
-.input-group-srearch{
-    background-color:#febd69 ;
-}
-.form-control{
-    box-shadow: none;
-    border-color: inherit;
-}
-/* this is end css input*/
-/* this is begin css footer*/
-footer{
-    width: 100%;
-    max-height:150px ;
-    background-color: #222121;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.leftFooter{
-    width: 28%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.leftFooter > h4{
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 1vmax;
-}
-.leftFooter > p{
-    font-size: 1vmax;
-    text-align: center;
-    font-family: "Lucida Sans", " Lucida Sans Regular", "Lucida Grande"
-    , "Lucida Sans Unicode", Geneva, Verdana, sans-serif;   
-}
 
-.leftFooterImg>img{
-    width: 10vmax;
-    margin: 1vmax0;
-    cursor: pointer;
-}
-.midFooter{
-    width: 40%;
-    text-align: center;
-}  
-.midFooter > h1{
-    margin: 1vmax auto;
-    font-size: 2vmax;
-    font-family: "Roboto";
-    color:#febd69 ;
-}
-.midFooter > p {
-    margin: 1vmax auto;
-}
-.rightFooter {
-    width: 20%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.rightFooter > h4{
-    font-family: "Roboto";
-    font-size: 1.4vmax;
-    text-decoration: underline;
-}
+
 /* this is end css footer */
 /* this is begin css banner*/
+
+.swiper {
+  width: 100%;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
 .main-banner > img{
     width: 100%;
 }
