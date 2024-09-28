@@ -3,6 +3,7 @@ import Message from './Message';
 import Loader from '../componets/Loader';
 import { useParams } from 'react-router-dom';
 import { useGetProductsQuery } from '../slices/productsApiSlice';
+import Product from "../componets/Product";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import "swiper/css/grid";
@@ -42,9 +43,10 @@ const TopProduct = () => {
                             }
                             }
                         >
-                        {data.products.slice(0,10).map((product)=>(
+                        {data?.products?.map((product)=>(
                         <SwiperSlide> 
-                        <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
+                            < Product  product={product}/>
+                        {/* <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
                             <div className="basis-[100px]"> 
                                 <img  src={product.bookImage} />
                             </div>
@@ -62,7 +64,7 @@ const TopProduct = () => {
                                     <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         </SwiperSlide>
                         ))}
                         </Swiper>
@@ -89,9 +91,10 @@ const TopProduct = () => {
                          }
                         
                         >
-                        {data.products.slice(0,10).map((product)=>(
+                        {data?.products?.slice(0,10).map((product)=>(
                         <SwiperSlide> 
-                        <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
+                            < Product  product={product}/>
+                        {/* <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
                             <div className="basis-[100px]"> 
                                 <img  src={product.bookImage} />
                             </div>
@@ -109,7 +112,7 @@ const TopProduct = () => {
                                     <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         </SwiperSlide>
                         ))}
                         </Swiper>
@@ -134,27 +137,9 @@ const TopProduct = () => {
                         }
                         }
                         >
-                        {data.products.slice(0,10).map((product)=>(
+                        {data?.products?.map((product)=>(
                         <SwiperSlide> 
-                        <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
-                            <div className="basis-[100px]"> 
-                                <img  src={product.bookImage} />
-                            </div>
-                            <div className=" w-[calc(100%-100px)] basis-[calc(100%-100px)]">
-                                <h2 className="font-normal  text-[17px] truncate mb-[10px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90] ">{product.bookName}</h2>
-                                <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">Tieu Thuyet</h6>
-                                <div className="mb-2">
-                                    <span className="text-[#4b5966] text-[18px] font-bold mr-[7px]">{product.bookPrice}</span>
-                                    <span className="text-[14px] text-[#777] line-through mr-[7px]">7500</span>
-                                    <span className=" text-[#eee] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] ">25%</span>
-                                </div>
-                                <div className="flex flex-row  opacity-0 group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
-                                    <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center" > < BsSuitHeart /> </button>
-                                    <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsEye /> </button>
-                                    <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
-                                </div>
-                            </div>
-                        </div>
+                          < Product  product={product}/>
                         </SwiperSlide>
                         ))}
                         </Swiper>
