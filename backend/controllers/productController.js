@@ -260,6 +260,51 @@ const getFeaturedProducts = asyncHandler(async (req, res) => {
   res.status(200).json(products);
 });
 
+// @desc    Get personalized products for the user (Sản phẩm dành cho bạn)
+// @route   GET /api/products/recommended
+// @access  Private (dành cho người dùng đã đăng nhập)
+const getRecommendedProducts = asyncHandler(async (req, res) => {
+  const user = req.user; // Giả định user đã đăng nhập và middleware xác thực đã được thực hiện trước đó
+
+  if (!user) {
+    res.status(401);
+    throw new Error("User not authenticated");
+  }
+
+  // Lấy danh sách sản phẩm từ wishlist và cart
+  const wishlistProductIds = user.wishlist.map((product) => product._id);
+  const cartProductIds = user.cart.map((item) => item.product._id);
+
+  // Tổng hợp các danh mục sản phẩm dựa trên wishlist và cart
+  const wishlistProducts = await Product.find({
+    _id: { $in: wishlistProductIds },
+  });
+  const cartProducts = await Product.find({ _id: { $in: cartProductIds } });
+
+  // Lấy danh mục từ các sản phẩm trong wishlist và cart
+  const categoriesFromWishlist = wishlistProducts.map(
+    (product) => product.category
+  );
+  const categoriesFromCart = cartProducts.map((product) => product.category);
+
+  // Tập hợp tất cả các danh mục yêu thích
+  const userPreferences = [
+    ...new Set([
+      ...categoriesFromWishlist,
+      ...categoriesFromCart,
+      ...(user.preferences || []),
+    ]),
+  ];
+
+  // Gợi ý các sản phẩm dựa trên danh mục yêu thích
+  const recommendedProducts = await Product.find({
+    category: { $in: userPreferences },
+    _id: { $nin: [...wishlistProductIds, ...cartProductIds] }, // Loại bỏ các sản phẩm đã có trong wishlist hoặc cart
+  }).limit(5); // Giới hạn số sản phẩm gợi ý
+
+  res.status(200).json(recommendedProducts);
+});
+
 // @desc    Get best-selling products (Sản phẩm bán chạy)
 // @route   GET /api/products/bestsellers
 // @access  Public
@@ -301,5 +346,6 @@ export {
   getFeaturedProducts,
   getDiscountedProducts,
   getBestSellingProducts,
-  getSimilarProducts
+  getSimilarProducts,
+  getRecommendedProducts
 };
