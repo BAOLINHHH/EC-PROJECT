@@ -2,8 +2,9 @@ import Cart from "../models/cartModel.js";
 
 // Hàm thêm sản phẩm vào giỏ hàng
 const addToCart = async (req, res) => {
+  const userId = req.user._id;
+
   const {
-    userId,
     cartItems,
     itemsPrice,
     itemsShip,
