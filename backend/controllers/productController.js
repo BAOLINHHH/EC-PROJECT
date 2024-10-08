@@ -261,7 +261,7 @@ const getProducts1 = asyncHandler(async (req, res) => {
 // @route   GET /api/products/latest
 // @access  Public
 const getLatestProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
+  const products = await Product.find({}).sort({ createdAt: -1 }).limit(15);
   res.status(200).json(products);
 });
 
