@@ -1,5 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
+import moment from "moment";
 
 // @desc     Fetch all products
 // @route    Get api/products
@@ -53,6 +54,33 @@ const getProducts = asyncHandler(async (req, res) => {
     ? { rating: { $lte: req.query.rate } }
     : {};
 
+  // sort
+  const sortOption = req.query.sort || ""; // Lấy giá trị sắp xếp từ request
+  let sortCriteria = {}; // Tiêu chí sắp xếp mặc định
+
+  switch (sortOption) {
+    case "price_asc":
+      sortCriteria = { bookPrice: 1 }; // Sắp xếp giá tăng dần
+      break;
+    case "price_desc":
+      sortCriteria = { bookPrice: -1 }; // Sắp xếp giá giảm dần
+      break;
+    case "rating_asc":
+      sortCriteria = { rating: 1 }; // Sắp xếp rating tăng dần
+      break;
+    case "rating_desc":
+      sortCriteria = { rating: -1 }; // Sắp xếp rating giảm dần
+      break;
+    case "name_asc":
+      sortCriteria = { bookName: 1 }; // Sắp xếp tên theo alphabet tăng dần
+      break;
+    case "name_desc":
+      sortCriteria = { bookName: -1 }; // Sắp xếp tên theo alphabet giảm dần
+      break;
+    default:
+      sortCriteria = { _id: -1 }; // Mặc định: sắp xếp theo ID mới nhất
+  }
+
   const count = await Product.countDocuments({
     ...keyword,
     ...category,
@@ -71,6 +99,7 @@ const getProducts = asyncHandler(async (req, res) => {
     ...language,
     ...rate,
   })
+    .sort(sortCriteria)
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
@@ -248,7 +277,7 @@ const getDiscountedProducts = asyncHandler(async (req, res) => {
 // @route   GET /api/products/featured
 // @access  Public
 const getFeaturedProducts = asyncHandler(async (req, res) => {
-  const oneWeekAgo = moment().subtract(7, 'days').toDate();
+  const oneWeekAgo = moment().subtract(7, "days").toDate();
 
   // Lấy các sản phẩm được tạo trong tuần qua hoặc có đánh giá trong tuần qua
   const products = await Product.find({
@@ -321,7 +350,7 @@ const getSimilarProducts = asyncHandler(async (req, res) => {
 
   if (!product) {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error("Product not found");
   }
 
   // Tìm các sản phẩm có cùng category với sản phẩm hiện tại, ngoại trừ sản phẩm hiện tại
@@ -344,8 +373,8 @@ export {
   getProducts1,
   getLatestProducts,
   getFeaturedProducts,
+  getRecommendedProducts,
   getDiscountedProducts,
   getBestSellingProducts,
   getSimilarProducts,
-  getRecommendedProducts
 };
