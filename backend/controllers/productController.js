@@ -261,7 +261,14 @@ const getProducts1 = asyncHandler(async (req, res) => {
 // @route   GET /api/products/latest
 // @access  Public
 const getLatestProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ createdAt: -1 }).limit(15);
+  // Kiểm tra xem query có truyền 'category' hay không, nếu có thì tạo điều kiện lọc
+  const category = req.query.category
+    ? { category: { $regex: req.query.category, $options: "i" } } // Lọc theo category (không phân biệt hoa/thường)
+    : {}; // Nếu không có category thì không áp dụng điều kiện lọc
+
+  // Tìm sản phẩm mới nhất và lọc theo category (nếu có)
+  const products = await Product.find(category).sort({ createdAt: -1 }).limit(5);
+
   res.status(200).json(products);
 });
 
