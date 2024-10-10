@@ -267,7 +267,7 @@ const getLatestProducts = asyncHandler(async (req, res) => {
     : {}; // Nếu không có category thì không áp dụng điều kiện lọc
 
   // Tìm sản phẩm mới nhất và lọc theo category (nếu có)
-  const products = await Product.find(category).sort({ createdAt: -1 }).limit(10);
+  const products = await Product.find(category).sort({ createdAt: -1 }).limit(15);
 
   res.status(200).json(products);
 });
