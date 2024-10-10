@@ -242,9 +242,9 @@ const createProductReview = asyncHandler(async (req, res) => {
 });
 
 // @desc    Get top rated products
-// @route   GET /api/products/top
+// @route   GET /api/products/toprated
 // @access  Public
-const getTopProducts = asyncHandler(async (req, res) => {
+const getTopRatedProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({}).sort({ rating: -1 }).limit(10);
   res.status(200).json(products);
 });
@@ -341,10 +341,10 @@ const getRecommendedProducts = asyncHandler(async (req, res) => {
   res.status(200).json(recommendedProducts);
 });
 
-// @desc    Get best-selling products (Sản phẩm bán chạy)
-// @route   GET /api/products/bestsellers
+// @desc    Get top-selling products (Sản phẩm bán chạy)
+// @route   GET /api/products/topsellers
 // @access  Public
-const getBestSellingProducts = asyncHandler(async (req, res) => {
+const getTopSellerProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({}).sort({ numReviews: -1 }).limit(10);
   res.status(200).json(products);
 });
@@ -376,12 +376,12 @@ export {
   updateProduct,
   deleteProduct,
   createProductReview,
-  getTopProducts,
+  getTopRatedProducts,
   getProducts1,
   getLatestProducts,
   getFeaturedProducts,
   getRecommendedProducts,
   getDiscountedProducts,
-  getBestSellingProducts,
+  getTopSellerProducts,
   getSimilarProducts,
 };
