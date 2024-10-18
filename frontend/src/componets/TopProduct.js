@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Message from './Message';
 import Loader from '../componets/Loader';
 import { useParams } from 'react-router-dom';
@@ -10,23 +10,41 @@ import "swiper/css/grid";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {Navigation, Grid  } from 'swiper/modules';
 import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
+import listProducts from '../api/productsAPI';
 const TopProduct = () => {
     const {pageNumber } = useParams()
     const {data , isLoading, error} = useGetProductsQuery({pageNumber});
+
+    const [loading,setLoading] = useState(true);
+    const [dataProduct,setDataProduct] = useState([]);
+
+
+    useEffect (()=> {
+        flechData()
+    }, []);
+
+    const flechData =async () =>{
+        try {
+            const responseProducts = await listProducts.getTopRatedProducts()
+            setDataProduct(responseProducts)
+            setLoading(false)
+          } catch (error) {
+          }
+    }
+
   return (
     <>
-    {isLoading ? (
+    {loading ? (
         <Loader />
-    ): error ? (<Message variant='danger'>{error?.data?.message || error.error}</Message>
     ) : (<>
     <section>
         <div className="container-sm">
             <div className="row">
                     <div className="col-4">
                         <div className="w-full  py-[10px] bg-[#f2f2f2]">
-                            <h2 className=" text-[25px] font-semibold text-[#4b5966]   capitalize leading-[1]">Sản phẩm bán chạy</h2>
+                            <h2 className=" text-[25px] font-semibold text-[#4b5966]   capitalize leading-[1]">Combo</h2>
                         </div>
-                        <Swiper 
+                        {dataProduct.length>0 && <Swiper 
                             slidesPerView={1}
                             paceBetween={20}
         
@@ -43,7 +61,7 @@ const TopProduct = () => {
                             }
                             }
                         >
-                        {data?.products?.map((product)=>(
+                        {dataProduct.map((product)=>(
                         <SwiperSlide> 
                             < Product  product={product}/>
                         {/* <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
@@ -67,13 +85,13 @@ const TopProduct = () => {
                         </div> */}
                         </SwiperSlide>
                         ))}
-                        </Swiper>
+                        </Swiper>}
                     </div>
                     <div className="col-4">
                         <div className="w-full py-[10px] bg-[#f2f2f2] ">
                             <h2 className=" text-[25px] font-semibold text-[#4b5966]  capitalize leading-[1]">Ebook</h2>
                         </div>
-                        <Swiper
+                        { dataProduct.length>0 && <Swiper
                          slidesPerView={1}
                          paceBetween={20}
           
@@ -91,7 +109,7 @@ const TopProduct = () => {
                          }
                         
                         >
-                        {data?.products?.slice(0,10).map((product)=>(
+                        {dataProduct.slice(0,10).map((product)=>(
                         <SwiperSlide> 
                             < Product  product={product}/>
                         {/* <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
@@ -115,13 +133,13 @@ const TopProduct = () => {
                         </div> */}
                         </SwiperSlide>
                         ))}
-                        </Swiper>
+                        </Swiper>}
                     </div>
                     <div className="col-4">
                         < div className="w-full py-[10px] bg-[#f2f2f2]">
                             <h2 className=" text-[25px] font-semibold text-[#4b5966] capitalize leading-[1]">Sản phẩm được đánh giá cao</h2>
                         </div>
-                        <Swiper
+                        { dataProduct.length>0 && <Swiper
                         slidesPerView={1}
                         paceBetween={20}
                         modules={[Navigation, Grid]}
@@ -137,12 +155,12 @@ const TopProduct = () => {
                         }
                         }
                         >
-                        {data?.products?.map((product)=>(
+                        {dataProduct.map((product)=>(
                         <SwiperSlide> 
                           < Product  product={product}/>
                         </SwiperSlide>
                         ))}
-                        </Swiper>
+                        </Swiper>}
                     </div>
             </div>
         </div>

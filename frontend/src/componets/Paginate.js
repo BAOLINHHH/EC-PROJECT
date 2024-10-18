@@ -5,7 +5,7 @@ import { useNavigate,useLocation} from 'react-router-dom';
 // import Pagination from '@mui/material/Pagination';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-const Paginate = ({page,pages, isAdmin = false, keyword = '' }) => {
+const Paginate = ({pages, isAdmin = false, keyword = '',pageNumberParamTest=' ' }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search)
@@ -16,10 +16,10 @@ const Paginate = ({page,pages, isAdmin = false, keyword = '' }) => {
   //  const currentPage = Number(queryParams.get("pageNumber")) || 1;
   // const [setPage] =useState(1);
   const handleChange= (event, value) =>{
-    
     const currentPage = value
     if(!isAdmin){
       queryParams.set("pageNumber", currentPage);
+      console.log("currentPage",currentPage)
       navigate({ search: queryParams.toString() });
     }else{
       navigate(`/admin/productlist?pageNumber=${currentPage}`)
@@ -28,7 +28,12 @@ const Paginate = ({page,pages, isAdmin = false, keyword = '' }) => {
   }
   return (
   <Stack spacing={2}>
-    <Pagination count={pages} page={page} 
+      {/* <Pagination count={pages} page={page} 
+     onChange={handleChange} 
+    /> */}
+    <Pagination
+
+    count={pages} 
     onChange={handleChange}
     />
   </Stack>

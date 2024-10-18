@@ -5,7 +5,7 @@ import {BsCart, BsSuitHeart} from 'react-icons/bs';
 import Loader from '../componets/Loader';
 import Message from '../componets/Message';
 import { useGetProductDetailQuery, useCreateReviewMutation } from '../slices/productsApiSlice';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch,useSelector } from 'react-redux';
 import {addToCart} from '../slices/cartSlice'
 import { addToFavorite } from '../slices/favoriteSlice';
@@ -16,10 +16,15 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { optionCurrency,transform } from '../componets/money';
+import { FaHeart } from "react-icons/fa";
+import favoriteApi from '../api/favoriteApi';
+import listProduct from '../api/productsAPI';
 const ProductScreem = () => {
   const navigate = useNavigate();
   const dispatch =useDispatch(); 
   const [value,setValue] = useState('1');
+  const [dataProduct, SetdataProduct]= useState({});
+  const [loading,setLoading] = useState(true)
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -27,9 +32,65 @@ const ProductScreem = () => {
   const [createReview, { isLoading: loadingProductReview }] =useCreateReviewMutation();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [ qty, setQuantity] = useState(1);   
+  const [ qty, setQuantity] = useState(1);
+  const [isinFavorite, setIsinFavorite] = useState('')   
   const {id: productId}= useParams();
+  const {id}= useParams();
+
   const { data : product,isLoading, refetch, error }= useGetProductDetailQuery(productId);
+
+
+ 
+  useEffect (() => {
+    flechData();
+    flechDataFavorite();
+},[]);
+
+const flechData = async ()=>{
+  try {
+    
+    const responseProduct = await listProduct.getProductDetail(id); 
+    SetdataProduct(responseProduct);
+    setLoading(false)
+  } catch (error) {
+  }
+}
+const flechDataFavorite = async ()=> {
+  try {
+    const responseFavoriteProduct = await favoriteApi.checkFavorite(id)
+    setIsinFavorite(responseFavoriteProduct.isInWishlist);
+  } catch (error) {
+    
+  }
+}
+const removeFavoriteHandler = async ()=>{
+  try {
+    await favoriteApi.deleteFavorite(id);
+    flechDataFavorite();
+    toast.success('Xóa sản phẩm yêu thích thành công');
+  } catch (error) {
+    console.log(error)
+    toast.error('Xóa sản phẩm yêu thích thất bại');
+  }
+}
+const addToFavoriteHandler = async () =>{
+    
+  try {
+    await favoriteApi.addFavorite(id);
+    flechDataFavorite();
+    toast.success('Thêm sản phẩm yêu thích thành công');
+  } catch (error) {
+    console.log(error)
+    toast.error('Thêm sản phẩm yêu thích thất bại');
+  } 
+}
+
+ 
+  const handlogin =()=>{
+    toast.info("Đăng nhập để thêm sản phẩm yêu thích");
+    navigate('/login');
+  }
+
   const decreaseQty = () =>{
     const count = document.querySelector('.count');
     if(count.valueAsNumber <= 1 ) return;
@@ -46,16 +107,23 @@ const ProductScreem = () => {
     dispatch (addToCart({...product, qty}));
     navigate ('/cart');
   }
+
+  const checkoutHandler = ()=>{
+    navigate('/login?redirect=/shipping');
+  }
+
   const addToCartHandler = () =>{
       dispatch (addToCart({...product , qty}))
       showToastMessage();
    
   }
-  const addToFavoriteHandler = () =>{
-    dispatch (addToFavorite({...product}))
-    showToastMessageFavorite();
+
+//   const addToFavoriteHandler = () =>{
+    
+//     dispatch (addToFavorite({...product}))
+//     showToastMessageFavorite();
  
-}
+// }
   const showToastMessage = () => {
     toast.success("Thêm sản phẩm vào giỏi hàng thành công !", {
       position: toast.POSITION.TOP_RIGHT,
@@ -84,43 +152,42 @@ const ProductScreem = () => {
   
   return (
    <>
-   {isLoading ? (
+   {loading ? (
                 <Loader />
-            ): error ? (<Message variant='danger'>{error?.data?.message || error.error}</Message>
             ) : (<>
 
-                  <section>
+                  <section className="mb-5">
                           <div className="container-sm">
                             <div className="row">
                                 <div className=' col-6 flex'>
-                                <div className=" relative left-[100px]">
+                                {/* <div className=" relative left-[100px]">
                                   <div className="max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
-                                    <Image src={product.bookImage} alt={product.bookName} fluid/>
+                                    <Image src={dataProduct.bookImage} alt={dataProduct.bookName} fluid/>
                                   </div>
                                   <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1">
-                                    <Image src={product.bookImage} alt={product.bookName} fluid/></div>
+                                    <Image src={dataProduct.bookImage} alt={dataProduct.bookName} fluid/></div>
+                                  <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
+                                    <Image src={dataProduct.bookImage} alt={dataProduct.bookName} fluid/></div>
+                                  <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
+                                    <Image src={product.bookImage} alt={dataProduct.bookName} fluid/></div>
                                   <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
                                     <Image src={product.bookImage} alt={product.bookName} fluid/></div>
-                                  <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
-                                    <Image src={product.bookImage} alt={product.bookName} fluid/></div>
-                                  <div className=" max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
-                                    <Image src={product.bookImage} alt={product.bookName} fluid/></div>
-                                </div>
+                                </div> */}
                                 <div className="max-h-[390px] max-w-[390px] border-[1px] border-solid border-[#e9e9e9] bg-[#f7f7f8] rounded-[5px] relative left-[150px]"> 
-                                  <Image src={product.bookImage} alt={product.bookName} fluid/>
+                                  <Image src={dataProduct.bookImage} alt={dataProduct.bookName} fluid/>
                                 </div>
                                 </div>
       
                                 <div className="col-6 pl-[20px]">
-                                  <h3 className="text-[#04070a] text-[22px] mb-[20px] leading-[35px] captitalize">{product.bookName}</h3>
+                                  <h3 className="text-[#04070a] text-[22px] mb-[20px] leading-[35px] captitalize">{dataProduct.bookName}</h3>
               
                                   <div className="flex items-center mb-[15px]">
                                  
-                                  <Rating  className="mr-[15px] text-[15px]" name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
-                                  <p className="text-[#7a7a7a] text-[15px] leading-[1.75]">({product.rating} đánh giá)</p>
+                                  <Rating  className="mr-[15px] text-[15px]" name="half-rating-read" defaultValue={dataProduct.rating} precision={0.5} readOnly />
+                                  <p className="text-[#7a7a7a] text-[15px] leading-[1.75]">({dataProduct.rating} đánh giá)</p>
                                   </div>
                                   <div className>
-                                    <span className="text-[#4b5966] text-[22px] font-bold mr-[7px]">{product.bookPrice}</span>
+                                    <span className="text-[#4b5966] text-[22px] font-bold mr-[7px]">{dataProduct.bookPrice}</span>
                                     <span className="text-[17px] text-[#777] line-through mr-[7px]">7500</span>
                                     <span className=" text-[20px] text-[hsl(9,80%,55%)]  ">25%</span>
                                   </div>
@@ -128,24 +195,24 @@ const ProductScreem = () => {
                                     <ul>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Thể loại <span>:</span></label>
-                                          {product.category}
+                                          {dataProduct.category}
                                         </li>
                                         <li className="flex my-[10px] capitalize"> 
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Tên tác giả <span>:</span></label>
-                                          {product.author}
+                                          {dataProduct.author}
                                         </li>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Nhà xuất bản <span>:</span></label>
-                                          {product.publicCompany}
+                                          {dataProduct.publicCompany}
                                         </li>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Hình thức <span>:</span></label>
-                                          {product.form}
+                                          {dataProduct.form}
                                         </li>
                                         <li className="flex items-center my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Trạng thái<span>:</span></label>
                                           <label className=" text-[#a6e157] font-semibold "> 
-                                            {product.bookQuaranty > 0 ? 'Còn Hàng': 'Hết Hàng' }
+                                            {dataProduct.bookQuaranty > 0 ? 'Còn Hàng': 'Hết Hàng' }
                                           </label>
                                         </li>                        
                                     </ul>
@@ -164,28 +231,57 @@ const ProductScreem = () => {
                                     <div className="h-[40px] m-[5px] flex">
                                       <Button className='bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
                                         type='button'
-                                        disabled= {product.bookQuaranty === 0}
-                                        onClick={addToCartAndBuyHandler}
+                                        disabled= {dataProduct.bookQuaranty === 0}
+                                        // onClick={addToCartAndBuyHandler}
+                                        onClick={checkoutHandler}
                                         >
+                                          
                                         Mua Ngay
                                       </Button>
                                     </div>
                                     <div className='m-[5px] flex'>
                                       <Button className=' bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
                                         type='button'
-                                        disabled= {product.bookQuaranty === 0}
+                                        disabled= {dataProduct.bookQuaranty === 0}
                                         onClick={addToCartHandler}
                                       >
                                       <BsCart />   
                                       </Button>
                                     </div>
                                     <div className="m-[5px] flex">
+                                      {
+                                      !userInfo ? (  
+                                        <>
                                       <Button className='bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
+                                        onClick={handlogin}
+                                        type='button'>
+                                      <BsSuitHeart/>             
+                                      </Button>
+                                      </>
+                                      ): isinFavorite ? (
+                                         <Button className='bg-[#fff] text-[#d91612] text-[14px] border-[2px] border-[#f40b0b] border-solid transition-all duration-[0.3s] ease-in-out  hover:text-[#f44c2c0] '
+                                         onClick={removeFavoriteHandler}
+                                         type='button'
+                                       >
+                                      <FaHeart />             
+                                      </Button>
+                                      ):( 
+                                      <Button className=' bg-[#fff] text-[#44c2c0] text-[14px] border-[2px] border-[#f40b0b] border-solid transition-all duration-[0.3s] ease-in-out  hover:text-[#d91612]  hover:bg-[#fff] hover:border-[#d91612]'
+                                        onClick={addToFavoriteHandler}
+                                        type='button'
+                                      >
+                                     <FaHeart />             
+                                     </Button>
+                                     )
+                                      
+
+                                      }
+                                      {/* <Button className='bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
                                         onClick={addToFavoriteHandler}
                                         type='button'
                                       >
                                       <BsSuitHeart/>             
-                                      </Button>
+                                      </Button> */}
                                     </div>
                                   </div>
                                 </div>
@@ -241,8 +337,8 @@ const ProductScreem = () => {
                                         </TabList>
                                         <TabPanel value='1'>
                                           <div className="detail-product py-3 " >
-                                            <h3 className="text-[#04070a] text-[22px] mb-[10px] leading-[35px] captitalize">{product.bookName}</h3>
-                                            <p className="text-[#666] text-[15px] font-semibold text-left leading-[26px]">{product.bookDetail}</p>
+                                            <h3 className="text-[#04070a] text-[22px] mb-[10px] leading-[35px] captitalize">{dataProduct.bookName}</h3>
+                                            <p className="text-[#666] text-[15px] font-semibold text-left leading-[26px]">{dataProduct.bookDetail}</p>
                                           </div>
                                         </TabPanel>
                                         <TabPanel value='2'>
@@ -252,31 +348,31 @@ const ProductScreem = () => {
                                                 <tbody>
                                                   <tr>
                                                     <th>Mã Hàng</th>
-                                                    <td>{product._id}</td>
+                                                    <td>{dataProduct._id}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Tên tác giả</th>
-                                                    <td>{product.author}</td>
+                                                    <td>{dataProduct.author}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Nhà xuất bản</th>
-                                                    <td>{product.publicCompany}</td>
+                                                    <td>{dataProduct.publicCompany}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Thể loại</th>
-                                                    <td>{product.category}</td>
+                                                    <td>{dataProduct.category}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Hình thức</th>
-                                                    <td>{product.form}</td>
+                                                    <td>{dataProduct.form}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Ngôn Ngữ</th>
-                                                    <td>{product.language}</td>
+                                                    <td>{dataProduct.language}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Số trang</th>
-                                                    <td>{product.pageNumber}</td>
+                                                    <td>{dataProduct.pageNumber}</td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -286,7 +382,7 @@ const ProductScreem = () => {
                                         <TabPanel value='3'>
                                         <div className="review-product">
                                                 <div className="row">
-                                                    <div className="col-12">   
+                                                    {/* <div className="col-12">   
                                                         <section className='home-wrapper-2'>
                      
                                                           {userInfo ? 
@@ -297,13 +393,13 @@ const ProductScreem = () => {
                                                           </div>
                                                             <div className='categories'> 
                                                                   <div className='container'> 
-                                                                   {product.reviews.length === 0 && <Message>Không có đánh giá</Message>}
+                                                                   {dataProduct.reviews.length === 0 && <Message>Không có đánh giá</Message>}
                                                     <ListGroup variant='flush'>
-                                                      {product.reviews.map((review) => (
+                                                      {dataProduct.reviews.map((review) => (
                                                         <ListGroup.Item key={review._id}>
-                                                          <strong>{review.name}</strong>
-                                                          {/* <Rating value={review.rating} /> */}
-                                                          <p>{review.createdAt.substring(0, 10)}</p>
+                                                          <strong>{review.name}</strong> */}
+                                                          {/* 2222<Rating value={review.rating} /> */}
+                                                          {/* <p>{review.createdAt.substring(0, 10)}</p>
                                                           <p>{review.comment}</p>
                                                         </ListGroup.Item>
                                                       ))}
@@ -363,7 +459,7 @@ const ProductScreem = () => {
                                                           }           
                                                         
                                                     </section> 
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                           </div>
                                         </TabPanel>

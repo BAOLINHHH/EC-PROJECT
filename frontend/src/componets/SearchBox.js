@@ -8,10 +8,13 @@ const SearchBox = () => {
   // const queryParams = new URLSearchParams('?keyword=${keyword}');
   // const [keywordParam, setKeywordParam] = useState(queryParams.get("keyword"));
   //  const queryParams = new URLSearchParams('?keyword=${keyword}');
-  const [keywordParam, setKeywordParam] = useState("");
-  const submitHandler = (e) => {
+  const [keywordParam, setKeywordParam] = useState('');
   
+  const submitHandler = (e) => {
+    
     e.preventDefault();
+    
+  
     navigate(`/all-product?keyword=${keywordParam}`);
    
     // if (!!filterValue) {

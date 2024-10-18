@@ -1,35 +1,78 @@
-import React, { } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { useGetProductsQuery } from '../slices/productsApiSlice';
 import Loader from '../componets/Loader';
 import Rating from '@mui/material/Rating';
 import { Link } from "react-router-dom"
-import Message from './Message';
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Grid, Autoplay } from 'swiper/modules'
 import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
-
+import listProducts from '../api/productsAPI';
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import "swiper/css/grid";
+import ActionButton from './ActionButton';
+
 
 
 const NewProduct = () => {
-    const {pageNumber } = useParams()
-    const {data , isLoading, error} = useGetProductsQuery({pageNumber});
+    // const {pageNumber } = useParams()
+    
+    const [loading,setLoading] = useState(true);
+    const [dataProduct,setDataProduct] = useState([]);
   
-    const arrFitterCategory = []
-    for(let i=0;i<data?.products?.length ;i++){
-        arrFitterCategory.push(data?.products[i]?.category)
+    const [colorCategory, setColorCategory] = useState(null);
+
+    // const currentCategoryParam = searchParams.get("category") || "";
+    // const [category, setCategory] = useState(currentCategoryParam);
+    const [category, setCategory] = useState('');
+
+    const arrcategories = [
+        'Tiểu Thuyết',
+        'Văn Học',
+        'Thiếu Nhi',
+        'Kinh Tế',
+        'Ngôn Tình',
+        'Tâm Lí',
+        "Manga",
+    ]
+ 
+    useEffect (()=> {
+        flechData()
+    }, [category]);
+
+    const flechData= async() =>{
+        try {
+            const responseProducts = await listProducts.getAllNewProducts(category);
+            setDataProduct(responseProducts);
+            setLoading(false);
+        } catch (error) {  
+
+        }
     }
-    const fitterCategory = [...new Set(arrFitterCategory)]
-    console.log(fitterCategory)
+    
+    const setChangeCategory = (item)=>{
+        setColorCategory(item);
+        setCategory(item)
+        // searchParams.set("category", item);
+        // navigate({ search: searchParams.toString() });
+
+    }
+
+    // const {pageNumber } = useParams()
+ 
+    // const {data , isLoading, error} = useGetProductsQuery();
+    // const arrFitterCategory = []
+    // for(let i=0;i<dataProduct?.length ;i++){
+    //     arrFitterCategory.push(dataProduct[i].category)
+    // }
+    // const fitterCategory = [...new Set(arrFitterCategory)]
   return (
     <>
-    {isLoading ? (
+    {loading ? (
         <Loader />
-    ): error ? (<Message variant='danger'>{error?.data?.message || error.error}</Message>
     ) : (<>
      <section className="my-8">
         <div className="container-sm">
@@ -41,15 +84,25 @@ const NewProduct = () => {
                         </div>
                         <div className="mt-3">
                             <ul className="flex flex-row ">   
-                            {fitterCategory.map(item => (
-                                <li className=" mr-[50px] text-[17px] capitalize leading-[28px] font-normal  ">{item} </li>
+                            {arrcategories.map(item => (
+                                <li className=" mr-[50px] text-[17px] capitalize leading-[28px] p-[4px] font-normal" onClick={()=> setChangeCategory(item)} 
+                                style={{
+                                cursor: 'pointer',
+                                listStyleType: 'none',
+                                color: colorCategory===item ? '#fff' : 'black',
+                                border: colorCategory===item ? '1px solid white': '',
+                                borderRadius: colorCategory===item ? '30px': '',
+                                backgroundColor: colorCategory===item ? '#ff6162' : ''
+                                }}
+                                >{item} </li>
                             ))}
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-        <Swiper  
+        
+        { dataProduct.length>0 && <Swiper  
           slidesPerView={5}
           spaceBetween={20}
           autoplay={{
@@ -76,31 +129,27 @@ const NewProduct = () => {
            className="mySwiper"
         >
              <div className=" flex flex-wrap">
-            {data?.products?.map((product, idx)=>( 
+            { dataProduct && dataProduct.map((item,idx)=>( 
                 <SwiperSlide key={idx}>
                             <div className="card h-[430px]  group ">
                                 <div className="flex justify-center">
-                                    <Link to={ `/product/${product._id}`}>
-                                    <img className="max-h-[210px] w-[210px]" src={product.bookImage}/>
+                                    <Link to={ `/${item._id}`}>
+                                    <img className="max-h-[210px] w-[210px]" src={item.bookImage}/>
                                     </Link>
                                 </div>
                                 <span className=" text-[#eee]  left-[8px] top-[8px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
                                 <span className=" text-[#eee] top-[45px] left-[8px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
-                                <div className="flex flex-row justify-center opacity-0 group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
-                                    <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center" > < BsSuitHeart /> </button>
-                                    <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsEye /> </button>
-                                    <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
-                                </div>
+                               <ActionButton />
                             <div className="card-body border-t-[1px] ">
                                 <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">Tieu Thuyet</h6>
-                                <Link to={`product/${product._id}`}>
+                                <Link to={`product/${item._id}`}>
                                 <h2 className="font-normal text-[17px] h-[70px] pt-2  line-clamp-2 mb-[10px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90]">
-                                {product.bookName}
+                                {item.bookName}
                                 </h2>
                                 </Link>
-                                <Rating name="half-rating-read mb-[10px]" defaultValue={product.rating} precision={0.5} readOnly />
+                                <Rating name="half-rating-read mb-[10px]" defaultValue={item.rating} precision={0.5} readOnly />
                                 <div> 
-                                    <span className="text-[#4b5966] text-[18px] font-bold mr-[7px]">{product.bookPrice}</span>
+                                    <span className="text-[#4b5966] text-[18px] font-bold mr-[7px]">{item.bookPrice}</span>
                                     <span className="text-[14px] text-[#777] line-through mr-[7px]">7500</span>
                                 </div>             
                             </div>
@@ -110,8 +159,9 @@ const NewProduct = () => {
                 
             ))}
             </div>
-        </Swiper>
+        </Swiper>}
         </div>
+        
     </section>
         
         </>) }

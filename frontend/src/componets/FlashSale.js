@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react'
+import React, {useMemo,useEffect, useState} from 'react'
 import { useParams } from 'react-router-dom';
 import { useGetProductsQuery } from '../slices/productsApiSlice';
 import Loader from '../componets/Loader';
@@ -12,13 +12,30 @@ import {Navigation, Grid  } from 'swiper/modules';
 import { FaStar } from "react-icons/fa6";
 import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
 import Rating from '@mui/material/Rating';
+import listProducts from '../api/productsAPI';
 const FlashSale = () => {
   
     const Deadline = Date.now() + 1000 * 60 * 60 * 24 * 10;
     const {pageNumber } = useParams()
     const {data , isLoading, error} = useGetProductsQuery({pageNumber});
     
- 
+    const [loading,setLoading] = useState(true);
+    const [dataProduct,setDataProduct] = useState([]);
+
+
+    useEffect (()=> {
+        flechData()
+    }, []);
+
+    const flechData =async () =>{
+        try {
+            const responseProducts = await listProducts.getBestSaleProducts()
+            console.log("aaaaaa",responseProducts)
+            setDataProduct(responseProducts)
+            setLoading(false)
+          } catch (error) {
+          }
+    }
    
   return (
     
@@ -184,10 +201,10 @@ const FlashSale = () => {
                 </div>
                 <div className=" col-8">
                     <div className="mb-3 flex justify-center bg-[#f2f2f2]">
-                        <h2 className=" text-[25px] font-semibold text-[#4b5966] capitalize leading-[1]">Sản Phẩm Nổi bật trong tuần</h2>
+                        <h2 className=" text-[25px] font-semibold text-[#4b5966] capitalize leading-[1]">Sản Phẩm bán chạy</h2>
                     </div>
                     <div className="mb-5">
-                        <Swiper
+                        { dataProduct.length>0 && <Swiper
                           slidesPerView={2}
                           spaceBetween={20}
                           modules={[Navigation, Grid]}
@@ -203,7 +220,7 @@ const FlashSale = () => {
                             }
                           }
                         >
-                        {data?.products?.map((product)=>(
+                        {dataProduct.map((product)=>(
                         <SwiperSlide>
                         <div className=" flex border-[1px] group">
                             <div className="basis-[150px] relative"> 
@@ -235,7 +252,7 @@ const FlashSale = () => {
                         </div>
                         </SwiperSlide>
                             ))}
-                        </Swiper>
+                        </Swiper>}
                     </div>
                     <div className="mb-3 flex justify-center bg-[#f2f2f2]">
                         <h2 className=" text-[25px] font-semibold text-[#4b5966] capitalize leading-[1]">Dành cho bạn</h2>

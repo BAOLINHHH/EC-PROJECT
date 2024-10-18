@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:4000",
+  "proxy": "http://localhost:4000/",
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -19,6 +19,7 @@
     "font-awesome": "4.7.0",
     "materialui-pagination-component": "^1.1.12",
     "overlay-navbar": "^1.2.3",
+    "proxy": "^2.2.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.0",
     "react-currency-input-field": "^3.6.14",

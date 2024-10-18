@@ -3,7 +3,7 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import { Link } from "react-router-dom"
 import Rating from '@mui/material/Rating';
 import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
-
+import listProduct from "../api/productsAPI";
 import Loader from "../componets/Loader";
 import Message from "../componets/Message";
 import {useNavigate, useSearchParams } from "react-router-dom";
@@ -14,7 +14,6 @@ import CurrencyInput from 'react-currency-input-field';
 const ProductGridScreen = () => {
   const navigate = useNavigate();
 
-
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [selectedForm, setSelectedForm] = useState(null)
   const [selectedLanguage, setSelectedLanguage] = useState(null)
@@ -22,42 +21,47 @@ const ProductGridScreen = () => {
   const [searchParams] = useSearchParams()
   const [colorCategory, setColorCategory] = useState(null);
   
-  const currentCategoryParam = searchParams.get("category") || "";
-  const currentPublicCompanyParam = searchParams.get("publicCompany") || "";
-  const currentPageNumberParam = searchParams.get('pageNumber')||'';
-  const keywordParam = searchParams.get("keyword")||''; 
-  const currentMinPrice = searchParams.get("minPrice")||'';
-  const currentMaxPrice = searchParams.get("maxPrice")||'';
-  const currentform = searchParams.get("form")||'';
-  const currentLanguage = searchParams.get('language')||'';
-  const currentRate = searchParams.get('rate')|| '';
 
 
-
-  const [categoryParam, setCategoryParam] = useState(currentCategoryParam)
-  const [publicCompanyParam, setPublicCompanyParam] = useState(currentPublicCompanyParam)
-  const [pageNumberParam, setPageNumberParam] = useState(currentPageNumberParam)
-  const [minPriceParam,setMinPriceParam] = useState(currentMinPrice);
-  const [maxPriceParam,setMaxPriceParam] = useState(currentMaxPrice);
-  const [formParam, setFormParam] = useState(currentform);
-  const [ languageParam,setLanguageParam] = useState(currentLanguage);
-  const [ rateParam, setRateParam] = useState(currentRate)
  
-  const { data: items, isLoading, error } = useGetProductsQuery({keyword: keywordParam ,pageNumber: pageNumberParam, category: categoryParam,publicCompany: publicCompanyParam,
-    minPrice: minPriceParam, maxPrice: maxPriceParam, form: formParam, language: languageParam, rate: rateParam });
+ 
+  const { data: items, isLoading, error } = useGetProductsQuery();
 
-  useEffect(()=>{ 
+    const [dataProduct, setDataProduct]= useState('');
+    const [loading,setLoading] = useState(true);
 
-    if (currentCategoryParam !== categoryParam||currentPublicCompanyParam !== publicCompanyParam||currentPageNumberParam!==pageNumberParam||currentform !==formParam || currentLanguage !== languageParam ||currentRate !==rateParam) {
-      setCategoryParam(currentCategoryParam);
-      setPublicCompanyParam(currentPublicCompanyParam);
+    
+
+    const keywordParam = searchParams.get("keyword")||"";
+    const currentPageNumberParam = searchParams.get('pageNumber')||'';
+    const [pageNumberParam,setPageNumberParam] = useState(currentPageNumberParam);
+    const [categoryParam,setCategoryParam] = useState(searchParams.get("category") || ""); 
+    const [publicCompanyParam, setPublicCompanyParam] = useState(searchParams.get("publicCompany") || "");
+    const [minPriceParam,setMinPriceParam] = useState(searchParams.get("minPrice")||"");
+    const [maxPriceParam,setMaxPriceParam] = useState(searchParams.get("maxPrice")||"");
+    const [formParam, setFormParam]= useState(searchParams.get("form")||"");
+    const [languageParam,setLanguageParam] = useState(searchParams.get("language")||"");
+    const [rateParam, setRateParam] = useState(searchParams.get("language")||"");
+    useEffect (()=> {
+     if(currentPageNumberParam!==pageNumberParam ){
       setPageNumberParam(currentPageNumberParam);
-      setFormParam(currentform);
-      setLanguageParam(currentLanguage);
-      setRateParam(currentRate);
-    }
-  },[currentPageNumberParam,pageNumberParam,currentPublicCompanyParam,publicCompanyParam,currentCategoryParam,categoryParam,currentform,formParam,currentLanguage,languageParam,currentRate,rateParam]);
-  
+     }
+  }, [currentPageNumberParam]);
+
+    useEffect (()=> {
+      flechData()
+  }, [keywordParam,categoryParam,pageNumberParam,publicCompanyParam,minPriceParam,maxPriceParam,formParam,rateParam]);
+
+  const flechData = async() =>{
+      try {
+        const responseProducts = await listProduct.getAllProducts(keywordParam,pageNumberParam,categoryParam,publicCompanyParam,minPriceParam,maxPriceParam,formParam,languageParam,rateParam)
+        setDataProduct(responseProducts)
+        setLoading(false)
+      } catch (error) {
+      }
+  }
+
+
   // const arrCategories =[];
   // for(let i = 0;  i<items.products.length; i++){
   //     arrCategories.push(items.products[i].category)
@@ -99,31 +103,60 @@ const oneStar = [ <FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>]
 const arrStarRate = [
 {name: '5',star: <Rating value={5} readOnly />}, {name: '4',star: <Rating value={4} readOnly />},{ name: '3', star: <Rating value={3} readOnly />}, {name: '2', star: <Rating value={2} readOnly />}, {name: '1', star: <Rating value={1} readOnly />}
 ]
- const validateValueMin = (value) => {
-  setMinPriceParam(value);
- }
- const validateValueMax = (value) => {
-  setMaxPriceParam(value);
- }
+
+//  const validateValueMin = (value) => {
+//   setMinPriceParam(value);
+//  }
+//  const validateValueMax = (value) => {
+//   setMaxPriceParam(value);
+//  }
+
+
+
+
 const setCategoryValue = (categoryValue) => {
     setColorCategory(categoryValue);
     if(categoryValue==='Tất cả các sách'){
         categoryValue='';
     }
+    setCategoryParam(categoryValue);
     searchParams.set("category", categoryValue);
     navigate({ search: searchParams.toString() });
   };
+
+
   const handleCheckboxFormChange = (formMap)=>{
-  const formcheck = formMap === selectedForm ? '': formMap
-  setSelectedForm(formcheck)
+  const formcheck = formMap === selectedForm ? '': formMap;
+  setSelectedForm(formcheck);
+  setFormParam(formcheck)
   searchParams.set("form", formcheck);
   navigate({ search: searchParams.toString() });
 }
+  const submitPrie=(e) =>{
+    e.preventDefault()
 
+    // searchParams.set("", categoryValue);
+    // navigate({ search: searchParams.toString() });
+    // searchParams.set("category", categoryValue);
+    // navigate({ search: searchParams.toString() });
+
+
+    searchParams.set("minPriceParam", minPriceParam);
+    searchParams.set("maxPriceParam", maxPriceParam);
+    navigate({ search: searchParams.toString() });
+    
+    // console.log("tttt",{search: searchParams.toString()
+
+  
+    // searchParams.set("minPrice",minPriceParam);
+    // navigate(`/all-product?minPrice=${minPriceParam}&maxPrice=${maxPriceParam}`);
+  }
+  
 
   const handleCheckboxChange = (company)=>{
   const publicCompany = company===selectedCompany ? '': company
   setSelectedCompany(publicCompany);
+  setPublicCompanyParam(publicCompany)
   searchParams.set("publicCompany", publicCompany);
   navigate({ search: searchParams.toString() });
 };
@@ -131,29 +164,32 @@ const setCategoryValue = (categoryValue) => {
 const handleCheckboxLanguageChange= (languageArr) =>{
   const languageFunction = languageArr === selectedLanguage ? '': languageArr
   setSelectedLanguage(languageFunction);
+  setLanguageParam(languageFunction)
+
   searchParams.set('language', languageFunction);
   navigate({ search: searchParams.toString() });
 };
 const handleCheckboxStarChange = (value) => {
 const rateFunction = value === selectedRate ? '': value
 setSelectedRate(rateFunction);
+setRateParam(rateFunction);
 searchParams.set('rate', rateFunction);
 navigate({ search: searchParams.toString()});
 };
 
-  const pages = useMemo(() => {
-    if (!items) return 0;
+  // const pages = useMemo(() => {
+  //   if (!items) return 0;
     
-    if(items.pages)
-       return items.pages 
+  //   if(items.pages)
+  //      return items.pages 
 
-  }, [items,]);
-  const page = useMemo(() => {
-    if (!items) return 0;
+  // }, [items,]);
+  // const page = useMemo(() => {
+  //   if (!items) return 0;
          
-    if(items.page)
-    return items.page
-  }, [items]);
+  //   if(items.page)
+  //   return items.page
+  // }, [items]);
 
   
   return (
@@ -183,7 +219,7 @@ navigate({ search: searchParams.toString()});
                         cursor: 'pointer',
                         listStyleType: 'none',
                         color: colorCategory===categoryMap ? '#fff' : 'black',
-                        border: colorCategory===categoryMap ? '1px solid black': '',
+                        border: colorCategory===categoryMap ? '1px solid white': '',
                         borderRadius: colorCategory===categoryMap ? '30px': '',
                         backgroundColor: colorCategory===categoryMap ? '#ff6162' : ''
                         }}
@@ -219,7 +255,7 @@ navigate({ search: searchParams.toString()});
                         Giá
                       </h2>
                     </div>
-                    {/* lan 2 <form onSubmit={submitPrie}> */}
+                     <form onSubmit={submitPrie}>
                       <div >
                         <div className="row mb-3">
                           <div className="col-6">
@@ -229,9 +265,9 @@ navigate({ search: searchParams.toString()});
                                 allowDecimals={false}
                                 defaultValue={minPriceParam}
                                 className="form-control"
-                                onValueChange={validateValueMin}
+                                // onValueChange={validateValueMin}
 
-                                // onChange={(e)=>setMinPriceParam(e.target.value)}
+                                onChange={(e)=>setMinPriceParam(e.target.value)}
                               />
                             </div>
                           </div>
@@ -241,17 +277,22 @@ navigate({ search: searchParams.toString()});
                               <CurrencyInput
                                 allowDecimals={false}
                                 defaultValue={maxPriceParam}
-                                onValueChange={validateValueMax}
-                                // onChange={(e)=>setMaxPriceParam(e.target.value)}
+                                // onValueChange={validateValueMax}
+                                onChange={(e)=>setMaxPriceParam(e.target.value)}
                                 className="form-control"
                               />
                             </div>
                           </div>
                         </div>
-                      
+                        <button
+                            type="submit"
+                            className="btn btn-outline-warning"
+                          >
+                            Chọn
+                          </button>
                       </div>
                     
-                    {/* lan 2</form> */}
+                    </form>
                   </div>
                  <div>
                     <div>
@@ -305,16 +346,12 @@ navigate({ search: searchParams.toString()});
               </div>
             </div>
             <div className="col-lg-9">
-              {isLoading ? (
+              {loading ? (
                 <Loader />
-              ) : error ? (
-                <Message variant="danger">
-                  {error?.data?.message || error.error}
-                </Message>
               ) : (
                 <>
                   <div className="flex flex-wrap w-full gap-4">
-                    {items.products && items.products.map((product) => (
+                    {dataProduct && dataProduct?.products.map((product) => (
                       <div className="w-[31.6%]">
                       <div className=" card h-[430px]  group ">
                           <div className="flex justify-center relative">
@@ -350,7 +387,8 @@ navigate({ search: searchParams.toString()});
                 </>
               )}
               <div className="d-flex justify-content-center mt-3">
-            <Paginate pages={pages} page={page}/>
+            <Paginate pages={dataProduct.pages}/>
+           
             </div>
             </div>
           </div>

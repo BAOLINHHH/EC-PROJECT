@@ -150,7 +150,7 @@ const Home = () => {
             { categories.map(item =>(
               <SwiperSlide>
             <div className=" rounded-[5px] border-[3px] flex justify-center hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] border-[#faf1ff]">
-                <div className=" flex flex-col justify-items-center items-center rounded-[5px] bg-[#fff] w-[166px] h-[140px] pt-[10px] ">
+                <div className=" flex flex-col justify-items-center items-center rounded-[5px] bg-[#fff] w-[166px] h-[140px] pt-[10px] "onClick={() => setCategorys(item.name)}>
                 <img src={item.thumbnail}/>
                 <div>{item.name}</div>
                 </div>
@@ -192,9 +192,9 @@ const Home = () => {
     <TopProduct />
               
   
-        <Link to={ '/all-product'}>
+        {/* <Link to={ '/all-product'}>
     <button type="button" className="btn btn-primary d-flex justify-content-center ">Xem Thêm</button>
-        </Link>
+        </Link> */}
     {/* <section className='home-wrapper-2 py-5'>
         <div className='container-xxl'>
             <div className='col-12 categories'>

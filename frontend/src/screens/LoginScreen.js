@@ -9,33 +9,74 @@ import { BsGoogle } from "react-icons/bs";
 import { useLoginMutation } from '../slices/usersApiSlice';
 import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
+import userApi from '../api/userApi'
 
 const LoginScreen = () => {
-    const [ email, setEmail] = useState('')
-    const [ password, setPassword] = useState('')
+    const [ email, setEmail] = useState('');
+    const [ password, setPassword] = useState('');
+    const { userInfo} = useSelector((state)=> state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [ login, {isLoading}] = useLoginMutation();
-    const { userInfo} = useSelector((state)=> state.auth);
     const {search} = useLocation();
-    const sp = new URLSearchParams(search)
-    const redirect = sp.get('redirect') || '/'
+    const sp = new URLSearchParams(search);
+    const redirect = sp.get('redirect') || '/';
     useEffect (() => {
       if(userInfo){
         navigate(redirect)
       }
     }, [userInfo,redirect, navigate])
-    const submitHandler = async(e) =>{
-        e.preventDefault()
+
+
+    const submitHandler= async(e)=>{
+      e.preventDefault()
+      const dataLogin={email,password}
+       
         try {
-          const res = await login({ email,password}).unwrap();
-          dispatch(setCredentials({...res, }));
-          navigate(redirect)
-        } catch (err){
-          console.log(err)
-          toast.error(err?.data?.message || err.error)
+          const fetchLogin = await userApi.loginUser(dataLogin);
+          if(fetchLogin){
+            dispatch(setCredentials({...fetchLogin,}));
+            navigate(redirect)
+          } else {
+            console.log(5555)
+          }
+        } catch (Error) {
+          toast.error(Error?.response?.data?.message )
         }
+      
+      
+          //     try {
+    //       const res = await login({ email,password}).unwrap();
+    //       dispatch(setCredentials({...res, }));
+    //       navigate(redirect)
+    //     } catch (err){
+    //       console.log(err)
+    //       toast.error(err?.data?.message || err.error)
+    //     }
+
     }
+    // const dispatch = useDispatch();
+    // const navigate = useNavigate();
+    // const [ login, {isLoading}] = useLoginMutation();
+    // const { userInfo} = useSelector((state)=> state.auth);
+    // const {search} = useLocation();
+    // const sp = new URLSearchParams(search)
+    // const redirect = sp.get('redirect') || '/'
+    // useEffect (() => {
+    //   if(userInfo){
+    //     navigate(redirect)
+    //   }
+    // }, [userInfo,redirect, navigate])
+    // const submitHandler = async(e) =>{
+    //     e.preventDefault()
+    //     try {
+    //       const res = await login({ email,password}).unwrap();
+    //       dispatch(setCredentials({...res,}));
+    //       navigate(redirect)
+    //     } catch (err){
+    //       console.log(err)
+    //       toast.error(err?.data?.message || err.error)
+    //     }
+    // }
   return (
     // <FormContainer>
     //     <h1>Đăng nhập</h1>
@@ -119,9 +160,13 @@ const LoginScreen = () => {
           </div> */}
 
           <div className="text-center text-lg-start mt-4 pt-2">
+            {/* <button type="submit" className="btn btn-primary btn-lg"
+              style={{paddingLeft: '2.5rem', paddingRight: '2.5rem'}} disabled= {isLoading}>Đăng nhập
+            </button> */}
             <button type="submit" className="btn btn-primary btn-lg"
-              style={{paddingLeft: '2.5rem', paddingRight: '2.5rem'}} disabled= {isLoading}>Đăng nhập</button>
-             
+              style={{paddingLeft: '2.5rem', paddingRight: '2.5rem'}}>Đăng nhập
+            </button>
+            
           </div>
           <p className="small fw-bold mt-2 pt-1 mb-0">Bạn chưa có tài khoản? <Link to={redirect ? `/register?redirect=${redirect}`:'/register' }>Đăng ký</Link></p>
         </form>
