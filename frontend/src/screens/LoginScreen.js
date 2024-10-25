@@ -37,7 +37,6 @@ const LoginScreen = () => {
             dispatch(setCredentials({...fetchLogin,}));
             navigate(redirect)
           } else {
-            console.log(5555)
           }
         } catch (Error) {
           toast.error(Error?.response?.data?.message )

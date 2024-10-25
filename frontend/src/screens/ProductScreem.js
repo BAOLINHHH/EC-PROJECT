@@ -19,6 +19,7 @@ import { optionCurrency,transform } from '../componets/money';
 import { FaHeart } from "react-icons/fa";
 import favoriteApi from '../api/favoriteApi';
 import listProduct from '../api/productsAPI';
+import cartApi from '../api/cartApi';
 const ProductScreem = () => {
   const navigate = useNavigate();
   const dispatch =useDispatch(); 
@@ -38,8 +39,6 @@ const ProductScreem = () => {
   const {id}= useParams();
 
   const { data : product,isLoading, refetch, error }= useGetProductDetailQuery(productId);
-
-
  
   useEffect (() => {
     flechData();
@@ -111,6 +110,12 @@ const addToFavoriteHandler = async () =>{
   const checkoutHandler = ()=>{
     navigate('/login?redirect=/shipping');
   }
+
+//   const addToCartHandler = async () =>{
+//     const cartItems={...dataProduct}
+//     await cartApi.add({...cartItems,qty});
+    
+// }
 
   const addToCartHandler = () =>{
       dispatch (addToCart({...product , qty}))
@@ -259,7 +264,7 @@ const addToFavoriteHandler = async () =>{
                                       </Button>
                                       </>
                                       ): isinFavorite ? (
-                                         <Button className='bg-[#fff] text-[#d91612] text-[14px] border-[2px] border-[#f40b0b] border-solid transition-all duration-[0.3s] ease-in-out  hover:text-[#f44c2c0] '
+                                         <Button className='bg-[#fff] text-[#d91612] text-[14px] border-[2px] border-[#f40b0b] border-solid transition-all duration-[0.3s] ease-in-out hover:text-[#44c2c0] hover:bg-[#fff] hover:border-[#d91612]'
                                          onClick={removeFavoriteHandler}
                                          type='button'
                                        >

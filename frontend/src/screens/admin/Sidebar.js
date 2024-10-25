@@ -10,7 +10,6 @@ const Sidebar = () => {
                     <li>
                         <Link to="/admin/dashboard">Dashboard</Link>
                     </li>
-
                     <li>
                         {/* <Link href="#productSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle-admin"> Products</Link>
                         <ul className="collapse list-unstyled" id="productSubmenu">

@@ -14,7 +14,6 @@ const listProduct =  {
     },
     getProductDetail (productId) {
         const url = `products/${productId}`
-        console.log("url", url)
         return axios.get(url)
     },
     getTopRatedProducts(){

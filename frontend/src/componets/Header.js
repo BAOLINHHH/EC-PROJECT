@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, NavLink } from 'react-router-dom';
 import {Badge,Navbar,Nav,Container, NavDropdown} from 'react-bootstrap';
 import { LinkContainer} from 'react-router-bootstrap'
 import {BsCart,BsPerson ,BsSuitHeart } from 'react-icons/bs';
@@ -9,6 +9,7 @@ import SearchBox from './SearchBox';
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import MenuItem from '@mui/material/MenuItem';
+
 import { IoIosLogOut } from "react-icons/io";
 import { useSelector, useDispatch} from 'react-redux'; 
 import { useState } from 'react';
@@ -20,14 +21,15 @@ const Header = () => {
    const dispatch = useDispatch();
    const navigate = useNavigate();
    const [logoutApiCall]= useLogoutMutation();
-   const [anchorEl, setAnchorEl] = useState(null)
-   const open = '';
+//    const [anchorEl, setAnchorEl] = useState(null)
+//    const open = '';
    const handleClick =(event) =>{
-        setAnchorEl(event.currentTarget);
+        navigate('/profile')
+        // setAnchorEl(event.currentTarget);
    };
-   const handleClose = () => {
-    setAnchorEl(null);
-  };
+//    const handleClose = () => {
+//     setAnchorEl(null);
+//   };
    const logoutHandler = async () =>{
     try {
         await logoutApiCall().unwrap()
@@ -168,21 +170,19 @@ const Header = () => {
                         </Link>
                         </div>
                         <div className="order me-4">
-                        <Link to='/login'>
+                        {/* <Link to='/login'>
                         <i className="text-[24px]"><BsPerson  /></i>
-                        </Link>
-                        </div>
-
+                        </Link> */}
                         <button
                             
-                              aria-controls={open ? 'basic-menu' : undefined}
-                              aria-haspopup="true"
-                              aria-expanded={open ? 'true' : undefined}
-                              onClick={handleClick}
+                            onClick={handleClick}
                         >
-                              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
                         </button>
-                        <Menu
+                        </div>
+
+                       
+                        {/* <Menu
                          id="basic-menu"
                          anchorEl={anchorEl}
                          open={anchorEl}
@@ -204,19 +204,21 @@ const Header = () => {
                             <IoIosLogOut className="mr-2" />
                             Đăng xuất
                             </MenuItem>
-                        </Menu>
+                        </Menu> */}
 
                         </>
-                        
-                            
-                        ) : (<LinkContainer to ='/login'>
-                        <Nav.Link title='Tài khoản'>
+       
+                        ) : (
+                            <>
+                            <Link to = "/login">
                             <button className='text-[14px] text-[#fff] bg-[#592fd7] capitalize flex items-center p-[8px] gap-x-[6px] border-solid border-[1px] rounded-[6px] hover:shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]'>
                                 <BsPerson size={20}/>
                                 Đăng Nhập
                             </button>
-                        </Nav.Link>
-                        </LinkContainer>)
+                            </Link>
+                        </>    
+                        )
+                            
                         }
                                         {/* comment lan 2 Admin Links */}
                             {userInfo && userInfo.isAdmin && (

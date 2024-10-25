@@ -88,11 +88,162 @@ const OrderScreen = () => {
       <Message variant='danger'>{error}</Message>
     ) : (
       <>
-      <Row>
-        <Col md={8}>
-          <ListGroup variant='flush'>
+      <section>
+        <div className="container-sm">
+              <div>
+                <h1 className="text-[23px] text-[#1a0505] font-[800] capitalize pb-2">Thông tin chi tiết</h1>
+                <h4 className="text-[18px]  font-normal capitalize">Cảm ơn đã mua hàng</h4>
+              </div>
+              <div>
+              <ListGroup variant='flush'>
+           <ListGroup.Item>
+              <div className='flex gap-x-16'>
+                  <div className="border-solid border-[2px] rounded-[6px] px-[20px] py-[10px]  shadow-[1px_1px_7px_rgba(#00000029)]">
+                    <div className="mb-[15px] ">
+                      <h3 className="tetx-[19px] font-[700]">  Thông Tin  đơn hằng</h3>
+                    </div>
+                      <div className="mb-[5px]">
+                        <p><strong>Mã đơn hàng: </strong>{order._id} </p>
+                      </div>
+                      <div className="flex gap-x-[30px] mb-[5px]">
+                        <div>
+                          <strong className='tet-[17px]'>Ngày đặt</strong>
+                          <p className="text-[17px]">23/12/2022</p>
+                        </div>
+                        <div>
+                          <strong className="text-[17px]">Ngày hoàn thành</strong>
+                          <p className="text-[17px]">23/12/2022</p>
+                        </div>
+                      </div>
+
+                      <div className="mb-[5px]"> 
+                        <strong className="text-[17px]">Trạng thái đơn hàng</strong>
+                        <p className="text-[17px]">Mới đặt</p>
+                      </div>
+                      <div className="mb-[5px]"> 
+                        <strong className="text-[17px]">Phương thức thanh toán</strong>
+                        <p className="text-[17px]">Thanh toán khi nhập hàng</p>
+                      </div>
+                  </div>
+                  <div className="border-solid border-[2px] rounded-[6px] w-[340px] px-[20px] py-[10px] shadow-[1px_1px_7px_rgba(#00000029)]">
+                    <div className="mb-[15px]">
+                      <h3 className="tetx-[19px] font-[700]">Thông tin người nhận</h3>
+                    </div>
+                    <div>
+                        <p>Doan bao Linh</p>
+                        <p>0328297844</p>
+                        <p>khu pho 1, thiu tawrawrawr, adadasdas,asdasdasdas ,asdasdasdasda</p>
+                    </div>
+                  </div>
+                  <div className="border-solid border-[2px] rounded-[6px] w-[340px] px-[20px] py-[10px] shadow-[1px_1px_7px_rgba(#00000029)]">
+                    <div className="mb-[15px]">
+                      <h3 className="tetx-[19px] font-[700]">Tổng tiền đơn hàng</h3>
+                    </div>
+                    <div>
+                    <div className="mb-[5px]">
+                      <Row>
+                      <Col>Thành tiền</Col>
+                     <Col>{order.itemsPrice} VND</Col>
+                    </Row>
+                    </div>
+                    <div className="mb-[5px]">
+                      <Row>
+                        <Col>Phí vận chuyển</Col>
+                        <Col>{order.shippingPrice} VND</Col>
+                      </Row>
+                    </div>
+                    <div className="mb-[5px]">
+                      <Row>
+                        <Col>Tổng Số Tiền</Col>
+                        <Col>{order.totalPrice} VND</Col>
+                      </Row>
+                    </div>
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+
+                  {isPending ? (
+                    <Loader />
+                  ) : (
+                    <div>
+                      <div>
+                     
+                        <PayPalButtons
+                          createOrder={createOrder}
+                          onApprove={onApprove}
+                          onError={onError}
+                        ></PayPalButtons>
+                       
+                      </div>
+                    </div>
+                  )}
+                </ListGroup.Item>
+              )}
+
+                  {loadingDeliver && <Loader />}
+
+                  {userInfo &&
+                    userInfo.isAdmin &&
+                    order.isPaid &&
+                    !order.isDelivered && (
+                      <ListGroup.Item>
+                        <Button
+                          type='button'
+                          className='btn btn-block'
+                          onClick={deliverHandler}
+                        >
+                          Cập nhật trạng thái vận chuyển
+                        </Button>
+                      </ListGroup.Item>
+                    )}
+
+                    </div>
+                  </div>
+              </div>
+            </ListGroup.Item>
             <ListGroup.Item>
-              <h2>THÔNG TIN</h2>
+              <h2>Đơn Hàng</h2>
+              {order.orderItems.length === 0 ? (
+                <Message>Order is empty</Message>
+              ) : (
+                <ListGroup variant='flush'>
+                  {order.orderItems.map((item, index) => (
+                    <ListGroup.Item key={index}>
+                      <Row>
+                        <Col md={1}>
+                          <Image
+                            src={item.bookImage}
+                            alt={item.bookName}
+                            fluid
+                            rounded
+                          />
+                        </Col>
+                        <Col>
+                          <Link to={`/product/${item.product}`}>
+                            {item.bookName}
+                          </Link>
+                        </Col>
+                        <Col md={4}>
+                          {item.qty} x {item.bookPrice} VND = {item.qty * item.bookPrice} VND
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+              </div>
+        </div>
+      </section>
+      {/* <Row>
+        <Col md={8}>
+        <h1 className="text-[23px] text-[#1a0505] font-[800] capitalize pb-2">Thông tin chi tiết</h1>
+        <h4 className="text-[18px]  font-normal capitalize">Cảm ơn đã mua hàng</h4>
+          <ListGroup variant='flush'>
+        
+            <ListGroup.Item>
+              <h2> THÔNG TIN </h2>
               <p>
                 <strong>Mã đơn hàng: </strong>{order._id}
               </p>
@@ -229,7 +380,7 @@ const OrderScreen = () => {
           </ListGroup>
           </Card>
         </Col>
-      </Row>
+      </Row> */}
       </>
     )
 }

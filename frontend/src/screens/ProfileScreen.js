@@ -3,6 +3,8 @@ import { useDispatch,useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
 import { useProfileMutation } from '../slices/usersApiSlice';
 import { setCredentials } from '../slices/authSlice';
+import SidebarUser from './SidebarUser';
+import Avatar from '@mui/material/Avatar';
 
 const ProfileScreen = () => {
     const [name,setName]= useState("")
@@ -36,10 +38,48 @@ const ProfileScreen = () => {
     }
   return (
     <>
-        <section>
-        <div className="container">
-            <div className="row d-flex justify-content-center align-items-center h-100">
-            <div className="col-md-12">
+        <section className="py-3 ">
+        <div className="container ">
+        <div className=" flex gap-[60px] ">
+                <div className="w-[280px] shadow-[1px_1px_7px_rgba(#00000029)]  ">
+                    <SidebarUser/>
+                </div>
+                <div className=" border-solid border-[1px] rounded-[6px] w-full bg-[#fff] shadow-[1px_1px_7px_rgba(#00000029)]">
+                        <div className='w-full py-4'>
+                            <h1 className="font-[600] text-[20px] p-[10px]">Ho so ca nhan</h1>
+                        </div>
+                        <div className='flex flex-col  items-center my-3 gap-y-5'>
+                            <Avatar   sx={{ width: 60, height: 60 }}>M</Avatar>
+                            <button className="btn btn-danger w-[150px]">chon file</button>
+                        </div>
+                        <div className='flex w-[550px] pb-3'>
+                            <span className="w-[150px] p-[10px] ">Ho ten</span>
+                            <div className=" input-group ">
+                            <input type="text" className="form-control"  placeholder="Tên nguoi dung" />
+                            </div>
+                        </div>
+                        <div className='flex w-[550px] pb-3'>
+                            <span className="w-[150px] p-[10px]">So dien thoai</span>
+                            <div className=" input-group">
+                            <input type="text" className="form-control"  placeholder="Tên nguoi dung" />
+                            </div>
+                        </div>
+                        <div className='flex w-[550px] pb-3'>
+                            <span className="w-[150px] p-[10px] ">Email</span>
+                            <div className=" input-group ">
+                            <input type="text" className="form-control"  placeholder="Tên nguoi dung" />
+                            </div>
+                        </div>
+                        <div className="flex justify-center">
+                            <button type="submit" className="btn btn-danger" >Cập nhật</button>
+                        </div>
+                </div>
+        </div>
+            {/* <div className="row d-flex justify-content-center align-items-center ">
+                <div className="col-md-2">
+                    <SidebarUser/>
+                </div>
+                <div className="col-md-10">
                 <div className="card text-black" style={{borderRadius: '25px'}}>
                 <div className="card-body p-md-5">
                     <div className="row justify-content-center">
@@ -83,8 +123,8 @@ const ProfileScreen = () => {
                 </div>
                 </div>
             </div>
-            </div>
-        </div>
+                </div>
+            </div> */}
         </div>
         </section>
     </>

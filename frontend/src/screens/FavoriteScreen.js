@@ -35,7 +35,6 @@ const FavoriteScreen = () => {
      try {
       const responseData = await favoriteApi.getAllFavorite();
       setData(responseData.wishlistItems);
-      console.log("responseData.wishlistItems",responseData.wishlistItems)
       setIsLoading(false);
      } catch (error) {
       
@@ -80,7 +79,7 @@ const FavoriteScreen = () => {
               </section>
               ) : (
                 <>
-                <table  class="table">
+              <table  class="table">
               <thead className="table-light">
                 <tr>
                   <th> </th>
@@ -123,7 +122,7 @@ const FavoriteScreen = () => {
               ) 
               }
               </tbody>
-            </table>
+              </table>
                 
                 </>
               )

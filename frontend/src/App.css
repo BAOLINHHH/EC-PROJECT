@@ -3,12 +3,17 @@
 /* this is end css footer */
 /* this is begin css banner*/
 
-.swiper {
+.active{
+  color: #C92127;
+  border-left: solid 5px;
+} 
+
+/* .swiper {
   width: 100%;
   height: 100%;
   margin-left: auto;
   margin-right: auto;
-}
+} */
 .main-banner > img{
     width: 100%;
 }

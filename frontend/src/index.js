@@ -35,6 +35,8 @@ import ListUsersAminScreen from './screens/admin/ListUsersAminScreen';
 import UpdateUserScreen from './screens/admin/UpdateUserScreen';
 import FavoriteScreen from './screens/FavoriteScreen';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import ChangePassword from './screens/ChangePassword';
+import AddressScreen from './screens/AddressScreen';
 
 
 
@@ -59,6 +61,8 @@ const router = createBrowserRouter(
       <Route path='/profile' element ={<ProfileScreen/>}/>
       <Route path='/listorder' element ={<ListOrderScreen/>}/>
       <Route path='/favorite' element ={<FavoriteScreen/>}/>
+      <Route path='/changepassword' element ={<ChangePassword/>}/>
+      <Route path='/address' element ={<AddressScreen/>}/>
       </Route>
 
       <Route path='' element = {<AdminRoute/>}>
