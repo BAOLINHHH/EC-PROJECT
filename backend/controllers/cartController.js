@@ -59,15 +59,30 @@ const addToCart = async (req, res) => {
 const getCartByUser = async (req, res) => {
   const userId = req.user._id;
 
-  // Find the cart for the user
-  const cart = await Cart.findOne({ user: userId }).populate("cartItems"); // Assuming `cartItems` contains product references
+  // Find the cart for the user, do not populate yet
+  const cart = await Cart.findOne({ user: userId });
 
   if (!cart) {
-    res.status(200).json({}); // Return an empty object if the cart is not found
-    return; // Prevent further execution
+    return res.status(200).json({}); // Return an empty object if the cart is not found
   }
 
-  res.status(200).json(cart); // Return the found cart
+  // Populate cartItems with product details
+  await cart.populate({
+    path: "cartItems._id", // Populate `_id` in cartItems as a reference to Product
+    model: "Product",      // Reference model for product
+  });
+
+  // Map cartItems to include all details of each product and retain qty
+  const cartItemsWithDetails = cart.cartItems.map(item => ({
+    ...item._id.toObject(), // Include all fields from the product
+    qty: item.qty,          // Keep the qty field from cartItems
+  }));
+
+  // Return the cart with fully populated cartItems
+  res.status(200).json({
+    ...cart.toObject(),
+    cartItems: cartItemsWithDetails, // Replace cartItems with detailed product list
+  });
 };
 
 export { addToCart, getCartByUser };
