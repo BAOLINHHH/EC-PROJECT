@@ -1,5 +1,8 @@
 import Category from '../models/categoryModel.js';
 
+// @desc     Create category
+// @route    POST api/categories
+// @access   Public
 const createCategory = async (req, res) => {
     try {
         const category = new Category(req.body);
@@ -10,6 +13,9 @@ const createCategory = async (req, res) => {
     }
 };
 
+// @desc     Get all category
+// @route    GET api/categories
+// @access   Public
 const getCategories = async (req, res) => {
     try {
         const categories = await Category.find();
@@ -19,6 +25,9 @@ const getCategories = async (req, res) => {
     }
 };
 
+// @desc     Get all category by ID
+// @route    GET api/categories/:id
+// @access   Public
 const getCategoryById = async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
@@ -29,6 +38,9 @@ const getCategoryById = async (req, res) => {
     }
 };
 
+// @desc     Update category by ID
+// @route    PUT api/categories/:id
+// @access   Public
 const updateCategory = async (req, res) => {
     try {
         const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -39,6 +51,9 @@ const updateCategory = async (req, res) => {
     }
 };
 
+// @desc     Delete category by ID
+// @route    DELETE api/categories/:id
+// @access   Public
 const deleteCategory = async (req, res) => {
     try {
         const category = await Category.findByIdAndDelete(req.params.id);

@@ -1,6 +1,9 @@
 // controllers/AuthorController.js
 import Author from "../models/authorModel.js";
 
+// @desc     Create author
+// @route    POST api/authors
+// @access   Public
 const createAuthor = async (req, res) => {
   try {
     const author = new Author(req.body);
@@ -11,6 +14,9 @@ const createAuthor = async (req, res) => {
   }
 };
 
+// @desc     Fetch all authors
+// @route    GET api/authors
+// @access   Public
 const getAuthors = async (req, res) => {
   try {
     const authors = await Author.find();
@@ -20,6 +26,9 @@ const getAuthors = async (req, res) => {
   }
 };
 
+// @desc     Get authors by ID
+// @route    GET api/authors/:id
+// @access   Public
 const getAuthorById = async (req, res) => {
   try {
     const author = await Author.findById(req.params.id);
@@ -30,6 +39,9 @@ const getAuthorById = async (req, res) => {
   }
 };
 
+// @desc     Update authors by ID
+// @route    PUT api/authors/:id
+// @access   Public
 const updateAuthor = async (req, res) => {
   try {
     const author = await Author.findByIdAndUpdate(req.params.id, req.body, {
@@ -42,6 +54,9 @@ const updateAuthor = async (req, res) => {
   }
 };
 
+// @desc     Delete authors by ID
+// @route    DELETE api/authors/:id
+// @access   Public
 const deleteAuthor = async (req, res) => {
   try {
     const author = await Author.findByIdAndDelete(req.params.id);

@@ -44,9 +44,9 @@ const productSchema = mongoose.Schema(
       ref: 'PublicCompany',
     },
     language: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
-      default: 'English',
+      ref: 'Language',
     },
     form: {
       type: mongoose.Schema.Types.ObjectId,

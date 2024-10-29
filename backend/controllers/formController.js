@@ -1,6 +1,9 @@
 // controllers/FormController.js
 import Form from '../models/formModel.js';
 
+// @desc     Create form
+// @route    POST api/forms
+// @access   Public
 const createForm = async (req, res) => {
     try {
         const form = new Form(req.body);
@@ -11,6 +14,9 @@ const createForm = async (req, res) => {
     }
 };
 
+// @desc     Get all forms
+// @route    GET api/forms
+// @access   Public
 const getForms = async (req, res) => {
     try {
         const forms = await Form.find();
@@ -20,6 +26,9 @@ const getForms = async (req, res) => {
     }
 };
 
+// @desc     Get all form by ID
+// @route    GET api/forms/:id
+// @access   Public
 const getFormById = async (req, res) => {
     try {
         const form = await Form.findById(req.params.id);
@@ -30,6 +39,9 @@ const getFormById = async (req, res) => {
     }
 };
 
+// @desc     Update form by ID
+// @route    PUT api/forms/:id
+// @access   Public
 const updateForm = async (req, res) => {
     try {
         const form = await Form.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -40,6 +52,9 @@ const updateForm = async (req, res) => {
     }
 };
 
+// @desc     Delete form by ID
+// @route    DELETS api/forms/:id
+// @access   Public
 const deleteForm = async (req, res) => {
     try {
         const form = await Form.findByIdAndDelete(req.params.id);

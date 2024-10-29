@@ -1,6 +1,9 @@
 // controllers/PublicCompanyController.js
 import PublicCompany from '../models/publicCompanyModel.js';
 
+// @desc     Create public company
+// @route    POST api/publicompanies
+// @access   Public
 const createPublicCompany = async (req, res) => {
     try {
         const publicCompany = new PublicCompany(req.body);
@@ -11,6 +14,9 @@ const createPublicCompany = async (req, res) => {
     }
 };
 
+// @desc     Get all public companies
+// @route    GET api/publicompanies
+// @access   Public
 const getPublicCompanies = async (req, res) => {
     try {
         const publicCompanies = await PublicCompany.find();
@@ -20,6 +26,9 @@ const getPublicCompanies = async (req, res) => {
     }
 };
 
+// @desc     Get public company by ID
+// @route    GET api/publicompanies/:id
+// @access   Public
 const getPublicCompanyById = async (req, res) => {
     try {
         const publicCompany = await PublicCompany.findById(req.params.id);
@@ -30,6 +39,9 @@ const getPublicCompanyById = async (req, res) => {
     }
 };
 
+// @desc     Update public company by ID
+// @route    PUT api/publicompanies/:id
+// @access   Public
 const updatePublicCompany = async (req, res) => {
     try {
         const publicCompany = await PublicCompany.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -40,6 +52,9 @@ const updatePublicCompany = async (req, res) => {
     }
 };
 
+// @desc     Delete public company by ID
+// @route    DELETE api/publicompanies/:id
+// @access   Public
 const deletePublicCompany = async (req, res) => {
     try {
         const publicCompany = await PublicCompany.findByIdAndDelete(req.params.id);
