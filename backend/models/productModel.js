@@ -23,60 +23,73 @@ const productSchema = mongoose.Schema(
       required: true,
       ref: 'User',
     },
-    bookName:{
-        type: String,
-        required: true,
-        default: 'Sample name',
+    bookName: {
+      type: String,
+      required: true,
+      default: 'Sample name',
     },
-    category:{
-        type: String,
-        required: true,
-        default: 'Sample category'
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Category',
     },
-    author:{
-        type: String,
-        required: true,
-        default: 'Sample author',
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Author',
     },
-    publicCompany:{
-        type: String,
-        required: true,
-        default: 'Sample public company',
+    publicCompany: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'PublicCompany',
     },
-    language:{
-        type: String,
-        required: true,
-        default: 'English',
+    language: {
+      type: String,
+      required: true,
+      default: 'English',
     },
-    form:{
-        type: String,
-        required: true,
-        default: 'Sample form',
+    form: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Form',
     },
-    pageNumber:{
-        type: Number,
-        required: true,
-        default: 0,
+    pageNumber: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    bookPrice:{
-        type: Number,
-        required: true,
-        default: 0,
+    bookPrice: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    bookDetail:{
-        type: String,
-        required: true,
-        default: 'Sample description',
+    bookDetail: {
+      type: String,
+      required: true,
+      default: 'Sample description',
     },
-    bookImage:{
-        type: String,
-        required: true,
-        default: '/imageshome/tieuthuyet.jpg',
+    bookImage: {
+      type: String,
+      required: true,
+      default: '/imageshome/tieuthuyet.jpg',
     },
-    bookQuaranty:{
-        type: Number,
-        required: true,
-        default: 0,
+    bookQuaranty: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
+    pdfUrl: {
+      type: String,
+      required: false,
+    },
+    audioUrl: {
+      type: String,
+      required: false,
     },
     reviews: [reviewSchema],
     rating: {

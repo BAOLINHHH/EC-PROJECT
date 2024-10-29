@@ -101,7 +101,11 @@ const getProducts = asyncHandler(async (req, res) => {
   })
     .sort(sortCriteria)
     .limit(pageSize)
-    .skip(pageSize * (page - 1));
+    .skip(pageSize * (page - 1))
+    .populate('category') // Populate để lấy thông tin category
+    .populate('author') // Nếu bạn cũng muốn thông tin author
+    .populate('form') // Nếu bạn cũng muốn thông tin form
+    .populate('publicCompany'); // Nếu bạn cũng muốn thông tin publicCompany
 
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });

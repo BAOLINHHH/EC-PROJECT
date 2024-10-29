@@ -12,6 +12,11 @@ import uploadRoutes from './routes/uploadRoutes.js';
 const port = process.env.PORT || 4000;
 import cartRoutes from './routes/cartRoutes.js';
 import wishlistRoutes from './routes/wishlistRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+import authorRoutes from './routes/authorRoutes.js';
+import formRoutes from './routes/formRoutes.js';
+import publicCompanyRoutes from './routes/publicCompanyRoutes.js';
+
 
 connectDB();
 
@@ -30,6 +35,10 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/authors', authorRoutes);
+app.use('/api/forms', formRoutes);
+app.use('/api/public-companies', publicCompanyRoutes); 
 
 app.get('/api/config/paypal', (req, res) => 
     res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
