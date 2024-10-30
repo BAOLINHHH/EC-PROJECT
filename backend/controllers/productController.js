@@ -1,6 +1,7 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 import moment from "moment";
+import mongoose from "mongoose";
 
 // @desc     Fetch all products
 // @route    Get api/products
@@ -16,8 +17,19 @@ const getProducts = asyncHandler(async (req, res) => {
     ? { bookName: { $regex: req.query.keyword, $options: "i" } }
     : {};
   // console.log('requestKeyword',requestKeyword, !!requestKeyword , typeof requestKeyword, typeof requestKeyword=== 'string',requestKeyword ===null,requestKeyword==='null')
+  // Helper function to build the category query
+  const categoryCondition = (category) => {
+    if (mongoose.Types.ObjectId.isValid(category)) {
+      // If it's a valid ObjectId, query directly
+      return { category: new mongoose.Types.ObjectId(category) };
+    } else {
+      // Use regex if it's a string
+      return { category: { $regex: category, $options: "i" } };
+    }
+  };
+
   const category = !checkValue(req.query.category)
-    ? { category: { $regex: req.query.category, $options: "i" } }
+    ? categoryCondition(req.query.category)
     : {};
 
   //filter Price
@@ -37,18 +49,55 @@ const getProducts = asyncHandler(async (req, res) => {
       ? { bookPrice: { $gte: minPrice, $lte: maxPrice } }
       : {};
   //Public Company filter
+  const publicCompanyCondition = (publicCompany) => {
+    if (mongoose.Types.ObjectId.isValid(publicCompany)) {
+      return { publicCompany: new mongoose.Types.ObjectId(publicCompany) };
+    } else {
+      return { publicCompany: { $regex: publicCompany, $options: "i" } };
+    }
+  };
+
   const publicCompany = !checkValue(req.query.publicCompany)
-    ? { publicCompany: { $regex: req.query.publicCompany, $options: "i" } }
-    : {};
-  //Author filter
-  const form = !checkValue(req.query.form)
-    ? { form: { $regex: req.query.form, $options: "i" } }
+    ? publicCompanyCondition(req.query.publicCompany)
     : {};
 
-  ///filter language
-  const language = !checkValue(req.query.language)
-    ? { language: { $regex: req.query.language, $options: "i" } }
+  //Author filter
+  const authorCondition = (author) => {
+    if (mongoose.Types.ObjectId.isValid(author)) {
+      return { author: new mongoose.Types.ObjectId(author) };
+    } else {
+      return { author: { $regex: author, $options: "i" } };
+    }
+  };
+
+  const author = !checkValue(req.query.author)
+    ? authorCondition(req.query.author)
     : {};
+
+  ///filter form
+  const formCondition = (form) => {
+    if (mongoose.Types.ObjectId.isValid(form)) {
+      return { form: new mongoose.Types.ObjectId(form) };
+    } else {
+      return { form: { $regex: form, $options: "i" } };
+    }
+  };
+
+  const form = !checkValue(req.query.form) ? formCondition(req.query.form) : {};
+
+  ///filter language
+  const languageCondition = (language) => {
+    if (mongoose.Types.ObjectId.isValid(language)) {
+      return { language: new mongoose.Types.ObjectId(language) };
+    } else {
+      return { language: { $regex: language, $options: "i" } };
+    }
+  };
+
+  const language = !checkValue(req.query.language)
+    ? languageCondition(req.query.language)
+    : {};
+
   // filter rate
   const rate = !checkValue(req.query.rate)
     ? { rating: { $lte: req.query.rate } }
@@ -102,10 +151,11 @@ const getProducts = asyncHandler(async (req, res) => {
     .sort(sortCriteria)
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-    .populate('category') // Populate để lấy thông tin category
-    .populate('author') // Nếu bạn cũng muốn thông tin author
-    .populate('form') // Nếu bạn cũng muốn thông tin form
-    .populate('publicCompany'); // Nếu bạn cũng muốn thông tin publicCompany
+    .populate("category")
+    .populate("author")
+    .populate("form")
+    .populate("publicCompany")
+    .populate("language");
 
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
@@ -115,7 +165,12 @@ const getProducts = asyncHandler(async (req, res) => {
 // @access   Public
 
 const getProductById = asyncHandler(async (req, res) => {
-  const products = await Product.findById(req.params.id);
+  const products = await Product.findById(req.params.id)
+    .populate("category")
+    .populate("author")
+    .populate("form")
+    .populate("publicCompany")
+    .populate("language");
 
   if (products) {
     return res.json(products);
@@ -130,18 +185,20 @@ const getProductById = asyncHandler(async (req, res) => {
 // @access   Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    bookName: "Sample name",
+    bookName: req.body.bookName,
     user: req.user._id,
-    category: "Sample category",
-    author: "Sample author",
-    publicCompany: "Sample public company",
-    language: "Sample language",
-    form: "Sample form",
-    pageNumber: 0,
-    bookPrice: 0,
-    bookDetail: "Sample description",
-    bookImage: "/images/sample.jpg",
-    bookQuaranty: 0,
+    category: req.body.category,
+    author: req.body.author,
+    publicCompany: req.body.publicCompany,
+    language: req.body.language,
+    form: req.body.form,
+    pageNumber: req.body.pageNumber,
+    bookPrice: req.body.bookPrice,
+    bookDetail: req.body.bookDetail,
+    bookImage: req.body.bookImage,
+    bookQuaranty: req.body.bookQuaranty,
+    audioUrl: req.body.audioUrl,
+    pdfUrl: req.body.pdfUrl,
   });
 
   const createdProduct = await product.save();
@@ -164,6 +221,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     language,
     form,
     pageNumber,
+    audioUrl,
+    pdfUrl,
   } = req.body;
 
   const product = await Product.findById(req.params.id);
@@ -180,6 +239,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.language = language;
     product.form = form;
     product.pageNumber = pageNumber;
+    product.audioUrl = audioUrl;
+    product.pdfUrl = pdfUrl;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
@@ -271,7 +332,9 @@ const getLatestProducts = asyncHandler(async (req, res) => {
     : {}; // Nếu không có category thì không áp dụng điều kiện lọc
 
   // Tìm sản phẩm mới nhất và lọc theo category (nếu có)
-  const products = await Product.find(category).sort({ createdAt: -1 }).limit(15);
+  const products = await Product.find(category)
+    .sort({ createdAt: -1 })
+    .limit(15);
 
   res.status(200).json(products);
 });

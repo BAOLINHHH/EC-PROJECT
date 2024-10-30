@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const languageSchema = new mongoose.Schema(
   {
-    language: {
+    languageName: {
       type: String,
       required: true,
     },
