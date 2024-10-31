@@ -4,6 +4,7 @@ import Rating from '@mui/material/Rating';
 import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
 import { optionCurrency,transform } from "./money"
 const Product = ({product}) => {
+  console.log("producttop", product)
   return (
     // <Card className="  my-3 p-3 rounded">
     //     <Link to={ `/product/${product._id}`}>
@@ -32,7 +33,7 @@ const Product = ({product}) => {
                             <div className=" w-[calc(100%-100px)] basis-[calc(100%-100px)] pl-3">
                                 <Rating name="half-rating-read mb-[10px]" defaultValue={product.rating} precision={0.5} readOnly />
                                 <h2 className="font-normal  text-[17px] mb-[10px] truncate  leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90] ">{product.bookName}</h2>
-                                <h6 className="font-normal text-[#999] text-[14px] mb-[9px] leading-[1.2] capitalize">{product.category}</h6>
+                                <h6 className="font-normal text-[#999] text-[14px] mb-[9px] leading-[1.2] capitalize">{product.category.categoryName}</h6>
                                 <div className="mb-2 ">
                                     <span className="text-[#4b5966] text-[18px] font-bold mr-[10px]">{product.bookPrice}</span>
                                     <span className="text-[14px] text-[#777] line-through mr-[10px]">7500</span>

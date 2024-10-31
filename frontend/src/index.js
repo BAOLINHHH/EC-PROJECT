@@ -37,6 +37,9 @@ import FavoriteScreen from './screens/FavoriteScreen';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import ChangePassword from './screens/ChangePassword';
 import AddressScreen from './screens/AddressScreen';
+import NewAddressScreen from './screens/NewAddressScreen';
+import ReadSampleScreen from './screens/ReadSampleScreen';
+import AudioSampleScreen from './screens/AudioSampleScreen';
 
 
 
@@ -63,6 +66,9 @@ const router = createBrowserRouter(
       <Route path='/favorite' element ={<FavoriteScreen/>}/>
       <Route path='/changepassword' element ={<ChangePassword/>}/>
       <Route path='/address' element ={<AddressScreen/>}/>
+      <Route path='/address/new' element ={<NewAddressScreen/>}/>
+      <Route path='/readsample' element ={<ReadSampleScreen/>}/>
+      <Route path='/audio' element ={<AudioSampleScreen/>}/>
       </Route>
 
       <Route path='' element = {<AdminRoute/>}>

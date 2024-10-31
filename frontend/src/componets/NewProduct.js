@@ -21,7 +21,7 @@ const NewProduct = () => {
     // const {pageNumber } = useParams()
     
     const [loading,setLoading] = useState(true);
-    const [dataProduct,setDataProduct] = useState([]);
+    const [dataProduct,setDataProduct] = useState('');
   
     const [colorCategory, setColorCategory] = useState(null);
 
@@ -69,6 +69,7 @@ const NewProduct = () => {
     //     arrFitterCategory.push(dataProduct[i].category)
     // }
     // const fitterCategory = [...new Set(arrFitterCategory)]
+    console.log( "dataProduct",dataProduct)
   return (
     <>
     {loading ? (
@@ -129,8 +130,8 @@ const NewProduct = () => {
            className="mySwiper"
         >
              <div className=" flex flex-wrap">
-            { dataProduct && dataProduct.map((item,idx)=>( 
-                <SwiperSlide key={idx}>
+            { dataProduct?.map((item)=>( 
+                <SwiperSlide key={item._id}>
                             <div className="card h-[430px]  group ">
                                 <div className="flex justify-center">
                                     <Link to={ `/${item._id}`}>

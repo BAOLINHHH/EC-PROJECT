@@ -30,7 +30,7 @@ const ProductScreem = () => {
     setValue(newValue);
   };
   const { userInfo } = useSelector((state) => state.auth);
-  const [createReview, { isLoading: loadingProductReview }] =useCreateReviewMutation();
+  // const [createReview, { isLoading: loadingProductReview }] =useCreateReviewMutation();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [ qty, setQuantity] = useState(1);
@@ -38,7 +38,7 @@ const ProductScreem = () => {
   const {id: productId}= useParams();
   const {id}= useParams();
 
-  const { data : product,isLoading, refetch, error }= useGetProductDetailQuery(productId);
+  // const { data : product,isLoading, refetch, error }= useGetProductDetailQuery(productId);
  
   useEffect (() => {
     flechData();
@@ -98,12 +98,12 @@ const addToFavoriteHandler = async () =>{
   }
   const increaseQty = () =>{
     const count = document.querySelector('.count');
-    if(count.valueAsNumber>product.bookQuaranty) return;
+    if(count.valueAsNumber>dataProduct.bookQuaranty) return;
     const qty = count.valueAsNumber + 1;
     setQuantity(qty);
   }
   const addToCartAndBuyHandler = () =>{
-    dispatch (addToCart({...product, qty}));
+    dispatch (addToCart({...dataProduct, qty}));
     navigate ('/cart');
   }
 
@@ -118,7 +118,7 @@ const addToFavoriteHandler = async () =>{
 // }
 
   const addToCartHandler = () =>{
-      dispatch (addToCart({...product , qty}))
+      dispatch (addToCart({...dataProduct , qty}))
       showToastMessage();
    
   }
@@ -139,22 +139,22 @@ const addToFavoriteHandler = async () =>{
       position: toast.POSITION.TOP_RIGHT,
     });
   };
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  // const submitHandler = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      await createReview({
-        productId,
-        rating,
-        comment,
-      }).unwrap();
-      refetch();
-      toast.success('Đánh giá thành công');
-    } catch (err) {
-      toast.error("Tài khoản đã đánh giá sản phẩm");
-    }
-  };
-  
+  //   try {
+  //     await createReview({
+  //       productId,
+  //       rating,
+  //       comment,
+  //     }).unwrap();
+  //     refetch();
+  //     toast.success('Đánh giá thành công');
+  //   } catch (err) {
+  //     toast.error("Tài khoản đã đánh giá sản phẩm");
+  //   }
+  // };
+
   return (
    <>
    {loading ? (
@@ -200,19 +200,19 @@ const addToFavoriteHandler = async () =>{
                                     <ul>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Thể loại <span>:</span></label>
-                                          {dataProduct.category}
+                                          { dataProduct.category.categoryName }
                                         </li>
                                         <li className="flex my-[10px] capitalize"> 
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Tên tác giả <span>:</span></label>
-                                          {dataProduct.author}
+                                          {/* {dataProduct.author} */}
                                         </li>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Nhà xuất bản <span>:</span></label>
-                                          {dataProduct.publicCompany}
+                                          {dataProduct.publicCompany.publicCompanyName}
                                         </li>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Hình thức <span>:</span></label>
-                                          {dataProduct.form}
+                                          {dataProduct.form.form}
                                         </li>
                                         <li className="flex items-center my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Trạng thái<span>:</span></label>
@@ -353,27 +353,27 @@ const addToFavoriteHandler = async () =>{
                                                 <tbody>
                                                   <tr>
                                                     <th>Mã Hàng</th>
-                                                    <td>{dataProduct._id}</td>
+                                                    <td> {dataProduct._id} </td>
                                                   </tr>
                                                   <tr>
                                                     <th>Tên tác giả</th>
-                                                    <td>{dataProduct.author}</td>
+                                                    {/* <td>{dataProduct.author}</td> */}
                                                   </tr>
                                                   <tr>
                                                     <th>Nhà xuất bản</th>
-                                                    <td>{dataProduct.publicCompany}</td>
+                                                    <td>{dataProduct.publicCompany.publicCompanyName}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Thể loại</th>
-                                                    <td>{dataProduct.category}</td>
+                                                    <td>{dataProduct.category.categoryName}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Hình thức</th>
-                                                    <td>{dataProduct.form}</td>
+                                                    <td>{dataProduct.form.form}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Ngôn Ngữ</th>
-                                                    <td>{dataProduct.language}</td>
+                                                    <td>{dataProduct.language.languageName}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Số trang</th>

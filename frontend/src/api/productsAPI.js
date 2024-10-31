@@ -13,6 +13,7 @@ const listProduct =  {
         return axios.get(url)
     },
     getProductDetail (productId) {
+        console.log("productId",productId)
         const url = `products/${productId}`
         return axios.get(url)
     },

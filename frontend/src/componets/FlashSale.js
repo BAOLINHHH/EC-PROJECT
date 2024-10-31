@@ -16,11 +16,11 @@ import listProducts from '../api/productsAPI';
 const FlashSale = () => {
   
     const Deadline = Date.now() + 1000 * 60 * 60 * 24 * 10;
-    const {pageNumber } = useParams()
-    const {data , isLoading, error} = useGetProductsQuery({pageNumber});
+    // const {pageNumber } = useParams()
+    // const {data , isLoading, error} = useGetProductsQuery({pageNumber});
     
     const [loading,setLoading] = useState(true);
-    const [dataProduct,setDataProduct] = useState([]);
+    const [dataProduct,setDataProduct] = useState();
 
 
     useEffect (()=> {
@@ -30,7 +30,6 @@ const FlashSale = () => {
     const flechData =async () =>{
         try {
             const responseProducts = await listProducts.getBestSaleProducts()
-            console.log("aaaaaa",responseProducts)
             setDataProduct(responseProducts)
             setLoading(false)
           } catch (error) {
@@ -40,9 +39,8 @@ const FlashSale = () => {
   return (
     
     <>
-    {isLoading ? (
+    {loading ? (
         <Loader />
-    ): error ? (<Message variant='danger'>{error?.data?.message || error.error}</Message>
     ) : (<>
         {/* <section className="my-8">
             <div className="container-sm">
@@ -138,8 +136,8 @@ const FlashSale = () => {
                         <h2 className=" text-[25px] font-semibold text-[#444] capitalize leading-[1]">SẢN PHẨM KHUYẾN MÃI</h2>
                     </div>
                     <Swiper className=" h-[590px]">
-                    {data?.products?.map((product)=>(
-                    <SwiperSlide>
+                    {dataProduct?.map((product)=>(
+                    <SwiperSlide key={product._id} >
                     <div className="flex flex-col border-[2px] group ">
                         <div className="flex justify-center my-2 relative">
                             <img className="max-h-[350px] w-[350px] rounded-[5px]" src={product.bookImage}/>
@@ -204,7 +202,7 @@ const FlashSale = () => {
                         <h2 className=" text-[25px] font-semibold text-[#4b5966] capitalize leading-[1]">Sản Phẩm bán chạy</h2>
                     </div>
                     <div className="mb-5">
-                        { dataProduct.length>0 && <Swiper
+                        { dataProduct?.length>0 && <Swiper
                           slidesPerView={2}
                           spaceBetween={20}
                           modules={[Navigation, Grid]}
@@ -220,8 +218,8 @@ const FlashSale = () => {
                             }
                           }
                         >
-                        {dataProduct.map((product)=>(
-                        <SwiperSlide>
+                        {dataProduct?.map((product)=>(
+                        <SwiperSlide key={product._id} >
                         <div className=" flex border-[1px] group">
                             <div className="basis-[150px] relative"> 
                                 <img src={product.bookImage} />
@@ -273,8 +271,8 @@ const FlashSale = () => {
                           }
                         }
                        >
-                        {data.products.slice(0,10).map((product)=>(
-                            <SwiperSlide>
+                        {dataProduct?.slice(0,10).map((product)=>(
+                            <SwiperSlide key={product._id} >
                             <div className="flex flex-col group">
                                 <div className=" flex justify-center relative">
                                     <img className="w-[150px] h-[150px]" src={product.bookImage} />

@@ -13,10 +13,10 @@ import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
 import listProducts from '../api/productsAPI';
 const TopProduct = () => {
     const {pageNumber } = useParams()
-    const {data , isLoading, error} = useGetProductsQuery({pageNumber});
+    // const {data , isLoading, error} = useGetProductsQuery({pageNumber});
 
-    const [loading,setLoading] = useState(true);
-    const [dataProduct,setDataProduct] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
+    const [dataProduct,setDataProduct] = useState();
 
 
     useEffect (()=> {
@@ -27,14 +27,14 @@ const TopProduct = () => {
         try {
             const responseProducts = await listProducts.getTopRatedProducts()
             setDataProduct(responseProducts)
-            setLoading(false)
+            setIsLoading(false)
           } catch (error) {
           }
     }
 
   return (
     <>
-    {loading ? (
+    {isLoading ? (
         <Loader />
     ) : (<>
     <section>
@@ -44,7 +44,7 @@ const TopProduct = () => {
                         <div className="w-full  py-[10px] bg-[#f2f2f2]">
                             <h2 className=" text-[25px] font-semibold text-[#4b5966]   capitalize leading-[1]">Combo</h2>
                         </div>
-                        {dataProduct.length>0 && <Swiper 
+                        {dataProduct?.length>0 && <Swiper 
                             slidesPerView={1}
                             paceBetween={20}
         
@@ -61,8 +61,8 @@ const TopProduct = () => {
                             }
                             }
                         >
-                        {dataProduct.map((product)=>(
-                        <SwiperSlide> 
+                        {dataProduct?.map((product)=>(
+                        <SwiperSlide key={product._id}> 
                             < Product  product={product}/>
                         {/* <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
                             <div className="basis-[100px]"> 
@@ -110,7 +110,7 @@ const TopProduct = () => {
                         
                         >
                         {dataProduct.slice(0,10).map((product)=>(
-                        <SwiperSlide> 
+                        <SwiperSlide key={product._id} > 
                             < Product  product={product}/>
                         {/* <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
                             <div className="basis-[100px]"> 
@@ -156,7 +156,7 @@ const TopProduct = () => {
                         }
                         >
                         {dataProduct.map((product)=>(
-                        <SwiperSlide> 
+                        <SwiperSlide key={product._id}> 
                           < Product  product={product}/>
                         </SwiperSlide>
                         ))}

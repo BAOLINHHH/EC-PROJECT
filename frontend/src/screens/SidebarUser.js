@@ -63,7 +63,6 @@ const SidebarUser = () => {
                 <li onClick={(logoutHandler)} className=" flex items-center py-2 cursor-pointer"> 
                     <IoIosLogOut className="mx-2" />
                     <span className="text-[17px]"> Đăng xuất</span>
-                    
                 </li>
                
             </ul>

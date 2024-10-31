@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo ,useState} from "react";
-import { FaStar, FaRegStar } from "react-icons/fa";
+import React, { useEffect, useState} from "react";
 import { Link } from "react-router-dom"
 import Rating from '@mui/material/Rating';
 import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
@@ -10,7 +9,7 @@ import {useNavigate, useSearchParams } from "react-router-dom";
 import Paginate from "../componets/Paginate";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
 import CurrencyInput from 'react-currency-input-field';
-
+import apiTag from "../api/apiTag";
 const ProductGridScreen = () => {
   const navigate = useNavigate();
 
@@ -25,13 +24,19 @@ const ProductGridScreen = () => {
 
  
  
-  const { data: items, isLoading, error } = useGetProductsQuery();
+  // const { data: items, isLoading, error } = useGetProductsQuery();
 
     const [dataProduct, setDataProduct]= useState('');
-    const [loading,setLoading] = useState(true);
-
+    const [isLoading,setIsLoading] = useState(true);
+    const [dataCategory,setDataCategory] = useState(''); 
+    const [dataPublicCompany,setDataPublicCompany] = useState('');
+    const [dataForm,setDataForm] = useState('');
+    const [dataLanguage, setDataLanguage] = useState('');
+    const [minState,setMinState] = useState('');
+    const [maxState,setMaxState] = useState('');
     
-
+    
+    
     const keywordParam = searchParams.get("keyword")||"";
     const currentPageNumberParam = searchParams.get('pageNumber')||'';
     const [pageNumberParam,setPageNumberParam] = useState(currentPageNumberParam);
@@ -42,6 +47,7 @@ const ProductGridScreen = () => {
     const [formParam, setFormParam]= useState(searchParams.get("form")||"");
     const [languageParam,setLanguageParam] = useState(searchParams.get("language")||"");
     const [rateParam, setRateParam] = useState(searchParams.get("language")||"");
+    
     useEffect (()=> {
      if(currentPageNumberParam!==pageNumberParam ){
       setPageNumberParam(currentPageNumberParam);
@@ -52,14 +58,34 @@ const ProductGridScreen = () => {
       flechData()
   }, [keywordParam,categoryParam,pageNumberParam,publicCompanyParam,minPriceParam,maxPriceParam,formParam,rateParam]);
 
+
+
   const flechData = async() =>{
       try {
         const responseProducts = await listProduct.getAllProducts(keywordParam,pageNumberParam,categoryParam,publicCompanyParam,minPriceParam,maxPriceParam,formParam,languageParam,rateParam)
         setDataProduct(responseProducts)
-        setLoading(false)
+        setIsLoading(false)
       } catch (error) {
       }
   }
+  useEffect (()=>{
+    flechDataTag();
+  },[])
+  const flechDataTag = async() =>{
+    try {
+      const responseTagCategorys = await apiTag.getAllCategory();
+      const responseTagPublicCompany = await apiTag.getAllPublicCompany();
+      const responseTagForm = await apiTag.getAllForm();
+      const responseTagLanguage = await apiTag.getAllLanguage();
+      setDataCategory(responseTagCategorys);
+      setDataPublicCompany(responseTagPublicCompany);
+      setDataForm(responseTagForm);
+      setDataLanguage(responseTagLanguage);
+      
+    } catch (error) {
+     
+    }
+  } 
 
 
   // const arrCategories =[];
@@ -67,39 +93,39 @@ const ProductGridScreen = () => {
   //     arrCategories.push(items.products[i].category)
   // }
   // const fitterArrCategory = [...new Set(arrCategories)]
-  const arrcategories = [
-    'Tiểu Thuyết',
-    'Văn Học',
-    'Thiếu Nhi',
-    'Kinh Tế',
-    'Ngôn Tình',
-    'Tâm Lí',
-    "Manga",
-]
-const arrPublicCompany = [
-  'NXB Kim Đồng',
-  'NXB Hội Nhà Văn',
-  'IPM',
-  'AZ Việt Nam',
-  'Nhã Nam',
-  'Trẻ',
-  'Dân Trí',
-]
-const arrForm = [
-  'Bìa Cứng',
-  'Bìa Mềm',
-  'Bộ Hộp',
-]
-const arrLanguage = [ 
-  'Tiếng Việt',
-  'Tiếng Anh',
-  'Tiếng Trung',
-]
+//   const arrcategories = [
+//     'Tiểu Thuyết',
+//     'Văn Học',
+//     'Thiếu Nhi',
+//     'Kinh Tế',
+//     'Ngôn Tình',
+//     'Tâm Lí',
+//     "Manga",
+// ]
+// const arrPublicCompany = [
+//   'NXB Kim Đồng',
+//   'NXB Hội Nhà Văn',
+//   'IPM',
+//   'AZ Việt Nam',
+//   'Nhã Nam',
+//   'Trẻ',
+//   'Dân Trí',
+// ]
+// const arrForm = [
+//   'Bìa Cứng',
+//   'Bìa Mềm',
+//   'Bộ Hộp',
+// ]
+// const arrLanguage = [ 
+//   'Tiếng Việt',
+//   'Tiếng Anh',
+//   'Tiếng Trung',
+// ]
 // const fiveStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>];
-const fourStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>,<FaRegStar/>];
-const threeStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaRegStar/>,<FaRegStar/>];
-const twotar = [ <FaStar/>,<FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>];
-const oneStar = [ <FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>];
+// const fourStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaStar/>,<FaRegStar/>];
+// const threeStar = [ <FaStar/>,<FaStar/>,<FaStar/>,<FaRegStar/>,<FaRegStar/>];
+// const twotar = [ <FaStar/>,<FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>];
+// const oneStar = [ <FaStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>,<FaRegStar/>];
 const arrStarRate = [
 {name: '5',star: <Rating value={5} readOnly />}, {name: '4',star: <Rating value={4} readOnly />},{ name: '3', star: <Rating value={3} readOnly />}, {name: '2', star: <Rating value={2} readOnly />}, {name: '1', star: <Rating value={1} readOnly />}
 ]
@@ -125,16 +151,20 @@ const setCategoryValue = (categoryValue) => {
   };
 
 
-  const handleCheckboxFormChange = (formMap)=>{
-  const formcheck = formMap === selectedForm ? '': formMap;
+  const handleCheckboxFormChange = (vaule)=>{
+  const formcheck = vaule === selectedForm ? '': vaule;
   setSelectedForm(formcheck);
   setFormParam(formcheck)
   searchParams.set("form", formcheck);
   navigate({ search: searchParams.toString() });
 }
   const submitPrie=(e) =>{
-    e.preventDefault()
+    e.preventDefault();
 
+    const minPriceParam = minState;
+    const maxPriceParam = maxState
+    setMinPriceParam(minState);
+    setMaxPriceParam(maxState);
     // searchParams.set("", categoryValue);
     // navigate({ search: searchParams.toString() });
     // searchParams.set("category", categoryValue);
@@ -144,7 +174,7 @@ const setCategoryValue = (categoryValue) => {
     searchParams.set("minPriceParam", minPriceParam);
     searchParams.set("maxPriceParam", maxPriceParam);
     navigate({ search: searchParams.toString() });
-    
+    // console.log("tttt",{ search: searchParams.toString()})
     // console.log("tttt",{search: searchParams.toString()
 
   
@@ -177,29 +207,16 @@ searchParams.set('rate', rateFunction);
 navigate({ search: searchParams.toString()});
 };
 
-  // const pages = useMemo(() => {
-  //   if (!items) return 0;
-    
-  //   if(items.pages)
-  //      return items.pages 
-
-  // }, [items,]);
-  // const page = useMemo(() => {
-  //   if (!items) return 0;
-         
-  //   if(items.page)
-  //   return items.page
-  // }, [items]);
-
-  
+ 
   return (
     <>
       <section className="my-8 ">
         <div className="container-sm">
           <div className="row">
             <div className="col-lg-3">
-              <div>
+              {isLoading ?( <Loader/>):( <>
                 <div>
+                <div className="mb-3">
                   <div>
                     <h4 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2">
                       Thể Loại
@@ -213,43 +230,44 @@ navigate({ search: searchParams.toString()});
                     </h4>
                   </div>
                   <ul className="pl-[10px]">   
-                    {arrcategories.map(categoryMap => (      
+                    { dataCategory && dataCategory?.map(items => (      
                       <li className="max-w-[100px] flex justify-center "
                         style={{
                         cursor: 'pointer',
                         listStyleType: 'none',
-                        color: colorCategory===categoryMap ? '#fff' : 'black',
-                        border: colorCategory===categoryMap ? '1px solid white': '',
-                        borderRadius: colorCategory===categoryMap ? '30px': '',
-                        backgroundColor: colorCategory===categoryMap ? '#ff6162' : ''
+                        color: colorCategory===items._id ? '#fff' : 'black',
+                        border: colorCategory===items._id ? '1px solid white': '',
+                        borderRadius: colorCategory===items._id ? '30px': '',
+                        backgroundColor: colorCategory===items._id ? '#ff6162' : ''
                         }}
-                        onClick={() => setCategoryValue(categoryMap)}
+                        onClick={() => setCategoryValue(items._id)}
                         >
-                        {categoryMap}
+                        {items.categoryName }
                       </li>
                     ))}
                   </ul>
-                </div>
-                  <div>
+                  <hr/>
+                </div>  
+                  <div className="mb-3">
                     <div>
                       <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2">
                         Nhà xuất bản
                       </h2>
                     </div>
                       <div>
-                        {arrPublicCompany.map(company =>(
+                        { dataPublicCompany && dataPublicCompany?.map(items =>(
 
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value={publicCompanyParam} checked={company===selectedCompany} onChange={()=>handleCheckboxChange(company)} />
+                        <div key={items._id} class="form-check">
+                          <input class="form-check-input" type="checkbox" checked={items._id===selectedCompany} onChange={()=>handleCheckboxChange(items._id)} />
                           <label class="form-check-label" for="flexCheckDefault">
-                          {company}
+                          {items.publicCompanyName}
                           </label>
                         </div>
                         ))} 
                       </div>
-                   
+                    <hr/>
                   </div>
-                  <div >
+                  <div className="mb-3" >
                     <div>
                       <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2" >
                         Giá
@@ -261,70 +279,88 @@ navigate({ search: searchParams.toString()});
                           <div className="col-6">
                             <p className="mb-0">Nhỏ</p>
                             <div className="form-outline">
-                              <CurrencyInput    
-                                allowDecimals={false}
+                              <input
+                              type="number"
+                              value={minState}
+                              className="form-control"
+                              onChange ={(e) =>setMinState(e.target.value)}
+                              />
+                              {/* <CurrencyInput    
+                               allowDecimals={false}
                                 defaultValue={minPriceParam}
                                 className="form-control"
+                             
                                 // onValueChange={validateValueMin}
-
-                                onChange={(e)=>setMinPriceParam(e.target.value)}
-                              />
+                                onChange ={(e) =>setMinState(e.target.value)}
+                                // onChange={(e)=>setMinPriceParam(e.target.value)}
+                              /> */}
                             </div>
                           </div>
                           <div className="col-6">
                             <p className="mb-0">Lớn</p>
                             <div className="form-outline">
-                              <CurrencyInput
-                                allowDecimals={false}
+                            <input
+                              type="number"
+                              value={maxState}
+                              className="form-control"
+                              onChange ={(e) =>setMaxState(e.target.value)}
+                              />
+                              {/* <CurrencyInput
+                                
                                 defaultValue={maxPriceParam}
                                 // onValueChange={validateValueMax}
-                                onChange={(e)=>setMaxPriceParam(e.target.value)}
+                                onChange ={(e)=>setMaxState(e.target.value)}
                                 className="form-control"
-                              />
+                              /> */}
                             </div>
                           </div>
-                        </div>
+                          
+                        </div >
                         <button
                             type="submit"
-                            className="btn btn-outline-warning"
+                            className="btn btn-outline-warning mb-3"
                           >
                             Chọn
                           </button>
-                      </div>
-                    
+                        </div>
+      
                     </form>
+                    <hr/>
                   </div>
-                 <div>
+                 <div className="mb-3">
                     <div>
                       <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2">
                         Hình thức
                       </h2>
                     </div>
                     <div>
-                      {arrForm.map(formMap =>(
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value={formMap} checked={formMap===selectedForm} onChange={()=>handleCheckboxFormChange(formMap)} />
+                      {dataForm && dataForm?.map(items =>(
+                      <div class="form-check"key={items._id} >
+                        <input class="form-check-input" type="checkbox"  checked={items._id===selectedForm} onChange={()=>handleCheckboxFormChange(items._id)} />
                         <label class="form-check-label" for="flexCheckDefault">
-                        {formMap}
+                        {items.form}
                         </label>
                       </div>
                       ))} 
                     </div>
+                    <hr/>
                   </div>
-                  <div>
+                  
+                  <div className="mb-3">
                     <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2" >
-                        Hình thức
+                      Ngôn Ngữ
                     </h2>   
                       <div>
-                            {arrLanguage.map(languageMap=>(
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox" value={languageMap} checked={languageMap===selectedLanguage} onChange={()=>handleCheckboxLanguageChange(languageMap)} />
+                            { dataLanguage && dataLanguage?.map(items=>(
+                            <div class="form-check" key={items._id}>
+                              <input class="form-check-input" type="checkbox"  checked={items._id === selectedLanguage} onChange={()=>handleCheckboxLanguageChange(items._id)} />
                               <label class="form-check-label" for="flexCheckDefault">
-                              {languageMap}
+                              {items.languageName}
                               </label>
                             </div>
                             ))} 
                       </div>
+                      <hr/>
                   </div>
                   <div>
                     <h2 className="text-[20px] font-semibold text-[#444] capitalize leading-[1] mb-2">
@@ -344,18 +380,19 @@ navigate({ search: searchParams.toString()});
                     </div>
                   </div>
               </div>
+              </>) }
             </div>
             <div className="col-lg-9">
-              {loading ? (
+              {isLoading ? (
                 <Loader />
               ) : (
                 <>
                   <div className="flex flex-wrap w-full gap-4">
-                    {dataProduct && dataProduct?.products.map((product) => (
-                      <div className="w-[31.6%]">
+                    {dataProduct && dataProduct?.products?.map((product) => (
+                      <div className="w-[31.6%]" key={product._id}>
                       <div className=" card h-[430px]  group ">
                           <div className="flex justify-center relative">
-                              <Link to={ `/product/${product._id}`}>
+                              <Link to={ `/${product._id}`}>
                               <img className="max-h-[210px] w-[210px]" src={product.bookImage}/>
                               </Link>
                           </div>

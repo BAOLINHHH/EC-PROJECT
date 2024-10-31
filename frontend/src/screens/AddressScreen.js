@@ -1,5 +1,6 @@
 import React from 'react'
 import SidebarUser from './SidebarUser';
+import { Link} from 'react-router-dom';
 const AddressScreen = () => {
   return (
     <>
@@ -13,12 +14,14 @@ const AddressScreen = () => {
                   <div className="px-[10px] py-[5px]">
                         <div className='w-full mb-[10px] flex items-center justify-between'>
                             <h1 className="font-[600] text-[20px] p-[10px]"> Sổ địa chỉ giao hàng</h1>
+                            <Link to="/address/new">
                             <span className="cursor-pointer text-[#6131db]">
                               +
                               <span className="pl-2 text-[17px] ">
                                 Thêm dịa chỉ mới
                               </span>
                             </span>
+                            </Link>
                         </div>
                         <div className="px-3 flex justify-between">
                           <div >
