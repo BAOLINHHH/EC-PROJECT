@@ -136,6 +136,7 @@ const getProducts = asyncHandler(async (req, res) => {
     ...price,
     ...publicCompany,
     ...form,
+    ...author,
     ...language,
     ...rate,
   });
@@ -145,6 +146,7 @@ const getProducts = asyncHandler(async (req, res) => {
     ...price,
     ...publicCompany,
     ...form,
+    ...author,
     ...language,
     ...rate,
   })
