@@ -312,9 +312,46 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @route   GET /api/products/toprated
 // @access  Public
 const getTopRatedProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ rating: -1 }).limit(10);
-  res.status(200).json(products);
-});
+  const keyword = req.query.keyword ? { bookName: { $regex: req.query.keyword, $options: 'i' } } : {};
+  const category = req.query.category ? { category: req.query.category } : {};
+  const price = req.query.price ? { bookPrice: { $lte: req.query.price } } : {};
+  const publicCompany = req.query.publicCompany ? { publicCompany: req.query.publicCompany } : {};
+  const form = req.query.form ? { form: req.query.form } : {};
+  const author = req.query.author ? { author: req.query.author } : {};
+  const language = req.query.language ? { language: req.query.language } : {};
+  const rate = req.query.rate ? { rating: { $gte: req.query.rate } } : {};
+
+  const count = await Product.countDocuments({
+    ...keyword,
+    ...category,
+    ...price,
+    ...publicCompany,
+    ...form,
+    ...author,
+    ...language,
+    ...rate,
+  });
+
+  const products = await Product.find({
+    ...keyword,
+    ...category,
+    ...price,
+    ...publicCompany,
+    ...form,
+    ...author,
+    ...language,
+    ...rate,
+  })
+    .sort({ rating: -1 })
+    .limit(10)
+    .populate("category")
+    .populate("author")
+    .populate("form")
+    .populate("publicCompany")
+    .populate("language");
+
+    res.status(200).json({ products, count }); // Trả về sản phẩm cùng với thông tin phân trang, nếu cần có thể nhét lại vào {} -> pages: Math.ceil(count / 10)
+  });
 
 // @desc     Fetch all products
 // @route    Get api/products
@@ -329,16 +366,63 @@ const getProducts1 = asyncHandler(async (req, res) => {
 // @access  Public
 const getLatestProducts = asyncHandler(async (req, res) => {
   // Kiểm tra xem query có truyền 'category' hay không, nếu có thì tạo điều kiện lọc
-  const category = req.query.category
-    ? { category: { $regex: req.query.category, $options: "i" } } // Lọc theo category (không phân biệt hoa/thường)
-    : {}; // Nếu không có category thì không áp dụng điều kiện lọc
+  const categoryCondition = (category) => {
+    if (mongoose.Types.ObjectId.isValid(category)) {
+      // If it's a valid ObjectId, query directly
+      return { category: new mongoose.Types.ObjectId(category) };
+    } else {
+      // Use regex if it's a string
+      return { category: { $regex: category, $options: "i" } };
+    }
+  };
+  
+  const checkValue = (value) => {
+    return !value || (!!value && typeof value === "string" && value === "null");
+  };
+
+  const category = !checkValue(req.query.category)
+    ? categoryCondition(req.query.category)
+    : {};
 
   // Tìm sản phẩm mới nhất và lọc theo category (nếu có)
-  const products = await Product.find(category)
-    .sort({ createdAt: -1 })
-    .limit(15);
-
-  res.status(200).json(products);
+    const keyword = req.query.keyword ? { bookName: { $regex: req.query.keyword, $options: 'i' } } : {};
+    const price = req.query.price ? { bookPrice: { $lte: req.query.price } } : {};
+    const publicCompany = req.query.publicCompany ? { publicCompany: req.query.publicCompany } : {};
+    const form = req.query.form ? { form: req.query.form } : {};
+    const author = req.query.author ? { author: req.query.author } : {};
+    const language = req.query.language ? { language: req.query.language } : {};
+    const rate = req.query.rate ? { rating: { $gte: req.query.rate } } : {};
+  
+    const count = await Product.countDocuments({
+      ...keyword,
+      ...category,
+      ...price,
+      ...publicCompany,
+      ...form,
+      ...author,
+      ...language,
+      ...rate,
+    });
+  
+    const products = await Product.find({
+      ...keyword,
+      ...category,
+      ...price,
+      ...publicCompany,
+      ...form,
+      ...author,
+      ...language,
+      ...rate,
+    })
+      .sort({createdAt: -1 })
+      .limit(15)
+      .populate("category")
+      .populate("author")
+      .populate("form")
+      .populate("publicCompany")
+      .populate("language");
+  
+  res.status(200).json({ products, count });
 });
 
 // @desc    Get discounted products (Sản phẩm khuyến mãi)
@@ -414,9 +498,47 @@ const getRecommendedProducts = asyncHandler(async (req, res) => {
 // @route   GET /api/products/topsellers
 // @access  Public
 const getTopSellerProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ numReviews: -1 }).limit(10);
-  res.status(200).json(products);
+  const keyword = req.query.keyword ? { bookName: { $regex: req.query.keyword, $options: 'i' } } : {};
+  const category = req.query.category ? { category: req.query.category } : {};
+  const price = req.query.price ? { bookPrice: { $lte: req.query.price } } : {};
+  const publicCompany = req.query.publicCompany ? { publicCompany: req.query.publicCompany } : {};
+  const form = req.query.form ? { form: req.query.form } : {};
+  const author = req.query.author ? { author: req.query.author } : {};
+  const language = req.query.language ? { language: req.query.language } : {};
+  const rate = req.query.rate ? { rating: { $gte: req.query.rate } } : {};
+
+  const count = await Product.countDocuments({
+    ...keyword,
+    ...category,
+    ...price,
+    ...publicCompany,
+    ...form,
+    ...author,
+    ...language,
+    ...rate,
+  });
+
+  const products = await Product.find({
+    ...keyword,
+    ...category,
+    ...price,
+    ...publicCompany,
+    ...form,
+    ...author,
+    ...language,
+    ...rate,
+  })
+    .sort({ numReviews: -1 }) // Sắp xếp theo rating
+    .limit(10) // Giới hạn số lượng sản phẩm
+    .populate("category")
+    .populate("author")
+    .populate("form")
+    .populate("publicCompany")
+    .populate("language");
+
+  res.status(200).json({ products, count }); // Trả về sản phẩm cùng với thông tin phân trang, nếu cần có thể nhét lại vào {} -> pages: Math.ceil(count / 10)
 });
+
 
 // @desc    Get similar products (Sản phẩm tương tự)
 // @route   GET /api/products/:id/similar
