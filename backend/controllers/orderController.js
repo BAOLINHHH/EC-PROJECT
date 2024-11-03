@@ -7,60 +7,124 @@ import Product from '../models/productModel.js';
 // @desc     Create new order
 // @route    POST /api/orders
 // @access   Private
-const addOrderItems = asyncHandler (async (req, res)=> {
+// const addOrderItems = asyncHandler (async (req, res)=> {
+//     const {
+//         orderItems,
+//         shippingAddress,
+//         paymentMethod,
+//         itemsPrice,
+//         shippingPrice,
+//         totalPrice,
+//     } = req.body;
+
+//     if (orderItems && orderItems.length === 0){
+//         res.status(400);
+//         throw new Error('No order items');
+//     } else {
+//         // // get the ordered items from our database
+//         // const itemsFromDB = await Product.find({
+//         //     _id: { $in: orderItems.map((x) => x._id) },
+//         // });
+  
+//         // // map over the order items and use the price from our items from database
+//         // const dbOrderItems = orderItems.map((itemFromClient) => {
+//         //     const matchingItemFromDB = itemsFromDB.find(
+//         //         (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
+//         //     );
+//         //     return {
+//         //     ...itemFromClient,
+//         //     product: itemFromClient._id,
+//         //     price: matchingItemFromDB.price,
+//         //     _id: undefined,
+//         //     };
+//         // });
+
+//         // calculate prices
+//         // const { itemsPrice, shippingPrice, totalPrice } = calcPrices(dbOrderItems);
+
+//         const order = new Order ({
+//             orderItems: orderItems.map((x) => ({
+//                 ...x,
+//                 product: x._id,
+//                 _id: undefined
+//             })),
+//             // orderItems: dbOrderItems,
+//             user: req.user._id,
+//             shippingAddress,
+//             paymentMethod,
+//             itemsPrice,
+//             shippingPrice,
+//             totalPrice,
+//         });
+//         const createdOrder = await order.save();
+
+//         res.status(201).json(createdOrder);
+//     }
+// });
+
+const addOrderItems = asyncHandler(async (req, res) => {
     const {
-        orderItems,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      shippingPrice,
+      totalPrice,
+    } = req.body;
+  
+    if (orderItems && orderItems.length === 0) {
+      res.status(400);
+      throw new Error("No order items");
+    } else {
+      // Lấy sản phẩm từ database dựa trên orderItems
+      const itemsFromDB = await Product.find({
+        _id: { $in: orderItems.map((x) => x._id) },
+      });
+  
+      // Kiểm tra và cập nhật số lượng sản phẩm
+      for (const itemFromClient of orderItems) {
+        const matchingItemFromDB = itemsFromDB.find(
+          (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
+        );
+  
+        if (!matchingItemFromDB) {
+          res.status(404);
+          throw new Error(`Product with ID ${itemFromClient._id} not found`);
+        }
+  
+        // Kiểm tra số lượng còn lại
+        if (matchingItemFromDB.quantity < itemFromClient.qty) {
+          res.status(400);
+          throw new Error(
+            `Insufficient quantity for product ${matchingItemFromDB.name}`
+          );
+        }
+  
+        // Trừ số lượng sản phẩm
+        matchingItemFromDB.quantity -= itemFromClient.qty;
+        await matchingItemFromDB.save();
+      }
+  
+      // Tạo đối tượng đơn hàng mới
+      const order = new Order({
+        orderItems: orderItems.map((x) => ({
+          ...x,
+          product: x._id,
+          _id: undefined,
+        })),
+        user: req.user._id,
         shippingAddress,
         paymentMethod,
         itemsPrice,
         shippingPrice,
         totalPrice,
-    } = req.body;
-
-    if (orderItems && orderItems.length === 0){
-        res.status(400);
-        throw new Error('No order items');
-    } else {
-        // // get the ordered items from our database
-        // const itemsFromDB = await Product.find({
-        //     _id: { $in: orderItems.map((x) => x._id) },
-        // });
+      });
   
-        // // map over the order items and use the price from our items from database
-        // const dbOrderItems = orderItems.map((itemFromClient) => {
-        //     const matchingItemFromDB = itemsFromDB.find(
-        //         (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
-        //     );
-        //     return {
-        //     ...itemFromClient,
-        //     product: itemFromClient._id,
-        //     price: matchingItemFromDB.price,
-        //     _id: undefined,
-        //     };
-        // });
-
-        // calculate prices
-        // const { itemsPrice, shippingPrice, totalPrice } = calcPrices(dbOrderItems);
-
-        const order = new Order ({
-            orderItems: orderItems.map((x) => ({
-                ...x,
-                product: x._id,
-                _id: undefined
-            })),
-            // orderItems: dbOrderItems,
-            user: req.user._id,
-            shippingAddress,
-            paymentMethod,
-            itemsPrice,
-            shippingPrice,
-            totalPrice,
-        });
-        const createdOrder = await order.save();
-
-        res.status(201).json(createdOrder);
+      const createdOrder = await order.save();
+      res.status(201).json(createdOrder);
     }
-});
+  });
+  
 
 // @desc     Get logged in user orders
 // @route    GET /api/orders/myorders
