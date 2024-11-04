@@ -25,7 +25,7 @@ const getCategories = async (req, res) => {
     }
 };
 
-// @desc     Get all category by ID
+// @desc     Get category by ID
 // @route    GET api/categories/:id
 // @access   Public
 const getCategoryById = async (req, res) => {

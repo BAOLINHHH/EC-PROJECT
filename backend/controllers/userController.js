@@ -301,6 +301,131 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc     Request password reset (forgot password)
+// @route    POST /api/users/forgot-password
+// @access   Public
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  // Kiểm tra nếu email không được cung cấp
+  if (!email) {
+    res.status(400);
+    throw new Error("Email is required");
+  }
+
+  const user = await User.findOne({ email });
+
+  // Kiểm tra nếu người dùng không tồn tại
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Tạo token ngẫu nhiên
+  const resetToken = crypto.randomBytes(20).toString('hex');
+
+  // Mã hóa token trước khi lưu trong DB
+  const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+  // Lưu token và thời gian hết hạn vào user document
+  user.resetPasswordToken = hashedToken;
+  user.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // Hết hạn sau 10 phút
+  await user.save();
+
+  // Cấu hình SMTP và gửi email
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  const resetUrl = `localhost:4000/reset-password?token=${resetToken}`;
+
+  const mailOptions = {
+    from: `"Đặt lại mật khẩu" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: "Yêu cầu đặt lại mật khẩu",
+    text: `Bạn đã yêu cầu đặt lại mật khẩu. Vui lòng sử dụng liên kết sau: ${resetUrl}`,
+    html: `<p>Bạn đã yêu cầu đặt lại mật khẩu. Vui lòng sử dụng liên kết sau:</p><a href="${resetUrl}">${resetUrl}</a>`,
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  res.status(200).json({ message: "Reset password email sent" });
+});
+
+// @desc     Reset password
+// @route    POST /api/users/reset-password
+// @access   Public
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  // Kiểm tra token và mật khẩu mới có trong yêu cầu
+  if (!token || !newPassword) {
+    res.status(400);
+    throw new Error("Token and new password are required");
+  }
+
+  // Mã hóa token để so sánh với token đã lưu trong DB
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  // Tìm người dùng có token khớp và còn hạn
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpires: { $gt: Date.now() }, // Token chưa hết hạn
+  });
+
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid or expired token");
+  }
+
+  // Cập nhật mật khẩu mới
+  user.password = newPassword;
+  user.resetPasswordToken = undefined; // Xóa token sau khi sử dụng
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  res.status(200).json({ message: "Password reset successful" });
+});
+
+// @desc     Change user password
+// @route    PUT /api/users/change-password
+// @access   Private (Yêu cầu người dùng đăng nhập)
+const changePassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  // Kiểm tra xem các trường dữ liệu có được cung cấp đầy đủ không
+  if (!oldPassword || !newPassword) {
+    res.status(400);
+    throw new Error("Old password and new password are required");
+  }
+
+  // Tìm người dùng hiện tại bằng ID từ token xác thực
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Kiểm tra xem mật khẩu cũ có khớp không
+  const isMatch = await user.matchPassword(oldPassword);
+  if (!isMatch) {
+    res.status(401);
+    throw new Error("Old password is incorrect");
+  }
+
+  // Cập nhật mật khẩu mới
+  user.password = newPassword;
+  await user.save();
+
+  res.status(200).json({ message: "Password changed successfully" });
+});
+
+
 export {
   authUser,
   registerUser,
@@ -312,5 +437,8 @@ export {
   getUserById,
   updateUser,
   sendOtpByEmail,
-  verifyOtp
+  verifyOtp,
+  forgotPassword,
+  resetPassword,
+  changePassword
 };
