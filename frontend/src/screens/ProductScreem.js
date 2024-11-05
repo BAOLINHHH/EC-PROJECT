@@ -20,6 +20,7 @@ import { FaHeart } from "react-icons/fa";
 import favoriteApi from '../api/favoriteApi';
 import listProduct from '../api/productsAPI';
 import cartApi from '../api/cartApi';
+
 const ProductScreem = () => {
   const navigate = useNavigate();
   const dispatch =useDispatch(); 
@@ -164,7 +165,7 @@ const addToFavoriteHandler = async () =>{
                   <section className="mb-5">
                           <div className="container-sm">
                             <div className="row">
-                                <div className=' col-6 flex'>
+                                <div className=' col-6 flex flex-col'>
                                 {/* <div className=" relative left-[100px]">
                                   <div className="max-h-[68px] max-w-[68px] border-[1px] border-solid border-[#e9e9e9] rounded-lg my-1"> 
                                     <Image src={dataProduct.bookImage} alt={dataProduct.bookName} fluid/>
@@ -181,6 +182,23 @@ const addToFavoriteHandler = async () =>{
                                 <div className="max-h-[390px] max-w-[390px] border-[1px] border-solid border-[#e9e9e9] bg-[#f7f7f8] rounded-[5px] relative left-[150px]"> 
                                   <Image src={dataProduct.bookImage} alt={dataProduct.bookName} fluid/>
                                 </div>
+                                <div className=" flex justify-evenly mt-3">
+                                      <Link to="/audio" >
+                                      <Button className=' bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
+                                        type='button'
+                                      >
+                                      Nghe thử   
+                                      </Button>
+                                      </Link>
+                                      <Link to="/readsample">
+                                      <Button className=' bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
+                                        type='button'
+                  
+                                      >
+                                      Đọc thử   
+                                      </Button>
+                                      </Link>
+                                      </div>
                                 </div>
       
                                 <div className="col-6 pl-[20px]">
@@ -233,7 +251,7 @@ const addToFavoriteHandler = async () =>{
                                       </button>
                                     </div>
                                     {/* #62ab00 */}
-                                    <div className="h-[40px] m-[5px] flex">
+                                    {/* <div className="h-[40px] m-[5px] flex">
                                       <Button className='bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
                                         type='button'
                                         disabled= {dataProduct.bookQuaranty === 0}
@@ -243,16 +261,18 @@ const addToFavoriteHandler = async () =>{
                                           
                                         Mua Ngay
                                       </Button>
-                                    </div>
-                                    <div className='m-[5px] flex'>
-                                      <Button className=' bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
+                                    </div> */}
+                                    <div className='m-[5px] flex '>
+                                      <Button className=' mr-2 bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
                                         type='button'
                                         disabled= {dataProduct.bookQuaranty === 0}
                                         onClick={addToCartHandler}
                                       >
+                                        
                                       <BsCart />   
                                       </Button>
                                     </div>
+                                    
                                     <div className="m-[5px] flex">
                                       {
                                       !userInfo ? (  

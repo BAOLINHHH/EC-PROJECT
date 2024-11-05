@@ -16,6 +16,7 @@ const RegisterScreen = () => {
     const [ confirmPassword, setconfirmPassword] = useState('')
     const [emailVerify, setemailVerify] = useState('');
     const [otp, setOtp] = useState('');
+    const [countdownTimer,setCountdownTimer] = useState(60) 
 
 
     const dispatch = useDispatch();
@@ -28,7 +29,10 @@ const RegisterScreen = () => {
     const sp = new URLSearchParams(search)
     const redirect = sp.get('redirect') || '/'
 
-
+    useEffect (() => {
+        const timer = countdownTimer >0 && setInterval(() => setCountdownTimer(countdownTimer-1), 1000);
+        return () => clearInterval(timer)
+      }, [countdownTimer])
     useEffect (() => {
         if(userInfo){
           navigate(redirect)
@@ -44,8 +48,7 @@ const RegisterScreen = () => {
                 // const response = await userApi.registerUser({name,email,password})
                 // setemailVerify(response.email)
                 setemailVerify(email)
-                
-
+                setCountdownTimer(60);
                 // const res = await register({ name, email, password}).unwrap();
                 // dispatch(setCredentials({...res, }));
                 // navigate(redirect)
@@ -57,10 +60,14 @@ const RegisterScreen = () => {
       }
       const submitOtpHandler =(e) =>{
         e.preventDefault()
-            console.log("emailVerify", emailVerify)
-            console.log("otp", otp)
-      
-       
+            const postData = {
+                email: emailVerify,
+                otp: otp
+            }
+            console.log("postData" ,postData)
+      }
+      const handleSendOtp = ()=>{
+        setCountdownTimer(60);
       }
   return (
     
@@ -86,11 +93,27 @@ const RegisterScreen = () => {
                                 <input type="email" className="form-control" aria-describedby="icon-envelope" value={emailVerify} disabled  placeholder="Địa chỉ email" />
                                 </div>
                             </div>
-                            <div className="d-flex flex-row align-items-center mb-4">
+                            <div className="d-flex flex-row align-items-center mb-2">
                                 <div className="input-group flex-fill mb-0">
                                 <span className=' input-group-text' id= 'icon-envelope'><TbPasswordUser/> </span>
                                 <input type="text" className="form-control" aria-describedby="icon-envelope" value={otp} onChange={(e)=>setOtp(e.target.value)} placeholder="Mã Otp" />
                                 </div>
+                            </div>
+                            <div className="flex justify-end mb-4">
+                                {countdownTimer ? 
+                                ( 
+                                <span className=" text-[17px]">
+                                    Thời gian hiện hiệu lực: <span className="text-[#313eed]"> {countdownTimer} </span>
+                                </span>
+                                )
+                                :
+                                ( 
+                                <span className="text-[17px] text-[#313eed]" type="button" onClick={()=>handleSendOtp()}>
+                                    Giữ lại otp
+                                </span>
+                                )
+                                }
+                                
                             </div>
                             <div className="flex justify-between">
                                     <div className="flex items-center " type="button" onClick={()=>setemailVerify("")}>
