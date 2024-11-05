@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
-import { useGetProductsQuery } from '../slices/productsApiSlice';
+
 import Loader from '../componets/Loader';
 import Rating from '@mui/material/Rating';
 import { Link } from "react-router-dom"
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Grid, Autoplay } from 'swiper/modules'
-import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
 import listProducts from '../api/productsAPI';
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import "swiper/css/grid";
 import ActionButton from './ActionButton';
-
+import apiTag from "../api/apiTag";
 
 
 const NewProduct = () => {
@@ -22,31 +19,45 @@ const NewProduct = () => {
     
     const [loading,setLoading] = useState(true);
     const [dataProduct,setDataProduct] = useState('');
-  
+    const [dataCategory, setDataCategory] = useState('')
     const [colorCategory, setColorCategory] = useState(null);
 
     // const currentCategoryParam = searchParams.get("category") || "";
     // const [category, setCategory] = useState(currentCategoryParam);
-    const [category, setCategory] = useState('');
-
-    const arrcategories = [
-        'Tiểu Thuyết',
-        'Văn Học',
-        'Thiếu Nhi',
-        'Kinh Tế',
-        'Ngôn Tình',
-        'Tâm Lí',
-        "Manga",
-    ]
+    const [fitterCategory, setFitterCategory] = useState('');
+        console.log("fitterCategory ",fitterCategory)
+    // const arrcategories = [
+    //     'Tiểu Thuyết',
+    //     'Văn Học',
+    //     'Thiếu Nhi',
+    //     'Kinh Tế',
+    //     'Ngôn Tình',
+    //     'Tâm Lí',
+    //     "Manga",
+    // ]
  
     useEffect (()=> {
         flechData()
-    }, [category]);
+    }, [fitterCategory]);
+
+    
+    useEffect (()=> {
+        flechCatrgory()
+    }, []);
+    
+    const flechCatrgory = async ()=>{
+        try {
+            const responseCategory = await apiTag.getAllCategory()
+            setDataCategory(responseCategory);
+        } catch (error) {
+            
+        }
+    }
 
     const flechData= async() =>{
         try {
-            const responseProducts = await listProducts.getAllNewProducts(category);
-            setDataProduct(responseProducts);
+            const responseProducts = await listProducts.getAllNewProducts(fitterCategory);
+            setDataProduct(responseProducts.products);
             setLoading(false);
         } catch (error) {  
 
@@ -55,7 +66,7 @@ const NewProduct = () => {
     
     const setChangeCategory = (item)=>{
         setColorCategory(item);
-        setCategory(item)
+        setFitterCategory(item);
         // searchParams.set("category", item);
         // navigate({ search: searchParams.toString() });
 
@@ -64,12 +75,13 @@ const NewProduct = () => {
     // const {pageNumber } = useParams()
  
     // const {data , isLoading, error} = useGetProductsQuery();
+
     // const arrFitterCategory = []
     // for(let i=0;i<dataProduct?.length ;i++){
     //     arrFitterCategory.push(dataProduct[i].category)
     // }
     // const fitterCategory = [...new Set(arrFitterCategory)]
-    console.log( "dataProduct",dataProduct)
+
   return (
     <>
     {loading ? (
@@ -85,17 +97,17 @@ const NewProduct = () => {
                         </div>
                         <div className="mt-3">
                             <ul className="flex flex-row ">   
-                            {arrcategories.map(item => (
-                                <li className=" mr-[50px] text-[17px] capitalize leading-[28px] p-[4px] font-normal" onClick={()=> setChangeCategory(item)} 
+                            {dataCategory && dataCategory?.map(items => (
+                                <li className=" mr-[50px] text-[17px] capitalize leading-[28px] p-[4px] font-normal" onClick={()=> setChangeCategory(items._id)} 
                                 style={{
                                 cursor: 'pointer',
                                 listStyleType: 'none',
-                                color: colorCategory===item ? '#fff' : 'black',
-                                border: colorCategory===item ? '1px solid white': '',
-                                borderRadius: colorCategory===item ? '30px': '',
-                                backgroundColor: colorCategory===item ? '#ff6162' : ''
+                                color: colorCategory===items._id ? '#fff' : 'black',
+                                border: colorCategory===items._id ? '1px solid white': '',
+                                borderRadius: colorCategory===items._id ? '30px': '',
+                                backgroundColor: colorCategory===items._id ? '#ff6162' : ''
                                 }}
-                                >{item} </li>
+                                >{items.categoryName} </li>
                             ))}
                             </ul>
                         </div>
@@ -103,7 +115,7 @@ const NewProduct = () => {
                 </div>
             </div>
         
-        { dataProduct.length>0 && <Swiper  
+            { dataProduct?.length>0 &&<Swiper  
           slidesPerView={5}
           spaceBetween={20}
           autoplay={{
@@ -130,19 +142,19 @@ const NewProduct = () => {
            className="mySwiper"
         >
              <div className=" flex flex-wrap">
-            { dataProduct?.map((item)=>( 
+            { dataProduct && dataProduct?.map((item)=>( 
                 <SwiperSlide key={item._id}>
                             <div className="card h-[430px]  group ">
                                 <div className="flex justify-center">
                                     <Link to={ `/${item._id}`}>
-                                    <img className="max-h-[210px] w-[210px]" src={item.bookImage}/>
+                                    <img className="max-h-[210px] w-[210px]" src={item.bookImage} alt='bookImg'/>
                                     </Link>
                                 </div>
                                 <span className=" text-[#eee]  left-[8px] top-[8px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
                                 <span className=" text-[#eee] top-[45px] left-[8px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
                                <ActionButton />
                             <div className="card-body border-t-[1px] ">
-                                <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">Tieu Thuyet</h6>
+                                <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">{item?.category?.categoryName}</h6>
                                 <Link to={`product/${item._id}`}>
                                 <h2 className="font-normal text-[17px] h-[70px] pt-2  line-clamp-2 mb-[10px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90]">
                                 {item.bookName}
@@ -162,6 +174,7 @@ const NewProduct = () => {
             </div>
         </Swiper>}
         </div>
+        
         
     </section>
         

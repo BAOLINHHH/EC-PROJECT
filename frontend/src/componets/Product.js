@@ -1,10 +1,9 @@
 
-import { Link } from "react-router-dom"
 import Rating from '@mui/material/Rating';
 import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
 import { optionCurrency,transform } from "./money"
 const Product = ({product}) => {
-  console.log("producttop", product)
+  
   return (
     // <Card className="  my-3 p-3 rounded">
     //     <Link to={ `/product/${product._id}`}>
@@ -27,7 +26,7 @@ const Product = ({product}) => {
     <>       
              <div className="flex items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
                             <div className="basis-[100px]"> 
-                                <img  src={product.bookImage} />
+                                <img  src={product.bookImage} alt="BookImg" />
                             </div>
                             <span className=" text-[#eee] top-[3%] left-[1%] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
                             <div className=" w-[calc(100%-100px)] basis-[calc(100%-100px)] pl-3">

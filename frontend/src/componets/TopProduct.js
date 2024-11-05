@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import Message from './Message';
 import Loader from '../componets/Loader';
-import { useParams } from 'react-router-dom';
-import { useGetProductsQuery } from '../slices/productsApiSlice';
 import Product from "../componets/Product";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import "swiper/css/grid";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {Navigation, Grid  } from 'swiper/modules';
-import {BsCart ,BsSuitHeart,BsEye  } from 'react-icons/bs';
 import listProducts from '../api/productsAPI';
 const TopProduct = () => {
-    const {pageNumber } = useParams()
     // const {data , isLoading, error} = useGetProductsQuery({pageNumber});
 
     const [isLoading,setIsLoading] = useState(true);
@@ -26,7 +21,7 @@ const TopProduct = () => {
     const flechData =async () =>{
         try {
             const responseProducts = await listProducts.getTopRatedProducts()
-            setDataProduct(responseProducts)
+            setDataProduct(responseProducts.products)
             setIsLoading(false)
           } catch (error) {
           }
@@ -44,7 +39,7 @@ const TopProduct = () => {
                         <div className="w-full  py-[10px] bg-[#f2f2f2]">
                             <h2 className=" text-[25px] font-semibold text-[#4b5966]   capitalize leading-[1]">Combo</h2>
                         </div>
-                        {dataProduct?.length>0 && <Swiper 
+                         <Swiper 
                             slidesPerView={1}
                             paceBetween={20}
         
@@ -61,7 +56,7 @@ const TopProduct = () => {
                             }
                             }
                         >
-                        {dataProduct?.map((product)=>(
+                        {dataProduct && dataProduct?.map((product)=>(
                         <SwiperSlide key={product._id}> 
                             < Product  product={product}/>
                         {/* <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
@@ -85,13 +80,13 @@ const TopProduct = () => {
                         </div> */}
                         </SwiperSlide>
                         ))}
-                        </Swiper>}
+                        </Swiper>
                     </div>
                     <div className="col-4">
                         <div className="w-full py-[10px] bg-[#f2f2f2] ">
                             <h2 className=" text-[25px] font-semibold text-[#4b5966]  capitalize leading-[1]">Ebook</h2>
                         </div>
-                        { dataProduct.length>0 && <Swiper
+                       <Swiper
                          slidesPerView={1}
                          paceBetween={20}
           
@@ -109,7 +104,7 @@ const TopProduct = () => {
                          }
                         
                         >
-                        {dataProduct.slice(0,10).map((product)=>(
+                        {dataProduct && dataProduct.slice(0,10).map((product)=>(
                         <SwiperSlide key={product._id} > 
                             < Product  product={product}/>
                         {/* <div className="flex flex-row items-center bg-[#ffffff] border-[1px] border-solid border-[#eee] p-[15px] mb-3 group">
@@ -133,13 +128,13 @@ const TopProduct = () => {
                         </div> */}
                         </SwiperSlide>
                         ))}
-                        </Swiper>}
+                        </Swiper>
                     </div>
                     <div className="col-4">
                         < div className="w-full py-[10px] bg-[#f2f2f2]">
                             <h2 className=" text-[25px] font-semibold text-[#4b5966] capitalize leading-[1]">Sản phẩm được đánh giá cao</h2>
                         </div>
-                        { dataProduct.length>0 && <Swiper
+                      <Swiper
                         slidesPerView={1}
                         paceBetween={20}
                         modules={[Navigation, Grid]}
@@ -155,12 +150,12 @@ const TopProduct = () => {
                         }
                         }
                         >
-                        {dataProduct.map((product)=>(
+                        {dataProduct && dataProduct.map((product)=>(
                         <SwiperSlide key={product._id}> 
                           < Product  product={product}/>
                         </SwiperSlide>
                         ))}
-                        </Swiper>}
+                        </Swiper>
                     </div>
             </div>
         </div>

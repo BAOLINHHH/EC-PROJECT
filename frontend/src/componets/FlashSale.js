@@ -1,9 +1,6 @@
-import React, {useMemo,useEffect, useState} from 'react'
-import { useParams } from 'react-router-dom';
-import { useGetProductsQuery } from '../slices/productsApiSlice';
+import React, {useEffect, useState} from 'react'
 import Loader from '../componets/Loader';
 import banner1 from '../imageshome/banner1.jpg'
-import Message from './Message';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -15,7 +12,7 @@ import Rating from '@mui/material/Rating';
 import listProducts from '../api/productsAPI';
 const FlashSale = () => {
   
-    const Deadline = Date.now() + 1000 * 60 * 60 * 24 * 10;
+    // const Deadline = Date.now() + 1000 * 60 * 60 * 24 * 10;
     // const {pageNumber } = useParams()
     // const {data , isLoading, error} = useGetProductsQuery({pageNumber});
     
@@ -30,7 +27,7 @@ const FlashSale = () => {
     const flechData =async () =>{
         try {
             const responseProducts = await listProducts.getBestSaleProducts()
-            setDataProduct(responseProducts)
+            setDataProduct(responseProducts.products)
             setLoading(false)
           } catch (error) {
           }
@@ -136,11 +133,11 @@ const FlashSale = () => {
                         <h2 className=" text-[25px] font-semibold text-[#444] capitalize leading-[1]">SẢN PHẨM KHUYẾN MÃI</h2>
                     </div>
                     <Swiper className=" h-[590px]">
-                    {dataProduct?.map((product)=>(
+                    { dataProduct && dataProduct?.map((product)=>(
                     <SwiperSlide key={product._id} >
                     <div className="flex flex-col border-[2px] group ">
                         <div className="flex justify-center my-2 relative">
-                            <img className="max-h-[350px] w-[350px] rounded-[5px]" src={product.bookImage}/>
+                            <img className="max-h-[350px] w-[350px] rounded-[5px]" src={product.bookImage} alt='imgBook'/>
                         </div>
                         <span className=" text-[#eee]  left-[8px] top-[8px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
                         <span className=" text-[#eee] top-[45px] left-[8px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
@@ -152,7 +149,7 @@ const FlashSale = () => {
                         <div>
                             <div className="flex justify-center">
                                     <div className="basis-[100px] ">
-                                        <h6 className="  flex justify-center items-center h-[40px] bg-[#a6c7f2] border-[1px] border-solid rounded-[5px] text-[#4c43cc] ">{product.category}</h6> 
+                                        <h6 className="  flex justify-center items-center h-[40px] bg-[#a6c7f2] border-[1px] border-solid rounded-[5px] text-[#4c43cc] ">{product.category.categoryName}</h6> 
                                     </div>
                                     <div className="basis-[100px] flex items-center ml-3">
                                         <Rating name="half-rating-read " defaultValue={product.rating} precision={0.5} readOnly /> 
@@ -194,7 +191,7 @@ const FlashSale = () => {
                     ))}
                     </Swiper>
                     <div className>
-                        <img className=" h-[100px]" src={banner1} /> 
+                        <img className=" h-[100px]" src={banner1} alt='altBanner'/> 
                     </div>
                 </div>
                 <div className=" col-8">
@@ -202,7 +199,7 @@ const FlashSale = () => {
                         <h2 className=" text-[25px] font-semibold text-[#4b5966] capitalize leading-[1]">Sản Phẩm bán chạy</h2>
                     </div>
                     <div className="mb-5">
-                        { dataProduct?.length>0 && <Swiper
+                       <Swiper
                           slidesPerView={2}
                           spaceBetween={20}
                           modules={[Navigation, Grid]}
@@ -218,11 +215,11 @@ const FlashSale = () => {
                             }
                           }
                         >
-                        {dataProduct?.map((product)=>(
+                        { dataProduct && dataProduct?.map((product)=>(
                         <SwiperSlide key={product._id} >
                         <div className=" flex border-[1px] group">
                             <div className="basis-[150px] relative"> 
-                                <img src={product.bookImage} />
+                                <img src={product.bookImage}  alt='bookImg'/>
                             </div>
                             <span className=" text-[#eee]  left-[3px] top-[2px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
                             <span className=" text-[#eee] top-[37px] left-[3px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
@@ -234,14 +231,14 @@ const FlashSale = () => {
                             <div className="w-[calc(100%-150px)] basis-[calc(100%-150px)] pl-3">                 
                                 <div className="flex flex-row ">
                                     <div className="basis-[100px] ">
-                                        <h6 className="  flex justify-center items-center h-[40px] bg-[#a6c7f2] border-[1px] border-solid rounded-[5px] text-[#4c43cc] ">{product.category}</h6> 
+                                        <h6 className="  flex justify-center items-center h-[40px] bg-[#a6c7f2] border-[1px] border-solid rounded-[5px] text-[#4c43cc] ">{product.category.categoryName}</h6> 
                                     </div>
                                     <div className="basis-[100px] ">
                                         <span className="  flex justify-center items-center h-[40px] ml-5 bg-[#c48d20]  border-[1px] border-solid rounded-[5px] text-[#f8e825] "><  FaStar style={{ color:'#f8e825',fontSize:'21px', paddingRight: '3px'}} /> {product.rating} </span>
                                     </div>
                                 </div>
                                 <h2 className="font-normal text-[25px] h-[40px] pt-2 line-clamp-2 mb-[3px] leading-[28px] text-[#050c13] capitalize hover:text-[#5caf90]">{product.bookName}</h2>
-                                <h6 className="font-normal text-[14px]  truncate mb-[10px] leading-[28px] text-[#4b5966] capitalize">{product.author}</h6>
+                                <h6 className="font-normal text-[14px]  truncate mb-[10px] leading-[28px] text-[#4b5966] capitalize">{product.author.authorName}</h6>
                                 <div className="flex  items-center"> 
                                 <span className="text-[#4b5966] text-[24px] font-bold  ">{product.bookPrice}</span>
 
@@ -250,7 +247,7 @@ const FlashSale = () => {
                         </div>
                         </SwiperSlide>
                             ))}
-                        </Swiper>}
+                        </Swiper>
                     </div>
                     <div className="mb-3 flex justify-center bg-[#f2f2f2]">
                         <h2 className=" text-[25px] font-semibold text-[#4b5966] capitalize leading-[1]">Dành cho bạn</h2>
@@ -271,11 +268,11 @@ const FlashSale = () => {
                           }
                         }
                        >
-                        {dataProduct?.slice(0,10).map((product)=>(
+                        { dataProduct && dataProduct?.map((product)=>(
                             <SwiperSlide key={product._id} >
                             <div className="flex flex-col group">
                                 <div className=" flex justify-center relative">
-                                    <img className="w-[150px] h-[150px]" src={product.bookImage} />
+                                    <img className="w-[150px] h-[150px]" src={product.bookImage} alt='bookImg' />
                                 </div>
                                 <span className=" text-[#eee]  left-[3px] top-[2px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
                                 <span className=" text-[#eee] top-[37px] left-[3px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
@@ -285,7 +282,7 @@ const FlashSale = () => {
                                     <button className=" mx-1 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
                                 </div>
                                 <div className="py-1"> 
-                                    <h6 className="font-normal text-[#999] text-[14px] my-2  leading-[1.2] capitalize">{product.category}</h6>
+                                    <h6 className="font-normal text-[#999] text-[14px] my-2  leading-[1.2] capitalize">{product.category.categoryName}</h6>
                                     <h2 className="font-normal text-[17px] w-[250px] pt-1  line-clamp-1 mb-[5px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90]">
                                     {product.bookName}
                                     </h2>
