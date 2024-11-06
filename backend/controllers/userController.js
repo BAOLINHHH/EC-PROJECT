@@ -69,6 +69,9 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc     Sending OTP to user's email
+// @route    POST api/users/send-otp
+// @access   Public
 const sendOtpByEmail = async (req, res) => {
   const { email } = req.body;
 
@@ -78,54 +81,48 @@ const sendOtpByEmail = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
+    // Tạo mã OTP và thời gian hết hạn mới
+    const otp = crypto.randomInt(100000, 999999);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 phút sau
+
     // Tìm người dùng với email
     const user = await User.findOne({ email });
 
-    // Nếu người dùng không tồn tại
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Kiểm tra thời gian hết hạn OTP
-    const now = Date.now();
-    if (user.expiresAt && user.expiresAt > now) {
-      return res.status(400).json({ message: "OTP is still valid. Please check your email." });
-    } else {
-      // Nếu OTP đã hết hạn hoặc không có OTP, tạo mã mới
-      const otp = crypto.randomInt(100000, 999999);
-      const expiresAt = new Date(now + 10 * 60 * 1000); // 10 phút sau
-
-      // Cập nhật OTP và thời hạn trong bảng User
+    // Nếu người dùng tồn tại, kiểm tra và cập nhật OTP
+    if (user) {
+      if (user.expiresAt && user.expiresAt > Date.now()) {
+        return res.status(400).json({ message: "OTP is still valid. Please check your email." });
+      }      
       user.code = otp;
       user.expiresAt = expiresAt;
       await user.save();
-
-      // Cấu hình bộ gửi SMTP
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      });
-
-      // Tùy chọn email
-      const mailOptions = {
-        from: `"Xác thực OTP" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Mã xác thực",
-        text: `Mã OTP của bạn là: ${otp}`,
-        html: `<p>Mã OTP của bạn là: <strong>${otp}</strong></p><p>Lưu ý: mã OTP của bạn có thời hạn 10 phút.</p>`,
-      };
-
-      // Gửi email
-      await transporter.sendMail(mailOptions);
-
-      // Phản hồi khi email được gửi thành công
-      res.status(200).json({
-        message: "New OTP sent to email and updated in user profile",
-      });
     }
+
+    // Cấu hình bộ gửi SMTP
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    // Tùy chọn email
+    const mailOptions = {
+      from: `"Xác thực OTP" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: "Mã xác thực",
+      text: `Mã OTP của bạn là: ${otp}`,
+      html: `<p>Mã OTP của bạn là: <strong>${otp}</strong></p><p>Lưu ý: mã OTP của bạn có thời hạn 10 phút.</p>`,
+    };
+
+    // Gửi email
+    await transporter.sendMail(mailOptions);
+
+    // Phản hồi khi email được gửi thành công
+    res.status(200).json({
+      message: "New OTP sent to email",
+    });
   } catch (error) {
     console.error("Error sending OTP:", error.message || error);
     res.status(500).json({
@@ -134,6 +131,7 @@ const sendOtpByEmail = async (req, res) => {
     });
   }
 };
+
 
 // @desc     Verify OTP for user's email
 // @route    POST api/users/verify-otp
