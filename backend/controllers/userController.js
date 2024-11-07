@@ -45,7 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new Error("Người dùng đã tồn tại");
   }
 
   const user = await User.create({
@@ -65,7 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid user data");
+    throw new Error("Dữ liệu người dùng không hợp lệ");
   }
 });
 
@@ -78,12 +78,12 @@ const sendOtpByEmail = async (req, res) => {
   try {
     // Kiểm tra email có trong yêu cầu hay không
     if (!email) {
-      return res.status(400).json({ message: "Email is required" });
+      return res.status(400).json({ message: "Email là bắt buộc" });
     }
 
     // Tạo mã OTP và thời gian hết hạn mới
     const otp = crypto.randomInt(100000, 999999);
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 phút sau
+    const expiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 phút sau hết hạn
 
     // Tìm người dùng với email
     const user = await User.findOne({ email });
@@ -91,7 +91,7 @@ const sendOtpByEmail = async (req, res) => {
     // Nếu người dùng tồn tại, kiểm tra và cập nhật OTP
     if (user) {
       if (user.expiresAt && user.expiresAt > Date.now()) {
-        return res.status(400).json({ message: "OTP is still valid. Please check your email." });
+        return res.status(400).json({ message: "OTP vẫn còn hiệu lực. Vui lòng kiểm tra email của bạn." });
       }      
       user.code = otp;
       user.expiresAt = expiresAt;
@@ -121,13 +121,13 @@ const sendOtpByEmail = async (req, res) => {
 
     // Phản hồi khi email được gửi thành công
     res.status(200).json({
-      message: "New OTP sent to email",
+      message: "Mã OTP mới đã được gửi tới email",
     });
   } catch (error) {
-    console.error("Error sending OTP:", error.message || error);
+    console.error("Lỗi khi gửi OTP:", error.message || error);
     res.status(500).json({
-      message: "Failed to send OTP",
-      error: error.message || "An unexpected error occurred",
+      message: "Gửi OTP thất bại",
+      error: error.message || "Có lỗi không mong muốn xảy ra",
     });
   }
 };
@@ -142,7 +142,7 @@ const verifyOtp = async (req, res) => {
   try {
     // Kiểm tra nếu thiếu email hoặc otp
     if (!email || !otp) {
-      return res.status(400).json({ message: "Email and OTP are required" });
+      return res.status(400).json({ message: "Email và OTP là bắt buộc" });
     }
 
     // Tìm người dùng với email và kiểm tra OTP
@@ -150,25 +150,25 @@ const verifyOtp = async (req, res) => {
 
     // Kiểm tra nếu người dùng không tồn tại hoặc OTP không trùng khớp
     if (!user || user.code !== parseInt(otp, 10)) {
-      return res.status(400).json({ message: "Invalid OTP or email" });
+      return res.status(400).json({ message: "OTP hoặc email không hợp lệ" });
     }
 
     // Kiểm tra thời gian hết hạn OTP
     if (user.expiresAt < Date.now()) {
-      return res.status(400).json({ message: "OTP has expired" });
+      return res.status(400).json({ message: "Mã OTP đã hết hạn" });
     }
 
     // OTP hợp lệ, có thể tiếp tục với xác thực người dùng hoặc cập nhật trạng thái
-    res.status(200).json({ message: "OTP verified successfully" });
+    res.status(200).json({ message: "Xác thực OTP thành công" });
 
     // Cập nhật lại trạng thái 
     await User.updateOne({ email }, { $set: { status: 1 } });
 
   } catch (error) {
-    console.error("Error verifying OTP:", error.message || error);
+    console.error("Lỗi khi xác thực OTP:", error.message || error);
     res
       .status(500)
-      .json({ message: "Failed to verify OTP", error: error.message });
+      .json({ message: "Xác thực OTP thất bại", error: error.message });
   }
 };
 
@@ -181,7 +181,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     expires: new Date(0),
   });
 
-  res.status(200).json({ message: "Logged out successfully" });
+  res.status(200).json({ message: "Đăng xuất thành công" });
 });
 
 // @desc     Get user profile
@@ -201,7 +201,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Không tìm thấy người dùng");
   }
 });
 
@@ -229,7 +229,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Không tìm thấy người dùng");
   }
 });
 
@@ -250,13 +250,13 @@ const deleteUser = asyncHandler(async (req, res) => {
   if (user) {
     if (user.isAdmin) {
       res.status(400);
-      throw new Error("Cannot delete admin user");
+      throw new Error("Không thể xóa người dùng admin");
     }
     await User.deleteOne({ _id: user._id });
-    res.status(200).json({ message: "User delete successfully" });
+    res.status(200).json({ message: "Xóa người dùng thành công" });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Không tìm thấy người dùng");
   }
 });
 
@@ -270,7 +270,7 @@ const getUserById = asyncHandler(async (req, res) => {
     res.status(200).json(user);
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Không tìm thấy người dùng");
   }
 });
 
@@ -295,7 +295,7 @@ const updateUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Không tìm thấy người dùng");
   }
 });
 
@@ -308,7 +308,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   // Kiểm tra nếu email không được cung cấp
   if (!email) {
     res.status(400);
-    throw new Error("Email is required");
+    throw new Error("Email là bắt buộc");
   }
 
   const user = await User.findOne({ email });
@@ -316,7 +316,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   // Kiểm tra nếu người dùng không tồn tại
   if (!user) {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Không tìm thấy người dùng");
   }
 
   // Tạo token ngẫu nhiên
@@ -327,7 +327,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   // Lưu token và thời gian hết hạn vào user document
   user.resetPasswordToken = hashedToken;
-  user.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // Hết hạn sau 10 phút
+  user.resetPasswordExpires = Date.now() + 1 * 60 * 1000; // Hết hạn sau 1 phút
   await user.save();
 
   // Cấu hình SMTP và gửi email
@@ -351,7 +351,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   await transporter.sendMail(mailOptions);
 
-  res.status(200).json({ message: "Reset password email sent" });
+  res.status(200).json({ message: "Email yêu cầu đặt lại mật khẩu đã được gửi" });
 });
 
 // @desc     Reset password
@@ -363,7 +363,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   // Kiểm tra token và mật khẩu mới có trong yêu cầu
   if (!token || !newPassword) {
     res.status(400);
-    throw new Error("Token and new password are required");
+    throw new Error("Token và mật khẩu mới là bắt buộc");
   }
 
   // Mã hóa token để so sánh với token đã lưu trong DB
@@ -377,7 +377,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
   if (!user) {
     res.status(400);
-    throw new Error("Invalid or expired token");
+    throw new Error("Token không hợp lệ hoặc đã hết hạn");
   }
 
   // Cập nhật mật khẩu mới
@@ -386,7 +386,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.resetPasswordExpires = undefined;
   await user.save();
 
-  res.status(200).json({ message: "Password reset successful" });
+  res.status(200).json({ message: "Đặt lại mật khẩu thành công" });
 });
 
 // @desc     Change user password
@@ -398,7 +398,7 @@ const changePassword = asyncHandler(async (req, res) => {
   // Kiểm tra xem các trường dữ liệu có được cung cấp đầy đủ không
   if (!oldPassword || !newPassword) {
     res.status(400);
-    throw new Error("Old password and new password are required");
+    throw new Error("Mật khẩu cũ và mật khẩu mới là bắt buộc");
   }
 
   // Tìm người dùng hiện tại bằng ID từ token xác thực
@@ -406,23 +406,22 @@ const changePassword = asyncHandler(async (req, res) => {
 
   if (!user) {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Không tìm thấy người dùng");
   }
 
   // Kiểm tra xem mật khẩu cũ có khớp không
   const isMatch = await user.matchPassword(oldPassword);
   if (!isMatch) {
     res.status(401);
-    throw new Error("Old password is incorrect");
+    throw new Error("Mật khẩu cũ không chính xác");
   }
 
   // Cập nhật mật khẩu mới
   user.password = newPassword;
   await user.save();
 
-  res.status(200).json({ message: "Password changed successfully" });
+  res.status(200).json({ message: "Mật khẩu đã được thay đổi thành công" });
 });
-
 
 export {
   authUser,
