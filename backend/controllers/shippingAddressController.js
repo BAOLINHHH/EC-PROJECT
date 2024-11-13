@@ -26,25 +26,50 @@ const getShippingAddressesByUser = async (req, res) => {
 // @route   POST /api/shippingAddress
 // @access  Private
 const addShippingAddress = async (req, res) => {
-    const userId = req.user._id;
-    const { recipientName, phoneNumber, country, city, district, ward, addressDetails } = req.body;
-//    if(!userId)
-//        res.status(500).json({ message: "You need to login first!", error });
-    try {
-        let shippingaddres = await ShippingAddress.findOne({ user: userId });
-    
-        if (!shippingaddres) {
-          shippingaddres = new ShippingAddress({ user: userId, shippingAddress: [] });
-        }
-    
-        shippingaddres.shippingAddress.push({ recipientName, phoneNumber, country, city, district, ward, addressDetails });
-        await shippingaddres.save();
-    
-        res.status(200).json(shippingaddres);
-      } catch (error) {
-        res.status(500).json({ message: "Error adding to ShippingAddress list", error });
-      }
+  const userId = req.user._id;
+  const {
+    recipientName,
+    phoneNumber,
+    ProvinceID,
+    ProvinceName,
+    DistrictID,
+    DistrictName,
+    WardCode,
+    WardName,
+    addressDetails,
+  } = req.body;
+
+  try {
+    // Tìm kiếm địa chỉ giao hàng theo user ID
+    let shippingAddress = await ShippingAddress.findOne({ user: userId });
+
+    // Nếu chưa tồn tại, tạo mới
+    if (!shippingAddress) {
+      shippingAddress = new ShippingAddress({ user: userId, shippingAddress: [] });
+    }
+
+    // Thêm địa chỉ mới vào danh sách
+    shippingAddress.shippingAddress.push({
+      recipientName,
+      phoneNumber,
+      ProvinceID,
+      ProvinceName,
+      DistrictID,
+      DistrictName,
+      WardCode,
+      WardName,
+      addressDetails,
+    });
+
+    // Lưu vào cơ sở dữ liệu
+    await shippingAddress.save();
+
+    res.status(200).json(shippingAddress);
+  } catch (error) {
+    res.status(500).json({ message: "Error adding to ShippingAddress list", error });
+  }
 };
+
 
 // @desc    Xóa địa chỉ giao hàng
 // @route   DELETE /api/shippingAddress/:addressId
@@ -120,47 +145,50 @@ const checkShippingAddress = async (req, res) => {
 const updateShippingAddress = async (req, res) => {
   const userId = req.user._id;
   const { shippingaddressID } = req.params;
-  const { recipientName, phoneNumber, country, city, district, ward, addressDetails } = req.body;
+  const {
+    recipientName,
+    phoneNumber,
+    ProvinceID,
+    ProvinceName,
+    DistrictID,
+    DistrictName,
+    WardCode,
+    WardName,
+    addressDetails,
+  } = req.body;
 
   try {
-    // Tìm danh sách địa chỉ giao hàng của người dùng
-    const shippingaddress = await ShippingAddress.findOne({ user: userId });
-
-    // Nếu không có danh sách địa chỉ, trả về lỗi
-    if (!shippingaddress) {
-      return res.status(404).json({ message: "You need to login first!" });
-    }
-
-    // Tìm vị trí của địa chỉ cần cập nhật trong danh sách
-    const addressIndex = shippingaddress.shippingAddress.findIndex(
-      (address) => address._id.toString() === shippingaddressID
+    // Sử dụng findOneAndUpdate để tìm và cập nhật địa chỉ giao hàng
+    const updatedShippingAddress = await ShippingAddress.findOneAndUpdate(
+      { user: userId, "shippingAddress._id": shippingaddressID },
+      {
+        $set: {
+          "shippingAddress.$.recipientName": recipientName,
+          "shippingAddress.$.phoneNumber": phoneNumber,
+          "shippingAddress.$.ProvinceID": ProvinceID,
+          "shippingAddress.$.ProvinceName": ProvinceName,
+          "shippingAddress.$.DistrictID": DistrictID,
+          "shippingAddress.$.DistrictName": DistrictName,
+          "shippingAddress.$.WardCode": WardCode,
+          "shippingAddress.$.WardName": WardName,
+          "shippingAddress.$.addressDetails": addressDetails,
+        },
+      },
+      { new: true }
     );
 
     // Nếu không tìm thấy địa chỉ, trả về lỗi
-    if (addressIndex === -1) {
+    if (!updatedShippingAddress) {
       return res.status(404).json({ message: "Shipping address not found" });
     }
 
-    // Cập nhật các trường của địa chỉ giao hàng
-    shippingaddress.shippingAddress[addressIndex] = {
-      ...shippingaddress.shippingAddress[addressIndex]._doc,
-      recipientName,
-      phoneNumber,
-      country,
-      city,
-      district,
-      ward,
-      addressDetails,
-    };
-
-    // Lưu lại thay đổi vào cơ sở dữ liệu
-    await shippingaddress.save();
-
-    res.status(200).json(shippingaddress);
+    // Trả về kết quả cập nhật
+    res.status(200).json(updatedShippingAddress);
   } catch (error) {
     res.status(500).json({ message: "Error updating shipping address", error });
   }
 };
+
 
 export {
   getShippingAddressesByUser,

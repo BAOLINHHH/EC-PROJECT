@@ -15,17 +15,22 @@ const shippingAddressSchema = new mongoose.Schema(
         phoneNumber: {
           type: String,
         },
-        country: {
-          type: String,
-          default: 'Việt Nam',
+        ProvinceID: {
+          type: Number,
         },
-        city: {
-          type: String,
-        },
-        district: {
+        ProvinceName: {
           type: String,
         },
-        ward: {
+        DistrictID: {
+          type: Number,
+        },
+        DistrictName: {
+          type: String,
+        },
+        WardCode: {
+          type: Number,
+        },
+        WardName: {
           type: String,
         },
         addressDetails: {
