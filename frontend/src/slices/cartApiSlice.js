@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-const CARTS_URL = "/api/cart";
+const CARTS_URL = "http://localhost:4000/api/cart";
 
 export const cartApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

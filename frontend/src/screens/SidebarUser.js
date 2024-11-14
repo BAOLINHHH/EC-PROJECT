@@ -7,18 +7,19 @@ import {  NavLink,useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import {  useDispatch} from 'react-redux'; 
 import {logout} from '../slices/authSlice';
+import userApi from '../api/userApi';
 const SidebarUser = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [logoutApiCall]= useLogoutMutation();
     const logoutHandler = async () =>{
         try {
-            await logoutApiCall().unwrap()
+            await userApi.logout()
+            // await logoutApiCall().unwrap()
             dispatch(logout())
             navigate('/login')
         } catch (err){
             console.log(err)
-        
        }
     }
     

@@ -18,12 +18,15 @@ import formRoutes from './routes/formRoutes.js';
 import publicCompanyRoutes from './routes/publicCompanyRoutes.js';
 import languageRoutes from './routes/languageRoutes.js';
 import shippingAddressRoutes from'./routes/shippingAddressRoutes.js';
-
+import cors from 'cors';
 
 connectDB();
 
 const app = express()
-
+const corss = cors
+app.use(corss({
+  origin: "http://localhost:3000"
+}));
 //Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

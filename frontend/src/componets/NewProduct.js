@@ -25,7 +25,7 @@ const NewProduct = () => {
     // const currentCategoryParam = searchParams.get("category") || "";
     // const [category, setCategory] = useState(currentCategoryParam);
     const [fitterCategory, setFitterCategory] = useState('');
-        console.log("fitterCategory ",fitterCategory)
+
     // const arrcategories = [
     //     'Tiểu Thuyết',
     //     'Văn Học',

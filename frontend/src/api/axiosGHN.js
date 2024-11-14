@@ -1,12 +1,15 @@
 import axios from "axios"
 
-const instance=axios.create({
-    baseURL :'http://localhost:4000/api/',
- 
-    // timeout: 2000,
+const tokenApi = '75d0468f-9ff9-11ef-a804-e2ccc85641ed'
+const instanceGHN=axios.create({
+    baseURL :'https://online-gateway.ghn.vn/shiip/public-api/',
+    headers:{
+        'Token': tokenApi,
+        'Content-Type': 'application/json',
+    }
 });
 // Add a request interceptor
-instance.interceptors.request.use(function (config) {
+instanceGHN.interceptors.request.use(function (config) {
     // Do something before request is sent
     return config;
   }, function (error) {
@@ -15,7 +18,7 @@ instance.interceptors.request.use(function (config) {
   });
 
 // Add a response interceptor
-instance.interceptors.response.use(function (response) {
+instanceGHN.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response.data;
@@ -27,4 +30,4 @@ instance.interceptors.response.use(function (response) {
 
 
 
-export default instance
+export default instanceGHN

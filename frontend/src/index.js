@@ -40,7 +40,7 @@ import AddressScreen from './screens/AddressScreen';
 import NewAddressScreen from './screens/NewAddressScreen';
 import ReadSampleScreen from './screens/ReadSampleScreen';
 import AudioSampleScreen from './screens/AudioSampleScreen';
-
+import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 
 
 const router = createBrowserRouter(
@@ -55,7 +55,8 @@ const router = createBrowserRouter(
       {/* <Route path="/all-product/search/:keyword/page/:pageNumber" element={< ProductGridScreen/>}/>
       <Route path="/all-product/filter/:category/page/:pageNumber" element={< ProductGridScreen/>}/> */}
       <Route path="/login" element={< LoginScreen/>}/>
-      <Route path="/register" element={< RegisterScreen/>}/>
+      <Route path="/register" element={<RegisterScreen/>}/>
+      <Route path='/forgetpassword' element ={<ForgetPasswordScreen/>}/>
       <Route path='/cart' element= { <CartScreen/>}/>
       <Route path='' element = {<PrivateRoute/>}>
       <Route path='/shipping' element= {<ShippingScreen/>}/>
@@ -69,6 +70,7 @@ const router = createBrowserRouter(
       <Route path='/address/new' element ={<NewAddressScreen/>}/>
       <Route path='/readsample' element ={<ReadSampleScreen/>}/>
       <Route path='/audio' element ={<AudioSampleScreen/>}/>
+      <Route path='/forgetpassword' element ={<ForgetPasswordScreen/>}/>
       </Route>
 
       <Route path='' element = {<AdminRoute/>}>

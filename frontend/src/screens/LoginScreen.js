@@ -1,12 +1,9 @@
 import { useState, useEffect} from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
-// import { Form, Button, Row, Col } from 'react-bootstrap'
 import loginimg from '../imageshome/loginimg.jpg'
 import { BsFacebook } from "react-icons/bs";
 import { BsGoogle } from "react-icons/bs";
-// import Loader from '../componets/Loader';
-import { useLoginMutation } from '../slices/usersApiSlice';
 import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 import userApi from '../api/userApi'
@@ -136,27 +133,20 @@ const LoginScreen = () => {
 
           {/* <!-- Email input --> */}
           <div className="form-outline mb-4">
-            <input type="email" id="email_field"  value={email} onChange={(e) => setEmail(e.target.value)} className="form-control form-control-lg"
+            <input type="email" id="email_field"  value={email} onChange={(e) => setEmail(e.target.value)} className="outline-none h-[43px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px] w-full p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"
               placeholder="Nhập địa chỉ email" />
-           
           </div>
 
           {/* <!-- Password input --> */}
           <div className="form-outline mb-3">
-            <input type="password" id="password_field" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control form-control-lg"
+            <input type="password" id="password_field" value={password} onChange={(e) => setPassword(e.target.value)} className=" outline-none h-[43px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px] w-full p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"
               placeholder="Nhập mật khẩu" />
           </div>
-{/* 
+
           <div className="d-flex justify-content-between align-items-center">
-            <!-- Checkbox -->
-            <div className="form-check mb-0">
-              <input className="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
-              <label className="form-check-label" for="form2Example3">
-                Remember me
-              </label>
-            </div>
-            <a href="#!" className="text-body">Forgot password?</a>
-          </div> */}
+        <Link className="text-[#5b26e2]" to='/forgetpassword'> <p className="text-[17px]"> Quên mật khẩu </p> </Link>
+            
+          </div>
 
           <div className="text-center text-lg-start mt-4 pt-2">
             {/* <button type="submit" className="btn btn-primary btn-lg"
@@ -167,7 +157,7 @@ const LoginScreen = () => {
             </button>
             
           </div>
-          <p className="small fw-bold mt-2 pt-1 mb-0">Bạn chưa có tài khoản? <Link to={redirect ? `/register?redirect=${redirect}`:'/register' }>Đăng ký</Link></p>
+          <p className="small fw-bold mt-2 pt-1 mb-0">Bạn chưa có tài khoản? <Link className="text-[#5b26e2]" to={redirect ? `/register?redirect=${redirect}`:'/register' }>Đăng ký</Link></p>
         </form>
       </div>
     </div>
