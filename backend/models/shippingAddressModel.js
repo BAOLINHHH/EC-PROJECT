@@ -28,7 +28,7 @@ const shippingAddressSchema = new mongoose.Schema(
           type: String,
         },
         WardCode: {
-          type: Number,
+          type: String,
         },
         WardName: {
           type: String,
@@ -36,6 +36,10 @@ const shippingAddressSchema = new mongoose.Schema(
         addressDetails: {
           type: String,
         },
+        isDefault: {
+          type: Number,
+          default: 0,
+        }
       },
     ],
   },

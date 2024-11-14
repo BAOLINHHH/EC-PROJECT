@@ -22,6 +22,39 @@ const getShippingAddressesByUser = async (req, res) => {
   }
 };
 
+// @desc    Hiển thị địa chỉ giao hàng mặc định
+// @route   GET /api/shippingAddress/default
+// @access  Private
+const getDefaultShippingAddress = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    // Tìm kiếm địa chỉ giao hàng của người dùng
+    const shippingAddress = await ShippingAddress.findOne({ user: userId });
+
+    // Nếu không tìm thấy địa chỉ giao hàng
+    if (!shippingAddress || shippingAddress.shippingAddress.length === 0) {
+      return res.status(404).json({ message: "No shipping address found" });
+    }
+
+    // Tìm địa chỉ mặc định trong danh sách địa chỉ giao hàng
+    const defaultAddress = shippingAddress.shippingAddress.find(
+      (address) => address.isDefault === 1
+    );
+
+    // Nếu không có địa chỉ mặc định
+    if (!defaultAddress) {
+      return res.status(404).json({ message: "No default shipping address found" });
+    }
+
+    // Trả về địa chỉ mặc định
+    res.status(200).json(defaultAddress);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching default shipping address", error });
+  }
+};
+
+
 // @desc    Thêm địa chỉ giao hàng mới
 // @route   POST /api/shippingAddress
 // @access  Private
@@ -37,6 +70,7 @@ const addShippingAddress = async (req, res) => {
     WardCode,
     WardName,
     addressDetails,
+    isDefault,
   } = req.body;
 
   try {
@@ -46,6 +80,13 @@ const addShippingAddress = async (req, res) => {
     // Nếu chưa tồn tại, tạo mới
     if (!shippingAddress) {
       shippingAddress = new ShippingAddress({ user: userId, shippingAddress: [] });
+    }
+
+    // Kiểm tra nếu isDefault là true, cập nhật các địa chỉ khác làm isDefault = 0
+    if (isDefault) {
+      shippingAddress.shippingAddress.forEach((address) => {
+        address.isDefault = 0;
+      });
     }
 
     // Thêm địa chỉ mới vào danh sách
@@ -59,6 +100,7 @@ const addShippingAddress = async (req, res) => {
       WardCode,
       WardName,
       addressDetails,
+      isDefault,
     });
 
     // Lưu vào cơ sở dữ liệu
@@ -70,41 +112,48 @@ const addShippingAddress = async (req, res) => {
   }
 };
 
-
 // @desc    Xóa địa chỉ giao hàng
-// @route   DELETE /api/shippingAddress/:addressId
+// @route   DELETE /api/shippingAddress/:shippingaddressID
 // @access  Private
 const deleteShippingAddress = async (req, res) => {
   const userId = req.user._id;
   const { shippingaddressID } = req.params;
 
   try {
-      const shippingaddress = await ShippingAddress.findOne({ user: userId });
+    // Tìm kiếm danh sách địa chỉ giao hàng của người dùng
+    const shippingAddress = await ShippingAddress.findOne({ user: userId });
 
-      if (!shippingaddress) {
-          return res.status(404).json({ message: "Shipping address list not found" });
-      }
+    if (!shippingAddress) {
+      return res.status(404).json({ message: "Shipping address list not found" });
+    }
 
-      // Kiểm tra xem địa chỉ cần xóa có tồn tại trong mảng không
-      const addressExists = shippingaddress.shippingAddress.some(
-          (item) => item._id.toString() === shippingaddressID
-      );
-      
-      if (!addressExists) {
-          return res.status(404).json({ message: "This Shipping Address is no longer exits." });
-      }
+    // Tìm chỉ số của địa chỉ cần xóa trong mảng
+    const addressIndex = shippingAddress.shippingAddress.findIndex(
+      (item) => item._id.toString() === shippingaddressID
+    );
 
-      // Lọc bỏ địa chỉ cần xóa và lưu lại thay đổi
-      shippingaddress.shippingAddress = shippingaddress.shippingAddress.filter(
-          (item) => item._id.toString() !== shippingaddressID
-      );
+    if (addressIndex === -1) {
+      return res.status(404).json({ message: "This Shipping Address no longer exists." });
+    }
 
-      await shippingaddress.save();
+    // Kiểm tra xem địa chỉ bị xóa có phải là mặc định không
+    const isDefaultAddress = shippingAddress.shippingAddress[addressIndex].isDefault === 1;
 
-      res.status(200).json({ message: "Shipping address deleted successfully", shippingaddress });
+    // Xóa địa chỉ cần xóa
+    shippingAddress.shippingAddress.splice(addressIndex, 1);
+
+    // Nếu địa chỉ bị xóa là mặc định và còn địa chỉ khác, đặt một địa chỉ khác làm mặc định
+    if (isDefaultAddress && shippingAddress.shippingAddress.length > 0) {
+      shippingAddress.shippingAddress[0].isDefault = 1;
+    }
+
+    // Lưu thay đổi
+    await shippingAddress.save();
+
+    res.status(200).json({ message: "Shipping address deleted successfully", shippingAddress });
   } catch (error) {
-      res.status(500).json({ message: "Error removing from wishlist", error });
-      console.error(error);
+    res.status(500).json({ message: "Error removing shipping address", error });
+    console.error(error);
   }
 };
 
@@ -155,9 +204,18 @@ const updateShippingAddress = async (req, res) => {
     WardCode,
     WardName,
     addressDetails,
+    isDefault,
   } = req.body;
 
   try {
+    // Nếu isDefault là true, cập nhật tất cả các địa chỉ khác làm isDefault = 0
+    if (isDefault) {
+      await ShippingAddress.updateOne(
+        { user: userId },
+        { $set: { "shippingAddress.$[].isDefault": 0 } }
+      );
+    }
+
     // Sử dụng findOneAndUpdate để tìm và cập nhật địa chỉ giao hàng
     const updatedShippingAddress = await ShippingAddress.findOneAndUpdate(
       { user: userId, "shippingAddress._id": shippingaddressID },
@@ -172,6 +230,7 @@ const updateShippingAddress = async (req, res) => {
           "shippingAddress.$.WardCode": WardCode,
           "shippingAddress.$.WardName": WardName,
           "shippingAddress.$.addressDetails": addressDetails,
+          "shippingAddress.$.isDefault": isDefault ? 1 : 0,
         },
       },
       { new: true }
@@ -189,11 +248,11 @@ const updateShippingAddress = async (req, res) => {
   }
 };
 
-
 export {
   getShippingAddressesByUser,
   addShippingAddress,
   deleteShippingAddress,
   checkShippingAddress,
   updateShippingAddress,
+  getDefaultShippingAddress,
 };
