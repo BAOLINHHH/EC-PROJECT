@@ -39,7 +39,7 @@ const getDefaultShippingAddress = async (req, res) => {
 
     // Tìm địa chỉ mặc định trong danh sách địa chỉ giao hàng
     const defaultAddress = shippingAddress.shippingAddress.find(
-      (address) => address.isDefault === 1
+      (address) => address.isDefault === true
     );
 
     // Nếu không có địa chỉ mặc định
@@ -53,7 +53,6 @@ const getDefaultShippingAddress = async (req, res) => {
     res.status(500).json({ message: "Error fetching default shipping address", error });
   }
 };
-
 
 // @desc    Thêm địa chỉ giao hàng mới
 // @route   POST /api/shippingAddress
@@ -82,10 +81,10 @@ const addShippingAddress = async (req, res) => {
       shippingAddress = new ShippingAddress({ user: userId, shippingAddress: [] });
     }
 
-    // Kiểm tra nếu isDefault là true, cập nhật các địa chỉ khác làm isDefault = 0
+    // Kiểm tra nếu isDefault là true, cập nhật các địa chỉ khác làm isDefault = false
     if (isDefault) {
       shippingAddress.shippingAddress.forEach((address) => {
-        address.isDefault = 0;
+        address.isDefault = false;
       });
     }
 
@@ -137,14 +136,14 @@ const deleteShippingAddress = async (req, res) => {
     }
 
     // Kiểm tra xem địa chỉ bị xóa có phải là mặc định không
-    const isDefaultAddress = shippingAddress.shippingAddress[addressIndex].isDefault === 1;
+    const isDefaultAddress = shippingAddress.shippingAddress[addressIndex].isDefault === true;
 
     // Xóa địa chỉ cần xóa
     shippingAddress.shippingAddress.splice(addressIndex, 1);
 
     // Nếu địa chỉ bị xóa là mặc định và còn địa chỉ khác, đặt một địa chỉ khác làm mặc định
     if (isDefaultAddress && shippingAddress.shippingAddress.length > 0) {
-      shippingAddress.shippingAddress[0].isDefault = 1;
+      shippingAddress.shippingAddress[0].isDefault = true;
     }
 
     // Lưu thay đổi
@@ -153,10 +152,8 @@ const deleteShippingAddress = async (req, res) => {
     res.status(200).json({ message: "Shipping address deleted successfully", shippingAddress });
   } catch (error) {
     res.status(500).json({ message: "Error removing shipping address", error });
-    console.error(error);
   }
 };
-
 
 // @desc    Kiểm tra xem địa chỉ giao hàng có tồn tại không
 // @route   GET /api/shippingAddress/:shippingaddressID
@@ -172,19 +169,16 @@ const checkShippingAddress = async (req, res) => {
     // Nếu không có danh sách địa chỉ, trả về false
     if (!shippingaddresses) {
       return res.status(200).json({ message: "Error checking shipping address, no list found" });
-      console.log(addressId);
     }
 
     // Kiểm tra xem địa chỉ có tồn tại trong danh sách không
     const addressExists = shippingaddresses.shippingAddress.some(
       (address) => address._id.toString() === shippingaddressID
     );
-    //console.log("Checking address ID:", shippingaddressID);
-    //console.log("Address exists:", addressExists);
+
     res.status(200).json({ isInList: addressExists });
   } catch (error) {
     res.status(500).json({ message: "Error checking shipping address", error });
-    console.error(error);
   }
 };
 
@@ -208,11 +202,11 @@ const updateShippingAddress = async (req, res) => {
   } = req.body;
 
   try {
-    // Nếu isDefault là true, cập nhật tất cả các địa chỉ khác làm isDefault = 0
+    // Nếu isDefault là true, cập nhật tất cả các địa chỉ khác làm isDefault = false
     if (isDefault) {
       await ShippingAddress.updateOne(
         { user: userId },
-        { $set: { "shippingAddress.$[].isDefault": 0 } }
+        { $set: { "shippingAddress.$[].isDefault": false } }
       );
     }
 
@@ -230,18 +224,16 @@ const updateShippingAddress = async (req, res) => {
           "shippingAddress.$.WardCode": WardCode,
           "shippingAddress.$.WardName": WardName,
           "shippingAddress.$.addressDetails": addressDetails,
-          "shippingAddress.$.isDefault": isDefault ? 1 : 0,
+          "shippingAddress.$.isDefault": isDefault,
         },
       },
       { new: true }
     );
 
-    // Nếu không tìm thấy địa chỉ, trả về lỗi
     if (!updatedShippingAddress) {
       return res.status(404).json({ message: "Shipping address not found" });
     }
 
-    // Trả về kết quả cập nhật
     res.status(200).json(updatedShippingAddress);
   } catch (error) {
     res.status(500).json({ message: "Error updating shipping address", error });

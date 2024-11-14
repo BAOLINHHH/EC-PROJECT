@@ -37,14 +37,14 @@ const shippingAddressSchema = new mongoose.Schema(
           type: String,
         },
         isDefault: {
-          type: Number,
-          default: 0,
-        }
+          type: Boolean,
+          default: false,
+        },
       },
     ],
   },
   {
-    timestamps: true, // adds createdAt and updatedAt fields automatically
+    timestamps: true,
   }
 );
 
