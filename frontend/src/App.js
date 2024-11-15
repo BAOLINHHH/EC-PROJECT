@@ -24,7 +24,7 @@ const App = () => {
   const { data: cartDataDB, refetch, error } = useGetCartQuery();
   const isLoading = useSelector((state) => state.cart.isLoading);
   const { userInfo } = useSelector((state) => state.auth);
-
+  
   useEffect(() => {
     if (userInfo) {
       refetch(); // Refetch cart data when user logs in

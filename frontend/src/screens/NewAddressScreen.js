@@ -5,6 +5,7 @@ import {  Link} from 'react-router-dom';
 import ghnApi from '../api/ghnApi';
 import { toast } from 'react-toastify';
 import addressApi from '../api/addressApi';
+import Checkbox from '@mui/material/Checkbox';
 const NewAddressScreen = () => {
     const [province, setProvince] = useState([]);
     const [district, setDistrict] = useState([]);
@@ -16,13 +17,14 @@ const NewAddressScreen = () => {
     const [selectDistrict, setSelectDistrict] = useState("");
     const [selectward,setSelectward] = useState("");
 
-
+    const [checked, setChecked] = useState(true);
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
     const [nameProvince, setNameProvince]= useState("");
     const [nameDistrict, setNameDistrict]= useState("");
     const [nameWard, setNameWard]= useState("");
+
     useEffect(()=>{
         flechProvince();
     }, [])
@@ -41,6 +43,10 @@ const NewAddressScreen = () => {
            }
         } catch (error) {
         }
+    }
+    
+    const handleChangeCheckbox =(e)=>{
+            setChecked(e.target.checked)
     }
     const handleProvinceChange =(e) =>{
     const provinceId = e.target.value;
@@ -78,7 +84,8 @@ const NewAddressScreen = () => {
             DistrictName: nameDistrict.DistrictName,
             WardCode: nameWard.WardCode,
             WardName:  nameWard.WardName,
-            addressDetails: address
+            addressDetails: address,
+            isDefault: checked
         }
         console.log("postData",postData);
 
@@ -120,7 +127,7 @@ const NewAddressScreen = () => {
         } catch (error) {
             
         }
-    }  
+    } 
 
   return (
     <>
@@ -206,6 +213,10 @@ const NewAddressScreen = () => {
                                     <div className=" input-group ">
                                     <input type="text" className="outline-none h-[43px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px] w-full p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]" value={address} onChange={(e)=>setAddress(e.target.value)}  placeholder="Địa chỉ" />
                                     </div>
+                                </div>
+                                <div className='flex w-[600px] pb-3 items-center'>
+                                    <Checkbox checked={checked} onChange={handleChangeCheckbox}/>
+                                    <p className="text-[17px]"> Địa chỉ thanh toán mặc định của tôi</p>
                                 </div>
                                 <div className="flex my-9">
                                     <Link to= '/address'>
