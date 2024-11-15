@@ -9,6 +9,7 @@ import userApi from '../api/userApi';
 import CircularProgress from '@mui/material/CircularProgress';
 import { TbPasswordUser } from "react-icons/tb";
 import UserPasswordToggle from '../componets/UserPasswordToggle';
+import { setToken } from '../utils/authToken';
 const RegisterScreen = () => {
     const [ name, setName] = useState('')
     const [ email, setEmail] = useState('')
@@ -55,6 +56,7 @@ const RegisterScreen = () => {
                 toast.success(message);
                 setIsLoadingLogin(false);           
                 delete response.message;
+                setToken(response.token)
                 dispatch(setCredentials({...response}));
                 navigate(redirect);
               } catch (err){

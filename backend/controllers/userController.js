@@ -17,14 +17,12 @@ const authUser = asyncHandler(async (req, res) => {
     if (user.status === 0) {
       res.status(403).json({ message: "Tài khoản chưa được kích hoạt"});
     } else if (await user.matchPassword(password)) {
-      generateToken(res, user._id);
-
-      console.log("generateToken(res, user._id);",generateToken(res, user._id));
       res.status(200).json({
         _id: user._id,
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        token: generateToken(user._id)
       });
     } else {
       res.status(401);
@@ -142,13 +140,13 @@ const registerAndVerifyUser = asyncHandler(async (req, res) => {
   });
 
   // Tạo token và trả về thông tin người dùng
-  generateToken(res, user._id);
   res.status(201).json({
     message: 'Xác thực OTP thành công. Người dùng đã được tạo mới.',
     _id: user._id,
     name: user.name,
     email: user.email,
     isAdmin: user.isAdmin,
+    token: generateToken(user._id)
   });
 });
 

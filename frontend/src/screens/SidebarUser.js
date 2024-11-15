@@ -8,14 +8,17 @@ import { useLogoutMutation } from '../slices/usersApiSlice';
 import {  useDispatch} from 'react-redux'; 
 import {logout} from '../slices/authSlice';
 import userApi from '../api/userApi';
+import { removeToken } from '../utils/authToken';
+
 const SidebarUser = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [logoutApiCall]= useLogoutMutation();
-    const logoutHandler = async () =>{
+    const logoutHandler =  () =>{
         try {
-            await userApi.logout()
+            // await userApi.logout()
             // await logoutApiCall().unwrap()
+            removeToken()
             dispatch(logout())
             navigate('/login')
         } catch (err){

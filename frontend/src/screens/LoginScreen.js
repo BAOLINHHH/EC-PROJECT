@@ -7,6 +7,7 @@ import { BsGoogle } from "react-icons/bs";
 import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 import userApi from '../api/userApi'
+import { setToken } from '../utils/authToken';
 
 const LoginScreen = () => {
     const [ email, setEmail] = useState('');
@@ -27,11 +28,11 @@ const LoginScreen = () => {
     const submitHandler= async(e)=>{
       e.preventDefault()
       const dataLogin={email,password}
-       
         try {
           const fetchLogin = await userApi.loginUser(dataLogin);
           if(fetchLogin){
-            dispatch(setCredentials({...fetchLogin,}));
+            setToken(fetchLogin.token)
+            dispatch(setCredentials({...fetchLogin}));
             navigate(redirect)
           } else {
           }

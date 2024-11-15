@@ -23,9 +23,12 @@ import TopProduct from '../componets/TopProduct'
 import { Swiper, SwiperSlide } from 'swiper/react';
 // import 'swiper/css/pagination';
 // import { Pagination } from 'swiper/modules';
+
+
 import 'swiper/css';
 const Home = () => {
     const navigate = useNavigate();
+   
     
     const categories = [{name:'Tiểu Thuyết',thumbnail:book5img},
     {name:'Văn Học',thumbnail:book6img},{name:'Thiếu Nhi',thumbnail:book7img},{name:'Kinh Tế',thumbnail:book8img},{name:'Ngôn Tình',thumbnail:book9img},{name:'Tâm Lí',thumbnail:book10img},{name:'Manga',thumbnail:book11img}]

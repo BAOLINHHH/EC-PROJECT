@@ -1,19 +1,20 @@
 import axios from "axios"
-
-
-
-
+import { getToken } from "../utils/authToken";
 const instance=axios.create({
     baseURL :'http://localhost:4000/api/',
- 
     // timeout: 2000,
 });
 
 
 
 // Add a request interceptor
-instance.interceptors.request.use(function (config) {
+instance.interceptors.request.use( (config)=> {
     // Do something before request is sent
+    const token = getToken();
+ 
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   }, function (error) {
     // Do something with request error
