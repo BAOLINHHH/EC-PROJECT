@@ -17,9 +17,9 @@ const authUser = asyncHandler(async (req, res) => {
     if (user.status === 0) {
       res.status(403).json({ message: "Tài khoản chưa được kích hoạt"});
     } else if (await user.matchPassword(password)) {
-      generateToken(res, user._id)
+      generateToken(res, user._id);
 
-      console.log("generateToken(res, user._id);",generateToken(res, user._id))
+      console.log("generateToken(res, user._id);",generateToken(res, user._id));
       res.status(200).json({
         _id: user._id,
         name: user.name,
