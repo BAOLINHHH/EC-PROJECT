@@ -36,7 +36,7 @@ const ProductScreem = () => {
   const [comment, setComment] = useState('');
   const [ qty, setQuantity] = useState(1);
   const [isinFavorite, setIsinFavorite] = useState('')   
-  const {id: productId}= useParams();
+  // const {id: productId}= useParams();
   const {id}= useParams();
 
   // const { data : product,isLoading, refetch, error }= useGetProductDetailQuery(productId);

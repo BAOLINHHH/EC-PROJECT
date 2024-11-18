@@ -1,33 +1,49 @@
 import React, { useEffect, useState } from 'react'
 import SidebarUser from './SidebarUser';
 import { AiFillBackward } from "react-icons/ai";
-import {  Link} from 'react-router-dom';
+import {  Link,useNavigate,useParams} from 'react-router-dom';
 import ghnApi from '../api/ghnApi';
 import { toast } from 'react-toastify';
 import addressApi from '../api/addressApi';
 import Checkbox from '@mui/material/Checkbox';
-const NewAddressScreen = () => {
+import { useDispatch, useSelector } from "react-redux"
+import { removeFromDetailAddress } from '../slices/detailAddressSlice';
+const EditAddressScreen = () => {
+const navigate = useNavigate();
+  const dispatch =useDispatch(); 
+  const {id}= useParams();
+  const addressRedux = useSelector ((state) => state.address)
+  const {detailAddress} = addressRedux;
+  const addressUserRedux = detailAddress.find(item =>item._id === id )
+   
     const [province, setProvince] = useState([]);
     const [district, setDistrict] = useState([]);
     const [ward, setWard] = useState([]);
 
- 
+    const [selectProvince , setSelectProvince] = useState( addressUserRedux.ProvinceID);
+    const [selectDistrict, setSelectDistrict] = useState(  addressUserRedux.DistrictID);
+    const [selectward,setSelectward] = useState( addressUserRedux.WardCode ) ;
 
-    const [selectProvince , setSelectProvince] = useState("");
-    const [selectDistrict, setSelectDistrict] = useState("");
-    const [selectward,setSelectward] = useState("");
-
-    const [checked, setChecked] = useState(true);
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
-    const [nameProvince, setNameProvince]= useState("");
-    const [nameDistrict, setNameDistrict]= useState("");
-    const [nameWard, setNameWard]= useState("");
+    const [checked, setChecked] = useState(addressUserRedux.isDefault);
+    const [name, setName] = useState(   addressUserRedux.recipientName );
+    const [phone, setPhone] = useState( addressUserRedux.phoneNumber );
+    const [address, setAddress] = useState( addressUserRedux.addressDetails);
+    const [nameProvince, setNameProvince]= useState({ ProvinceID: addressUserRedux.ProvinceID, 
+                                                     ProvinceName: addressUserRedux.ProvinceName});
+    const [nameDistrict, setNameDistrict]= useState({DistrictID: addressUserRedux.DistrictID,
+                                                    DistrictName: addressUserRedux.DistrictName});
+    const [nameWard, setNameWard]= useState({WardCode: addressUserRedux.WardCode,
+                                            WardName:addressUserRedux.WardName});
 
     useEffect(()=>{
         flechProvince();
+        flechDistrict (addressUserRedux.ProvinceID)
+        flechward(addressUserRedux.DistrictID)
+        // return()=>{
+        //     dispatch(removeFromDetailAddress())
+        // }
     }, [])
+    
 
     const flechProvince = async() =>{
         try {
@@ -74,7 +90,7 @@ const NewAddressScreen = () => {
     }
     const submitHandler= async(e)=>{
         e.preventDefault()
-
+        const idAddress = addressUserRedux._id;
         const postData = {
             recipientName: name,
             phoneNumber: phone,
@@ -87,19 +103,14 @@ const NewAddressScreen = () => {
             addressDetails: address,
             isDefault: checked
         }
+        console.log(postData)
 
         try {
-        const response = await addressApi.update(postData);
-        if(response){
-            toast.success("Thêm địa chỉ thành công");
-        }else{
-            toast.error("Thêm địa chỉ thất bại");
-        }
+        await addressApi.edit(idAddress,postData);
+        toast.success("Thêm địa chỉ thành công");
         } catch (error) {
             toast.error(Error?.response?.data?.message )
         }
-        
-        
 
     }
   
@@ -136,11 +147,11 @@ const NewAddressScreen = () => {
         } catch (error) {
             
         }
-    } 
-
+    }
   return (
     <>
-         <section className="py-3">
+
+    <section className="py-3">
         <div className="container ">
         <div className=" flex gap-[60px]">
                 <div className="w-[280px] shadow-[1px_1px_7px_rgba(#00000029)] ">
@@ -149,7 +160,7 @@ const NewAddressScreen = () => {
                 <div className=" border-solid border-[1px] rounded-[6px] w-full bg-[#fff] shadow-[1px_1px_7px_rgba(#00000029)] ">
                   <div className="px-[10px] py-[5px] ]">
                         <div className='w-full mb-[10px] flex items-center justify-between'>
-                            <h1 className="font-[600] text-[20px] p-[10px]">Thêm địa chỉ</h1>
+                            <h1 className="font-[600] text-[20px] p-[10px]">Sửa địa chỉ</h1>
                         </div>
                         <div className="px-[20px]">
                             <form>
@@ -194,7 +205,7 @@ const NewAddressScreen = () => {
                                               key={item.DistrictID}
                                               value={item.DistrictID}
                                               selected="selected"
-                                              disabled={!handleProvinceChange}
+                                            //   disabled={!handleProvinceChange}
                                             >
                                               {item.DistrictName}
                                             </option>
@@ -210,7 +221,7 @@ const NewAddressScreen = () => {
                                               key={item.WardCode}
                                               value={item.WardCode}
                                               selected="selected"
-                                              disabled={!handleDistrictChange}
+                                            //   disabled={!handleDistrictChange}
                                             >
                                               {item.WardName}
                                             </option>
@@ -251,4 +262,4 @@ const NewAddressScreen = () => {
   )
 }
 
-export default NewAddressScreen
+export default EditAddressScreen

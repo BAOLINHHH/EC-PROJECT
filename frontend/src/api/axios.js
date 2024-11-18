@@ -2,6 +2,9 @@ import axios from "axios"
 import { getToken } from "../utils/authToken";
 const instance=axios.create({
     baseURL :'http://localhost:4000/api/',
+    headers:{
+      'Content-Type': 'application/json',
+  },
     // timeout: 2000,
 });
 

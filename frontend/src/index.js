@@ -41,6 +41,7 @@ import NewAddressScreen from './screens/NewAddressScreen';
 import ReadSampleScreen from './screens/ReadSampleScreen';
 import AudioSampleScreen from './screens/AudioSampleScreen';
 import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
+import EditAddressScreen from './screens/EditAddressScreen';
 
 
 const router = createBrowserRouter(
@@ -68,6 +69,7 @@ const router = createBrowserRouter(
       <Route path='/changepassword' element ={<ChangePassword/>}/>
       <Route path='/address' element ={<AddressScreen/>}/>
       <Route path='/address/new' element ={<NewAddressScreen/>}/>
+      <Route path='/address/new/:id' element ={<EditAddressScreen/>}/>
       <Route path='/readsample' element ={<ReadSampleScreen/>}/>
       <Route path='/audio' element ={<AudioSampleScreen/>}/>
       <Route path='/forgetpassword' element ={<ForgetPasswordScreen/>}/>

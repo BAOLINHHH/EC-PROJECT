@@ -1,7 +1,42 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SidebarUser from './SidebarUser';
-import { Link} from 'react-router-dom';
+import { Link,useNavigate} from 'react-router-dom';
+import addressApi from '../api/addressApi';
+import { addToDetailAddress,removeFromDetailAddress } from '../slices/detailAddressSlice';
+import { useDispatch } from 'react-redux';
+
+import { toast } from 'react-toastify';
 const AddressScreen = () => {
+  const navigate = useNavigate();
+  const dispatch =useDispatch(); 
+  const [dataAddress,setDataAddress] = useState([]);
+  const [isRefresh, setIsRefresh] = useState(false);
+  useEffect(()=>{
+    flechData();
+  },[isRefresh])
+  const flechData = async()=>{
+    try {
+      const response = await addressApi.getAll();
+      setDataAddress(response.shippingAddress)
+    } catch (error) {
+      toast.error(error?.response?.data?.message )
+    }
+
+  }
+  const handleEditAddress =(item)=>{
+    dispatch(addToDetailAddress(item))
+    navigate(`/address/new/${item._id}`)
+  }
+  const handleDeleteAddress= async(id)=>{
+    try {
+      await addressApi.detele(id);
+      dispatch(removeFromDetailAddress(id))
+      toast.success("Xóa địa chỉ thành công")
+      setIsRefresh(prev => !prev)
+    } catch (error) {
+      toast.error(error?.response?.data?.message )
+    }
+  }
   return (
     <>
       <section className="py-3">
@@ -23,23 +58,45 @@ const AddressScreen = () => {
                             </span>
                             </Link>
                         </div>
-                        <div className="px-3 flex justify-between">
-                          <div >
-                            <div className="flex mb-[4px]">
-                            <span className="font-[600]">Doan bao linh</span>
-                            <div className="border-solid border-r-[2px] border-[#ddd] mx-[8px]"></div>
-                            <span className="font-[600]">0328548518</span>
-                            </div>
+                        {dataAddress && dataAddress?.map((item) =>(
+                          <div>
+                            <div className="px-3 flex justify-between">
+                              <div>
+                                <div className="flex mb-[4px]">
+                                  <span className="font-[600]">{item.recipientName}</span>
+                                  <div className="border-solid border-r-[2px] border-[#ddd] mx-[8px]"></div>
+                                    <span className="font-[600]">
+                                      {item.phoneNumber}
+                                    </span>
+                                  <div className="border-solid border-r-[2px] border-[#ddd] mx-[8px]"></div>
+                                  {item.isDefault && (
+                                    <div className="border-solid rounded-[5px] bg-[rgb(45,203,247)] py-[2px] px-[8px]">
+                                      <span className="text-[rgb(223,84,50)]">Địa chỉ thanh toán mặc định</span>
+                                    </div>
+                                  )}
+                                </div>
+                              <div>
+                                <span>{item.addressDetails}</span>
+                              </div>
                             <div>
-                            <span>khu pho 1</span>
+                              <span>{item.WardName}, {item.DistrictName}, {item.ProvinceName}</span>
                             </div>
-                            <div>
-                            <span>thi tran vam lang, huyen go cong dong, tinh tien giang</span>
-                            </div>
+                              </div>
+                              {/* <Link to ={ `/address/new/${item._id}`}>
+                              <p className='text-[16px] text-[#c03427] cursor-pointer'> Sửa</p>
+                              </Link> */}
+                              <div className="flex flex-col gap-y-2"> 
+                                <button onClick={()=>handleEditAddress(item)} className=" text-[16px] text-[#c03427]">Sửa </button>
+                                <button  className=" text-[16px] text-[#c03427]" onClick={()=>handleDeleteAddress(item._id)}>Xóa</button>
+                              </div>
+                              
+                              </div>
+                          <hr className="mt-[10px] mb-[5px]"/>
                           </div>
-                          <p className='text-[16px] text-[#c03427]'> Sửa</p>
-                        </div>
-                        <hr className="mt-[10px] mb-[5px]"/>
+                        ))}
+                     
+                        {/* <hr className="mt-[10px] mb-[5px]"/> */}
+                       
                   </div>
                         {/* <div className="row flex justify-evenly">
                                   <div className="card col-4 p-4  "> */}
