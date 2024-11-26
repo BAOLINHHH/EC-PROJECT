@@ -67,6 +67,11 @@ const orderSchema = mongoose.Schema({
     deliveredAt:{
         type: Date,
     },
+        trackingCode: {
+        type: String,
+        required: true,
+        unique: true,
+    },
 }, {
     timestamp: true,
 });

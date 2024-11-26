@@ -15,6 +15,8 @@ import wishlistRoutes from './routes/wishlistRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import authorRoutes from './routes/authorRoutes.js';
 import formRoutes from './routes/formRoutes.js';
+import couponRoutes from './routes/couponRoutes.js';
+
 import publicCompanyRoutes from './routes/publicCompanyRoutes.js';
 import languageRoutes from './routes/languageRoutes.js';
 import shippingAddressRoutes from'./routes/shippingAddressRoutes.js';
@@ -46,6 +48,7 @@ app.use('/api/forms', formRoutes);
 app.use('/api/publiccompanies', publicCompanyRoutes);
 app.use('/api/languages', languageRoutes);
 app.use('/api/shippingaddress', shippingAddressRoutes);
+app.use('/api/coupon', couponRoutes);
 
 app.get('/api/config/paypal', (req, res) => 
     res.send({ clientId: process.env.PAYPAL_CLIENT_ID })

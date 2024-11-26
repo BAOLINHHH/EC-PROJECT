@@ -201,7 +201,7 @@ const addToFavoriteHandler = async () =>{
                                       Nghe thử   
                                       </Button>
                                        
-                                      <Link to="/readsample">
+                                      <Link to="/audio">
                                       <Button className=' bg-[#ffffff] text-[#0e0606] text-[14px] border-[2px] border-[#62ab00] border-solid transition-all duration-[0.3s] ease-in-out hover:bg-[#62ab00] hover:text-[#ffff] hover:border-[#63ae34]'
                                         type='button'
                   

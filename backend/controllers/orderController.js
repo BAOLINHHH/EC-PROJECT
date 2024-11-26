@@ -63,71 +63,82 @@ import Product from '../models/productModel.js';
 // });
 
 const addOrderItems = asyncHandler(async (req, res) => {
-    const {
-      orderItems,
+  const {
+    orderItems,
+    shippingAddress,
+    paymentMethod,
+    itemsPrice,
+    shippingPrice,
+    totalPrice,
+  } = req.body;
+
+  if (orderItems && orderItems.length === 0) {
+    res.status(400);
+    throw new Error("No order items");
+  } else {
+    // Lấy sản phẩm từ database dựa trên orderItems
+    const itemsFromDB = await Product.find({
+      _id: { $in: orderItems.map((x) => x._id) },
+    });
+
+    // Kiểm tra và cập nhật số lượng sản phẩm
+    for (const itemFromClient of orderItems) {
+      const matchingItemFromDB = itemsFromDB.find(
+        (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
+      );
+
+      if (!matchingItemFromDB) {
+        res.status(404);
+        throw new Error(`Product with ID ${itemFromClient._id} not found`);
+      }
+
+      // Kiểm tra số lượng còn lại
+      if (matchingItemFromDB.quantity < itemFromClient.qty) {
+        res.status(400);
+        throw new Error(
+          `Insufficient quantity for product ${matchingItemFromDB.name}`
+        );
+      }
+      
+      // Trừ số lượng sản phẩm
+      matchingItemFromDB.quantity -= itemFromClient.qty;
+      await matchingItemFromDB.save();
+    }
+
+    // Tạo đối tượng đơn hàng mới
+    const order = new Order({
+      orderItems: orderItems.map((x) => ({
+        ...x,
+        product: x._id,
+        _id: undefined,
+      })),
+      user: req.user._id,
       shippingAddress,
       paymentMethod,
       itemsPrice,
       shippingPrice,
       totalPrice,
-    } = req.body;
-  
-    if (orderItems && orderItems.length === 0) {
-      res.status(400);
-      throw new Error("No order items");
-    } else {
-      // Lấy sản phẩm từ database dựa trên orderItems
-      const itemsFromDB = await Product.find({
-        _id: { $in: orderItems.map((x) => x._id) },
-      });
-  
-      // Kiểm tra và cập nhật số lượng sản phẩm
-      for (const itemFromClient of orderItems) {
-        const matchingItemFromDB = itemsFromDB.find(
-          (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
-        );
-  
-        if (!matchingItemFromDB) {
-          res.status(404);
-          throw new Error(`Product with ID ${itemFromClient._id} not found`);
-        }
-  
-        // Kiểm tra số lượng còn lại
-        if (matchingItemFromDB.quantity < itemFromClient.qty) {
-          res.status(400);
-          throw new Error(
-            `Insufficient quantity for product ${matchingItemFromDB.name}`
-          );
-        }
-  
-        // Trừ số lượng sản phẩm
-        matchingItemFromDB.quantity -= itemFromClient.qty;
-        await matchingItemFromDB.save();
-      }
-  
-      // Tạo đối tượng đơn hàng mới
-      const order = new Order({
-        orderItems: orderItems.map((x) => ({
-          ...x,
-          product: x._id,
-          _id: undefined,
-        })),
-        user: req.user._id,
-        shippingAddress,
-        paymentMethod,
-        itemsPrice,
-        shippingPrice,
-        totalPrice,
-      });
-  
-      const createdOrder = await order.save();
-      res.status(201).json(createdOrder);
-    }
-  });
-  
+    });
+
+    // Lưu đơn hàng để có `_id`
+    const createdOrder = await order.save();
+
+    // Tạo mã vận đơn: <Ngày thanh toán><Số lượng sản phẩm>_<ObjectID>
+    const trackingCode = `${new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-/g, "")}${orderItems.length}_${createdOrder._id}`;
+    createdOrder.trackingCode = trackingCode;
+
+    await createdOrder.save();
+
+    res.status(201).json(createdOrder);
+  }
+});
+
 
 // @desc     Get logged in user orders
-// @route    GET /api/orders/myorders
+// @route    GET /api/orders/mine
 // @access   Private
 const getMyOrders = asyncHandler (async (req, res)=> {
     const orders = await Order.find({ user: req.user._id });
@@ -213,11 +224,33 @@ const getOrders = asyncHandler (async (req, res)=> {
     res.status(200).json(orders)
 });
 
+
+// @desc     Get tracking
+// @route    GET /api/orders/tracking/:trackingCode
+// @access   Public
+const getOrderByTrackingCode = asyncHandler(async (req, res) => {
+  const { trackingCode } = req.params;
+
+  // Tìm kiếm đơn hàng dựa trên trackingCode
+  const order = await Order.findOne({ trackingCode })
+    .populate("user", "name email") // Lấy thông tin người dùng (nếu cần)
+    .populate("orderItems.product", "name price"); // Lấy thêm thông tin sản phẩm (nếu cần)
+
+  if (!order) {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+
+  res.json(order); // Trả về thông tin đơn hàng
+});
+
+
 export { 
     addOrderItems,
     getMyOrders,
     getOrderById,
     updateOrderToPaid,
     updateOrderToDelivered,
-    getOrders
+    getOrders,
+    getOrderByTrackingCode
  };
