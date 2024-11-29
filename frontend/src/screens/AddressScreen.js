@@ -4,7 +4,6 @@ import { Link,useNavigate} from 'react-router-dom';
 import addressApi from '../api/addressApi';
 import { addToDetailAddress,removeFromDetailAddress } from '../slices/detailAddressSlice';
 import { useDispatch } from 'react-redux';
-
 import { toast } from 'react-toastify';
 const AddressScreen = () => {
   const navigate = useNavigate();
@@ -140,7 +139,7 @@ const AddressScreen = () => {
         </div>
           
         </div>
-        </section>
+      </section>
     </>
   )
 }

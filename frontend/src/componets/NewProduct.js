@@ -145,14 +145,19 @@ const NewProduct = () => {
             { dataProduct && dataProduct?.map((item)=>( 
                 <SwiperSlide key={item._id}>
                             <div className="card h-[430px]  group ">
-                                <div className="flex justify-center">
+                                <div className="flex justify-center relative ">
                                     <Link to={ `/${item._id}`}>
                                     <img className="max-h-[210px] w-[210px]" src={item.bookImage} alt='bookImg'/>
                                     </Link>
+                                
+                                </div>
+                                
+                                <div className='absolute z-[20] h-[45px] w-[45px] bg-[#fff] border-solid rounded-[100%] border-[#eee] left-[-70px] top-1 flex  justify-center border-[1px]'>
+                                <ActionButton props={item} />
                                 </div>
                                 <span className=" text-[#eee]  left-[8px] top-[8px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
                                 <span className=" text-[#eee] top-[45px] left-[8px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
-                               <ActionButton />
+                              
                             <div className="card-body border-t-[1px] ">
                                 <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">{item?.category?.categoryName}</h6>
                                 <Link to={`product/${item._id}`}>

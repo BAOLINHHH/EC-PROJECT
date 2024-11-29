@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import { useSelector,useDispatch } from 'react-redux';
 import CheckoutSteps from '../componets/CheckoutSteps';
@@ -19,15 +19,75 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import addressApi from '../api/addressApi';
 import { AiOutlineEnvironment,AiOutlineCar,AiOutlineCreditCard  } from "react-icons/ai";
+import ghnApi from '../api/ghnApi';
 const PaymentOrder = () => {
   
+    // const { cartItems, shippingAddress, paymentMethhod,itemsPrice,itemsShip,totalPrice} = useSelector((state) => state.cart)
     const { cartItems, shippingAddress, paymentMethhod,itemsPrice,itemsShip,totalPrice} = useSelector((state) => state.cart)
-    
     const [createOrder, {isLoading}] = useCreateOrderMutation()
     const {userInfo} = useSelector((state) =>state.auth)
     const dispatch = useDispatch();
     const navigate = useNavigate();
+   const [dataAddress, setDataAddress] = useState('');
+   const [selectedValue, setSelectedValue]= useState('vnpay');
+   const [feeShip, setFeeShip]= useState('');
+   useEffect(()=>{
+    flectDataAddress();
+  },[])
+  
+   const flectDataAddress = async()=>{
+    try {
+      const responseAddress = await addressApi.getAll();
+      const result = responseAddress.shippingAddress.find(item=>item.isDefault === true);
+      if(result){
+        setDataAddress(result)
+      
+      const district_id = result.DistrictID
+      const ward_code = result.WardCode
+      flectFeeShip(district_id,ward_code)
+      }
+      
+      
+    } catch (error) {
+      toast.error(error?.response?.data?.message )
+    }
+   }
+   const handleRadio =(e)=>{
+    setSelectedValue(e.target.value)
+   }
+   const handleCheckOut =()=>{
+    if(selectedValue === 'cash'){
+
+    }
+   }
+  
+  const flectFeeShip = async(districtID,WardCode)=>{
+    
+    try {
+      const response = await ghnApi.getFeeShip({
+            from_district_id:3695,
+            from_ward_code:'90742',
+            service_id:53320,
+            to_district_id:districtID,
+            to_ward_code:WardCode,
+            height:10,
+            length:10,
+            weight:1000,
+            width:20,
+            insurance_value:10000,
+            cod_failed_amount:2000,
+            coupon: null
+      });
+      setFeeShip( response.total)
+
+    } catch (error) {
+      
+    }
+  }
+
    
     const totalItem = {
 
@@ -36,32 +96,32 @@ const PaymentOrder = () => {
         totalcalc: 0,
       }
       totalItem.totalcalc = totalItem.total + totalItem.ship
-      useEffect (() => {
-        if(!shippingAddress || !paymentMethhod){
-            navigate('/shipping')
-        }
-      }, [shippingAddress,paymentMethhod,navigate]);
+      // useEffect (() => {
+      //   if(!shippingAddress || !paymentMethhod){
+      //       navigate('/shipping')
+      //   }
+      // }, [shippingAddress,paymentMethhod,navigate]);
 
-      const placeOrderHandler = async () => {
-        try {
+      // const placeOrderHandler = async () => {
+      //   try {
          
-          const res = await createOrder({
-            orderItems: cartItems,
-            shippingAddress: shippingAddress,
-            paymentMethod: paymentMethhod,
-            itemsPrice: itemsPrice,
-            shippingPrice: itemsShip,
-            totalPrice: totalPrice,
-          }).unwrap();
-          dispatch(clearCartItems());
-          navigate(`/order/${res._id}`);
-        } catch (error) {
-          toast.error(error);
-        }
-      };
+      //     const res = await createOrder({
+      //       orderItems: cartItems,
+      //       shippingAddress: shippingAddress,
+      //       paymentMethod: paymentMethhod,
+      //       itemsPrice: itemsPrice,
+      //       shippingPrice: itemsShip,
+      //       totalPrice: totalPrice,
+      //     }).unwrap();
+      //     dispatch(clearCartItems());
+      //     navigate(`/order/${res._id}`);
+      //   } catch (error) {
+      //     toast.error(error);
+      //   }
+      // };
   return (
     <>
-        <CheckoutSteps shippingAndPayment confiOrder />
+        {/* <CheckoutSteps shippingAndPayment confiOrder /> */}
         {/* <div className="row d-flex justify-content-between">
                 <div className="col-12 col-lg-8 mt-5 order-confirm">
 
@@ -156,50 +216,54 @@ const PaymentOrder = () => {
           <div className="container-sm">
               <div className="row ">
                   <div className="col-7">
-                    <div className="mb-3">
-                      <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <div className="mb-3 ">
+                      {/* <Accordion> */}
+                            {/* <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                               <span className= "flex flex-row items-center text-[17px] capitalize leading-[28px] font-black "> < AiOutlineEnvironment style={{ marginRight : "10px"}} />  Dia chi </span>
                             </AccordionSummary>
                               <AccordionDetails>
                                 <div className="row flex justify-evenly">
-                                  <div className="card col-4 p-4  ">
-                                      <div className=" border-[1px] border-solid rounded-[5px] flex flex-row items-center">
-                                        <Radio size="small"/>
+                                  <div className="card col-4 p-4  "> */}
+                                      {/* <div className=" border-[1px] border-solid rounded-[5px] flex flex-row items-center">
                                         <span className="pr-2"><img className="w-[19px]" src={logoHome} /></span>
                                         <p className="text-[19px] leading-[28px] capitalize"> Nhà </p>
-                                      </div>
-                                      <address className="my-2">
-                                        <strong className="text-[17px] leading-[28px]"> bao linh</strong>
-                                        <p className="text-[17px] leading-[28px]">khu pho</p>
-                                        <p className="text-[17px] leading-[28px]">thi tran vam lang</p>
-                                        <p className="text-[17px] leading-[28px]">huynh go cong dong</p>
-                                        <p className="text-[17px] leading-[28px]">tienh tien giang</p>
-                                        <p className="text-[17px] leading-[28px]">03582555222</p>
+                                      </div> */}
+                                      {/* {dataAddress && (
+                                        <address className="my-2">
+                                        <strong className="text-[17px] leading-[28px] mb-1">{dataAddress.recipientName} </strong>
+                                        <p className="text-[17px] leading-[28px] mb-1"> {dataAddress.addressDetails} </p>
+                                        <p className="text-[17px] leading-[28px] mb-1">{dataAddress.WardName}</p>
+                                        <p className="text-[17px] leading-[28px] mb-1">{dataAddress.DistrictName}</p>
+                                        <p className="text-[17px] leading-[28px] mb-1">{dataAddress.ProvinceName}</p>
+                                        <p className="text-[17px] leading-[28px] "> {dataAddress.phoneNumber} </p>
                                       </address>
-                                      <span className="text-danger "  type='button'>Sua</span>
-                                  </div>
-                                  <div className="card col-4 p-4 ">
-                                      <div className=" border-[1px] border-solid rounded-[5px] flex flex-row items-center">
-                                        <Radio size="small"/>
-                                        <span className="mr-2"><img className="w-[18px]" src={logoOffice} /></span>
-                                        <p className="text-[18px] leading-[28px] capitalize"> Văn phòng </p>
-                                      </div>
-                                      <address className="my-2">
-                                        <strong className="text-[17px]  capitalize leading-[28px]"> bao linh</strong>
-                                        <p className="text-[17px] leading-[28px]">khu pho</p>
-                                        <p className="text-[17px] leading-[28px]">thi tran vam lang</p>
-                                        <p className="text-[17px] leading-[28px]">huynh go cong dong</p>
-                                        <p className="text-[17px] leading-[28px]">tienh tien giang</p>
-                                        <p className="text-[17px] leading-[28px]">03582555222</p>
-                                      </address>
-                                      <span className='text-danger' type='button'>Sua</span>
-                                  </div>
+                                      )}
+                                       */}
+                                      {/* <span className="text-danger "  type='button'>Sua</span> */}
+                                  {/* </div>
                                 </div>
                               </AccordionDetails>
-                      </Accordion>
+                      </Accordion> */}
+                        <div className='w-full border-solid border-[1px] rounded-[7px]'>
+                          <div className='h-[120px] p-3'>
+                            <h2 className='text-[19px] font-[700]'>
+                              Địa chỉ giao hàng
+                            </h2>
+                            <hr/>
+                            <div className='mt-1'>
+                              <div className='flex '>
+                                <span className='font-normal'> {dataAddress.recipientName} </span>
+                                <div className="border-solid border-r-[2px] border-[#ddd] mx-[8px]"></div>
+                                <span className='font-normal'>{dataAddress.phoneNumber}</span>
+                              </div>
+                              <div>
+                                <span className='font-normal'> {dataAddress.addressDetails}, {dataAddress.WardName}, {dataAddress.DistrictName}, {dataAddress.ProvinceName}</span>
+                            </div>
+                            </div>
                           </div>
-                    <div className="mb-3 ">
+                        </div>
+                      </div>
+                    {/* <div className="mb-3 ">
                           <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                               <span className='flex flex-row items-center text-[17px] capitalize leading-[28px] font-black '> < AiOutlineCar  style={{ marginRight : "10px"}}/>  Dia chi </span>
@@ -218,31 +282,70 @@ const PaymentOrder = () => {
                            
                             </AccordionDetails>
                           </Accordion>
-                    </div>
-                    
+                    </div> */}
                     <div>
-                          <Accordion>
+
+
+                    <div className='w-full border-solid border-[1px] rounded-[7px]'>
+                          <div className='h-[150px] p-3'>
+                            <h2 className='text-[19px] font-[700]'>
+                              Phương thức thanh toán
+                            </h2>
+                            <hr/>
+                            <div className='mt-1'>
+                              <div >
+                              <RadioGroup
+                               
+                               value={selectedValue}
+                               onChange={handleRadio}
+                               >
+                             
+                           <div className="flex flex-row items-center mb-3">                   
+                             <Radio value={"vnpay"} />
+                           <img src={vnpayimg} className="h-[30px] w-[35px] mr-3" />
+                            <p className="text-[17px] " con>Ví VNPAY</p>
+                            
+                            </div>
+                           <div className="flex flex-row items-center mb-3">
+                       
+                           <Radio value={"cash"} />
+                           <img className="h-[30px] w-[35px] mr-3" src={moneyumg} />
+                           <p className="text-[17px] "> Thanh toán khi nhận hàng</p>
+                           </div>
+                           </RadioGroup>
+                            </div>
+                            </div>
+                          </div>
+                        </div>
+                          {/* <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                               <span className='flex flex-row items-center text-[17px] capitalize leading-[28px] font-black '> < AiOutlineCreditCard style={{ marginRight : "10px"}} />  Dia chi </span>
                             </AccordionSummary>
                             <AccordionDetails>
-                            <div className="flex flex-row mb-3 ">
-                              < Radio size="small"/>
-                              <img className="h-[30px] w-[30px] mr-3" src={momoimg}/> 
-                              <p className="text-[17px] leading-[28px]">Ví Momo</p>
-                            </div>
-                            <div className="flex flex-row mb-3">
-                            < Radio size="small"/>
+                           
+                             <RadioGroup
+                               
+                                value={selectedValue}
+                                onChange={handleRadio}
+                                >
+                              
+                            <div className="flex flex-row items-center mb-3">
+                         
+                              
+                              <Radio value={"vnpay"} />
                             <img src={vnpayimg} className="h-[30px] w-[35px] mr-3" />
-                             <p className="text-[17px] leading-[28px]">Ví VNPAY</p>
+                             <p className="text-[17px] " con>Ví VNPAY</p>
+                             
                              </div>
-                            <div className="flex flex-row mb-3">
-                            < Radio size="small"/>
+                            <div className="flex flex-row items-center mb-3">
+                        
+                            <Radio value={"cash"} />
                             <img className="h-[30px] w-[35px] mr-3" src={moneyumg} />
-                            <p className="text-[17px] leading-[28px]"> Thanh toán khi nhận hàng</p>
+                            <p className="text-[17px] "> Thanh toán khi nhận hàng</p>
                             </div>
+                            </RadioGroup>
                             </AccordionDetails>
-                          </Accordion>
+                          </Accordion> */}
                     </div>
                   </div>
                   <div className=" col-lg-4 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] bg-[#ffff] border-[1px] border-solid rounded-[16px] p-[2rem]  gx-2">
@@ -250,16 +353,20 @@ const PaymentOrder = () => {
                       <h4 className="text-[17px] capitalize leading-[28px] font-black">Chi tiết đơn hàng</h4>
                       <hr/>
                     </div>
-                    <div className="flex flex-row items-center bg-[#ffffff] border-b-[1px] border-solid border-[#eee] p-[15px] mb-3 ">
-                            <div className="basis-[100px]"> 
-                                <img src={momoimg} />
-                            </div>
-                            <div className=" w-[calc(100%-100px)] basis-[calc(100%-100px)] pl-3">
-                                <h2 className="font-normal  text-[17px] line-clamp-2 mb-[10px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90] ">aaaaaaaaaa</h2>
-                                <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">x1</h6>
-                                <span className="text-[#4b5966] text-[14px] font-bold mr-[7px]">20000</span>
-                            </div>
-                    </div>
+                      {cartItems.map((item)=>(
+                        <div className="flex flex-row items-center bg-[#ffffff] border-b-[1px] border-solid border-[#eee] p-[15px] mb-3 ">
+                          <div className="basis-[100px]"> 
+                            <img src={item.bookImage} />
+                          </div>
+                      
+                          <div className=" w-[calc(100%-100px)] basis-[calc(100%-100px)] pl-3">
+                            <h2 className="font-normal  text-[17px] line-clamp-2 mb-[10px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90] ">{item.bookName}</h2>
+                            <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize"> {item.qty} </h6>
+                            <span className="text-[#4b5966] text-[14px] font-bold mr-[7px]"> {item.bookPrice} </span>
+                          </div>    
+                        </div>
+                      ) )}
+                        
                     <div className="row">
                                     <div className="col-8 pb-1">
                                   <p>Thành tiền:  
@@ -275,7 +382,8 @@ const PaymentOrder = () => {
                                   </p>
                                   </div>
                                   <div className="col-4 pb-1">
-                                  <span>{ transform(totalItem.ship,optionCurrency) } </span>
+                                  {/* <span>{ transform(totalItem.ship,optionCurrency) } </span> */}
+                                  <span>{ transform(feeShip,optionCurrency) } </span>
                                   </div>
                     </div>
                     <div className="row pb-1 font-bold" >
@@ -289,7 +397,7 @@ const PaymentOrder = () => {
                     </div>
                     <hr />
                     <div className="d-flex justify-content-center pt-3">
-                                  <button type="button" className="btn btn-danger" >THANH TOÁN</button>
+                                  <button type="button" className="btn btn-danger"  onClick={handleCheckOut}>THANH TOÁN</button>
                     </div>
                   </div>
               </div>

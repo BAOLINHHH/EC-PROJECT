@@ -18,11 +18,11 @@ const LoginScreen = () => {
     const {search} = useLocation();
     const sp = new URLSearchParams(search);
     const redirect = sp.get('redirect') || '/';
-    useEffect (() => {
-      if(userInfo){
-        navigate(redirect)
-      }
-    }, [userInfo,redirect, navigate])
+    // useEffect (() => {
+    //   if(userInfo){
+    //     navigate(redirect)
+    //   }
+    // }, [userInfo,redirect, navigate])
 
 
     const submitHandler= async(e)=>{
@@ -30,12 +30,15 @@ const LoginScreen = () => {
       const dataLogin={email,password}
         try {
           const fetchLogin = await userApi.loginUser(dataLogin);
-          if(fetchLogin){
-            setToken(fetchLogin.token)
-            dispatch(setCredentials({...fetchLogin}));
+          if(!fetchLogin.isAdmin){
+           
             navigate(redirect)
           } else {
+    
+            navigate('/admin/home')
           }
+          setToken(fetchLogin.token)
+          dispatch(setCredentials({...fetchLogin}));
         } catch (Error) {
           toast.error(Error?.response?.data?.message )
         }

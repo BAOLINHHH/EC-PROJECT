@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import Sidebar from "./Sidebar";
+import SidebarAdmin from "./SidebarAdmin";
 import { useGetProducts1Query } from "../../slices/productsApiSlice";
 import { useGetOrderQuery } from "../../slices/ordersSlice";
 import Message from "../../componets/Message";
@@ -7,6 +7,10 @@ import Loader from "../../componets/Loader";
 import { Link } from "react-router-dom";
 import { useGetUsersQuery } from "../../slices/usersApiSlice";
 // import {  useDispatch,useSelector } from 'react-redux'
+import { FaHandHoldingDollar } from "react-icons/fa6";
+import {FaUsers,FaReceipt,FaCommentDots  } from "react-icons/fa";
+import { MdCategory } from "react-icons/md";
+import { IoPricetag } from "react-icons/io5";
 const DashboardScreen = () => {
   const { data: products, isLoading, error } = useGetProducts1Query();
   const { data: orders } = useGetOrderQuery();
@@ -42,10 +46,136 @@ const DashboardScreen = () => {
     <>
       <div className="row">
         <div className=" col-md-2">
-          <Sidebar />
+          <SidebarAdmin />
         </div>
         <div className="col-md-10">
-          {isLoading ? (
+          <section>
+            <div className=" container">
+            <div className=" grid grid-cols-4 gap-x-3 mb-3">
+              <div className="border-[1px] shadow-lg rounded-[8px] ">
+              <div className="flex justify-between p-[1.6em] ">
+                <div className="flex flex-col border-solid border-l-[5px] border-[#0052cc] pl-2">
+                  <p className="text-[17px] mb-3"> 
+                    Tổng số người dùng
+                  </p>
+                  <h2 className="text-[20px] font-bold leading-5 ">
+                    5000
+                  </h2>
+                </div>
+                
+                <span className=" border-[1px] rounded-[100%] border-solid w-[60px] h-[60px] bg-[#e5e7eb] flex items-center justify-center text-[#0052cc]">
+                  <FaUsers size={30}/>
+                </span>
+                
+              </div>
+              </div>
+              <div className="border-[1px] shadow-lg rounded-[8px] ">
+              <div className="flex justify-between p-[1.6em] ">
+                <div className="flex flex-col border-solid border-l-[5px] border-[#00baff] pl-2">
+                  <p className="text-[17px] mb-3"> 
+                    Doanh thu
+
+                  </p>
+                  <h2 className="text-[20px] font-bold leading-5 ">
+                    5000
+                  </h2>
+                </div>
+                
+                <span className=" border-[1px] rounded-[100%] border-solid w-[60px] h-[60px] bg-[#e5e7eb] flex items-center justify-center text-[#00baff]">
+                  <FaHandHoldingDollar size={30}/>
+                </span>
+                
+              </div>
+              </div>
+              <div className="border-[1px] shadow-lg rounded-[8px] ">
+              <div className="flex justify-between p-[1.6em] ">
+                <div className="flex flex-col border-solid border-l-[5px] border-[#ff9920] pl-2">
+                  <p className="text-[17px] mb-3"> 
+                    San pham
+                  </p>
+                  <h2 className="text-[20px] font-bold leading-5 ">
+                    5000
+                  </h2>
+                </div>
+                
+                <span className=" border-[1px] rounded-[100%] border-solid w-[60px] h-[60px] bg-[#fff2e2] flex items-center justify-center text-[#ff9920] ">
+                  <MdCategory size={30}/>
+                </span>
+                
+              </div>
+              </div>
+              <div className="border-[1px] shadow-lg rounded-[8px] ">
+                <div className="flex justify-between p-[1.6em] ">
+                  <div className="flex flex-col border-solid border-l-[5px] border-[#0052cc] pl-2">
+                    <p className="text-[17px] mb-3"> 
+                      Tổng số hóa đơn
+                    </p>
+                    <h2 className="text-[20px] font-bold leading-5 ">
+                      5000
+                    </h2>
+                  </div>
+                
+                <span className=" border-[1px] rounded-[100%] border-solid w-[60px] h-[60px] bg-[#e5e7eb] flex items-center justify-center text-[#22cc00ee]">
+                  <FaReceipt size={30}/>
+                </span>
+                
+              </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 ">
+              <div className="col-span-2">
+                aaaaaaa
+              </div>
+              <div className="col-span-1 pl-9">
+                <div className="grid grid-rows-2 gap-y-5 ">
+                <div className="border-[1px] shadow-lg rounded-[8px] ">
+                  <div className="flex justify-between p-[1.6em] ">
+                  <div className="flex flex-col border-solid border-l-[5px] border-[#00baff] pl-2">
+                    <p className="text-[17px] mb-3"> 
+                      Tổng lượt dánh giá  
+                    </p>
+                  <h2 className="text-[20px] font-bold leading-5 ">
+                    5000
+                  </h2>
+                </div>
+                
+                <span className=" border-[1px] rounded-[100%] border-solid w-[60px] h-[60px] bg-[#e5e7eb] flex items-center justify-center text-[#00baff]">
+                  <FaCommentDots size={30}/>
+                </span>
+                
+              </div>
+              </div>
+              <div className="border-[1px] shadow-lg rounded-[8px] ">
+              <div className="flex justify-between p-[1.6em] ">
+                <div className="flex flex-col border-solid border-l-[5px] border-[#eb4a3c] pl-2">
+                  <p className="text-[17px] mb-3"> 
+                    Tổng số Voucher khuyến mãi
+                  </p>
+                  <h2 className="text-[20px] font-bold leading-5 ">
+                    5000
+                  </h2>
+                </div>
+                
+                <span className=" border-[1px] rounded-[100%] border-solid w-[60px] h-[60px] bg-[#ffeae5] flex items-center justify-center text-[#f35535] ">
+                  <IoPricetag size={30}/>
+                </span>
+                
+              </div>
+              </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </section>
+          
+
+
+
+
+
+
+
+          {/* {isLoading ? (
             <Loader />
           ) : error ? (
             <Message variant="danger">
@@ -134,7 +264,7 @@ const DashboardScreen = () => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>

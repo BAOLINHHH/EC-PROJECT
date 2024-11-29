@@ -42,6 +42,8 @@ import ReadSampleScreen from './screens/ReadSampleScreen';
 import AudioSampleScreen from './screens/AudioSampleScreen';
 import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import EditAddressScreen from './screens/EditAddressScreen';
+import DetailProduct from './screens/admin/DetailProduct';
+import CouponScreen from './screens/CouponScreen';
 
 
 const router = createBrowserRouter(
@@ -68,23 +70,27 @@ const router = createBrowserRouter(
       <Route path='/favorite' element ={<FavoriteScreen/>}/>
       <Route path='/changepassword' element ={<ChangePassword/>}/>
       <Route path='/address' element ={<AddressScreen/>}/>
+      <Route path='/coupon' element ={<CouponScreen/>}/>
       <Route path='/address/new' element ={<NewAddressScreen/>}/>
       <Route path='/address/new/:id' element ={<EditAddressScreen/>}/>
       <Route path='/readsample' element ={<ReadSampleScreen/>}/>
       <Route path='/audio' element ={<AudioSampleScreen/>}/>
+
       <Route path='/forgetpassword' element ={<ForgetPasswordScreen/>}/>
       </Route>
 
-      <Route path='' element = {<AdminRoute/>}>
-      <Route path='/admin/dashboard' element={<DashboardScreen/>}/>
+      {/* <Route path='' element = {<AdminRoute/>}> */}
+      <Route path='/admin/home' element={<DashboardScreen/>}/>
 
       <Route path='/admin/orderlist' element={<ListOrderAdminScreen />}/>
       <Route path='/admin/productlist' element={<ProductList/>}/>
+      <Route path='/admin/productlist/detailproduct' element={<DetailProduct/>}/>
       <Route path='/admin/product/:id/edit' element={<UpdateProdctScreen/>}/>
       <Route path='/admin/productlist/:pageNumber' element={<ProductList/>}/>
       <Route path='/admin/userlist' element={<ListUsersAminScreen />}/>
       <Route path='/admin/user/:id/edit' element={<UpdateUserScreen />}/>
-      </Route>
+
+      {/* </Route> */}
 
       
     </Route>

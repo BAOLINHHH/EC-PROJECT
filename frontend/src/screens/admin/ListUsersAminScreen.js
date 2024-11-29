@@ -4,7 +4,7 @@ import { Table, Button } from 'react-bootstrap';
 import { FaTrash, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
 import Message from '../../componets/Message';
 import Loader from '../../componets/Loader';
-import Sidebar from './Sidebar';
+import SidebarAdmin from './SidebarAdmin';
 import { toast } from 'react-toastify';
 import { useGetUsersQuery,useDeleteUserMutation} from '../../slices/usersApiSlice';
 
@@ -24,21 +24,50 @@ const ListUsersAminScreen = () => {
     };
   return (
     <>
-        <div className="row">
-   <div className=" col-md-2">
-       <Sidebar />
-   </div>
-   {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant='danger'>
-          {error?.data?.message || error.error}
-        </Message>
-      ) : (
-        <div className='col-md-10'>
+    <div className="row">
+      <div className=" col-md-2">
+        <SidebarAdmin />
+      </div>
+ 
+      <div className='col-md-10'>
              <h1 className="mb-4 d-flex justify-content-center">THÔNG TIN TÀI KHOẢN</h1>
-              <hr />
-        <Table striped bordered hover responsive className='table-sm'>
+ 
+              <table  class="table  border-[1px] border-solid">
+                <thead className="table-light">
+                <tr>  
+                  <th className="capitalize leading-3 text-[17px]">ID</th>
+                  <th className="capitalize leading-3 text-[17px]">Họ và tên</th>
+                  <th className="capitalize leading-3 text-[17px]">Email </th>
+                  <th className="capitalize leading-3 text-[17px]">Role</th>
+                  <th className="capitalize leading-3 text-[17px]"></th>
+                </tr>
+              </thead>
+              <tbody>
+               <tr>
+                <td className="align-middle">
+                  1111111111111111
+                </td>
+                <td className="align-middle">
+                    doan bao linh
+                </td>
+                <td className="align-middle">
+                  linh@gmail.com  
+                </td>
+                <td className="align-middle">
+                  admin  
+                </td>
+                
+                <td className="align-middle">
+                  <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center w-[80px]">
+                    <button>
+                      avtive
+                    </button>
+                  </div>
+                </td>
+               </tr>               
+              </tbody>
+              </table>
+        {/* <Table striped bordered hover responsive className='table-sm'>
           <thead>
             <tr>
             <th>ID</th>
@@ -85,10 +114,10 @@ const ListUsersAminScreen = () => {
               </tr>
             ))}
           </tbody>
-        </Table>
-        </div>
-      )}
+        </Table> */}
       </div>
+      
+    </div>
     </>
   )
 }

@@ -41,7 +41,8 @@ const CartScreen = () => {
   }
   totalItem.totalcalc = totalItem.total+totalItem.ship
   const checkoutHandler = () =>{
-    navigate('/login?redirect=/shipping');
+    // navigate('/login?redirect=/payment');
+    navigate('/payment');
   }
   return (
     <>

@@ -4,18 +4,19 @@ import { FaTimes } from 'react-icons/fa';
 import Loader from '../../componets/Loader';
 import Message from '../../componets/Message';
 import { useGetOrderQuery } from '../../slices/ordersSlice'
-import Sidebar from './Sidebar';
+import SidebarAdmin from './SidebarAdmin';
 
 const ListOrderAdminScreen = () => {
-    const { data: orders, isLoading, error } = useGetOrderQuery();
-    console.log(orders)
+    // const { data: orders, isLoading, error } = useGetOrderQuery();
+   
   return (
    <>  
    <div className="row">
    <div className=" col-md-2">
-       <Sidebar />
+       <SidebarAdmin />
    </div>
-   {isLoading ? (
+    <div>aaaaaa</div>
+   {/* {isLoading ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>
@@ -68,7 +69,7 @@ const ListOrderAdminScreen = () => {
           </tbody>
         </Table>
         </div>
-      )}
+      )} */}
       </div>
    </>
   )

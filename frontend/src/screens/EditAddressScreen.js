@@ -168,7 +168,7 @@ const navigate = useNavigate();
                                     <span className="w-[250px] p-[10px] ">Họ tên</span>
                                     <div className=" input-group ">
                                     <input type="text" className="outline-none h-[43px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px] w-full p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]" value={name} onChange={(e)=>setName(e.target.value)} placeholder="Tên người dùng" />
-                                </div>
+                                    </div>
                                 </div>
                                 <div className='flex w-[600px] pb-3'>
                                     <span className="w-[250px] p-[10px]">Số điện thoại</span>

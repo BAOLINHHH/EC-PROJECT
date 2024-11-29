@@ -1,22 +1,26 @@
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Col } from 'react-bootstrap';
-import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
-import { useParams,useSearchParams } from 'react-router-dom';
-import Sidebar from './Sidebar';
+import { FaEdit, FaPlus, FaTrash ,FaEye,FaPen } from 'react-icons/fa';
+import { Link, useParams,useSearchParams } from 'react-router-dom';
+import SidebarAdmin from './SidebarAdmin';
 import { toast } from 'react-toastify';
 import Message from '../../componets/Message';
 import Loader from '../../componets/Loader';
-
 import { useGetProductsQuery,useCreateProductMutation,useDeleteProductMutation} from '../../slices/productsApiSlice';
 import Paginate from '../../componets/Paginate';
+import AddProduct from './AddProduct';
+import { useState } from 'react';
 const ProductList = () => {
     const {pageNumber} = useParams()
     const [searchParams] = useSearchParams()
+
     const pageParam = searchParams.get("pageNumber")||'';
     const { data, isLoading, error, refetch } = useGetProductsQuery({pageNumber: (pageNumber||pageParam)});
     
     const [ createProduct,{isLoading: loadingCreate}] = useCreateProductMutation();
     const [deleteProduct, { isLoading: loadingDelete }] =useDeleteProductMutation();
+    
+    const [isOpenAddProductDialog, setIsOpenAddProductDialog] = useState(false)
 
     const createProductHandler= async ()=> {
         if (window.confirm('Bạn có muốn thêm sản phẩm mới?')) {
@@ -28,6 +32,12 @@ const ProductList = () => {
             }
           }
     }
+    const handleOpen=()=>{
+      setIsOpenAddProductDialog(true);
+    };
+    const handlingCloseAddProductDialog = () => {
+      setIsOpenAddProductDialog(false);
+    };
     const deleteHandler = async (id) => {
       if (window.confirm('Bạn có muốn xóa?')) {
         try {
@@ -42,9 +52,74 @@ const ProductList = () => {
     <>
     <div className='row'>
         <div className='col-md-2'>
-            <Sidebar />
+            <SidebarAdmin />
         </div>
-        {isLoading ? (
+        <div className='col-md-10'>
+          <div className="mb-5">
+            <h1 className=" text-[20px] font-[700] mb-2">THÔNG TIN TÀI KHOẢN</h1>
+            <div className="flex justify-end">
+              <button className="flex items-center border-solid border-[1px] rounded-[7px] p-1 bg-[#1c7c3e] text-[15px] gap-x-1 text-end text-[#fff]" onClick={handleOpen}>
+              <FaPlus />
+              Thêm sản phẩm
+              </button>
+            </div>
+            <AddProduct
+            isOpen = {isOpenAddProductDialog}
+            handleClose={handlingCloseAddProductDialog}
+            />
+          </div>
+          <table  class="table  border-[1px] border-solid">
+                <thead className="table-light">
+                <tr>  
+                  <th className="capitalize leading-3 text-[17px]">Hình ảnh sản phẩm</th>
+                  <th className="capitalize leading-3 text-[17px]">Tên sản Phẩm</th>
+                  <th className="capitalize leading-3 text-[17px]">Thể loại</th>
+                  <th className="capitalize leading-3 text-[17px]">Trạng thái</th>
+                  <th className="capitalize leading-3 text-[17px]">Giá sản phẩm </th>
+                  <th className="capitalize leading-3 text-[17px]">Ngày tạo</th>
+                  <th className=""></th>
+                </tr>
+              </thead>
+              <tbody>
+               <tr>
+                <td className="align-middle">
+                    doan bao linh
+                </td>
+                <td className="align-middle">
+                  linh@gmail.com  
+                </td>
+                <td className="align-middle">
+                  admin  
+                </td>
+                <td className="align-middle">
+                  admin  
+                </td>
+                <td className="align-middle">
+                  admin  
+                </td>
+                <td className="align-middle">
+                  admin  
+                </td>
+                
+                <td className="align-middle">
+                  <Link to='/admin/productlist/detailproduct'>
+                  <div className="cursor-pointer border-solid border-[1px] rounded-[9px] bg-[#8e8584] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1">
+                  <FaEye/>
+                  </div>
+                  </Link>
+                  <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1">
+                  <FaPen/>
+                  </div>
+                  <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px]">
+                    <FaTrash/>
+                  </div>
+                </td>
+               </tr>               
+              </tbody>
+          </table>
+        
+        </div>
+        {/* {isLoading ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
@@ -108,7 +183,7 @@ const ProductList = () => {
             </tbody>
           </Table>
           <div className="d-flex justify-content-center mt-3">
-          <Paginate pages={data.pages} page={data.page} isAdmin={true} />
+          <Paginate pages={data.pages} page={data.page} isAdmin={true} /> */}
           {/* <TablePagination
               component="div"
               count={data.pages}
@@ -118,10 +193,10 @@ const ProductList = () => {
               onRowsPerPageChange={handleChangeRowsPerPage}
           /> */}
           
-          </div>
+          {/* </div>
           </div>
         </>
-      )}
+      )} */}
 
     </div>
     </>

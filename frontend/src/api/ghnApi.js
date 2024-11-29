@@ -31,5 +31,15 @@ const ghnApi = {
             return null
         }
     },
+    getFeeShip: async(data) =>{
+        try {
+            const url = 'v2/shipping-order/fee';
+            const response = await axiosGHN.post(url,data);
+            return response.data;
+        } catch (error) {
+            console.log("flech data err")
+            return null
+        }
+    }
 }
 export default ghnApi;

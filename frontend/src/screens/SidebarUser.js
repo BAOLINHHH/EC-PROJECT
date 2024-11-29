@@ -8,6 +8,7 @@ import { useLogoutMutation } from '../slices/usersApiSlice';
 import {  useDispatch} from 'react-redux'; 
 import {logout} from '../slices/authSlice';
 import userApi from '../api/userApi';
+import { RiCoupon2Fill } from "react-icons/ri";
 import { removeToken } from '../utils/authToken';
 
 const SidebarUser = () => {
@@ -31,7 +32,7 @@ const SidebarUser = () => {
         <div className="border-solid border-[1px] rounded-[6px] bg-[#fff] ">
             <ul >
                 <li className="pb-2">
-                    <NavLink to = '/profile' activeClassName="active" className="flex items-center">
+                    <NavLink to = '/profile'  className="flex items-center active-User">
                         <BsPerson className="mx-2"/>
                         <span className="text-[17px]"> Hồ sơ của tôi</span>
                     {/* <BsChevronDown className="pl-1 cursor-pointer " onClick={()=>setSubmitOpen(!submitOpen)} /> */}
@@ -47,21 +48,27 @@ const SidebarUser = () => {
                 )} */}
                 
                 <li className="py-2" >
-                    <NavLink to = "/changepassword" activeClassName="active" className="flex items-center"> 
+                    <NavLink to = "/changepassword" className="flex items-center active-User"> 
                         <TbPasswordUser  className="mx-2"/>
                         <span  className="text-[17px]">Mật khẩu</span>
                     </NavLink>
                 </li>
                 <li className="py-2">
-                    <NavLink to = "/address" className="flex items-center" activeClassName= "active">     
+                    <NavLink to = "/address" className="flex items-center active-User">     
                     <AiOutlineEnvironment className="mx-2" />
                     <span className="text-[17px]"> Địa chỉ</span>
                     </NavLink>
                 </li>
                 <li  className="py-2">
-                    <NavLink to = "/listorder"  className=" flex items-center" activeClassName="active">
+                    <NavLink to = "/listorder"  className=" flex items-center active-User">
                         <BsReceipt className="mx-2"/>
                         <span className="text-[17px]"> Đơn hàng của tôi</span>
+                    </NavLink>
+                </li>
+                <li  className="py-2">
+                    <NavLink to = "/coupon"  className=" flex items-center active-User">
+                        <RiCoupon2Fill className="mx-2"/>
+                        <span className="text-[17px]"> Vocher của tôi</span>
                     </NavLink>
                 </li>
                 <li onClick={(logoutHandler)} className=" flex items-center py-2 cursor-pointer"> 

@@ -22,8 +22,7 @@ const ListOrderScreen = () => {
                   </div>
                 <table  class="table">
                 <thead className="table-light">
-                <tr>
-                  
+                <tr>  
                   <th className="capitalize leading-3 text-[17px]">ID</th>
                   <th className="capitalize leading-3 text-[17px]">Ngày đặt</th>
                   <th className="capitalize leading-3 text-[17px]">Số lượng</th>
@@ -64,7 +63,7 @@ const ListOrderScreen = () => {
               ) 
               }
               </tbody>
-                  </table>
+                </table>
                 </div>
             </div>
       </div>
