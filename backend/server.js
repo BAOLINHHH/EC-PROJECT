@@ -20,6 +20,7 @@ import couponRoutes from './routes/couponRoutes.js';
 import publicCompanyRoutes from './routes/publicCompanyRoutes.js';
 import languageRoutes from './routes/languageRoutes.js';
 import shippingAddressRoutes from'./routes/shippingAddressRoutes.js';
+import webhookRouter from './routes/webhookRoutes.js';
 import cors from 'cors';
 
 connectDB();
@@ -49,6 +50,7 @@ app.use('/api/publiccompanies', publicCompanyRoutes);
 app.use('/api/languages', languageRoutes);
 app.use('/api/shippingaddress', shippingAddressRoutes);
 app.use('/api/coupon', couponRoutes);
+app.use('/webhook', webhookRouter);
 
 app.get('/api/config/paypal', (req, res) => 
     res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
