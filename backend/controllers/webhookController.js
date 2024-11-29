@@ -6,7 +6,7 @@ const handleWebhook = async (req, res) => {
 
   if (intentName === "MyCustomIntent") {
     // Truy cập database và lấy thông tin cần thiết
-    console.log("req.body.queryResult", req.body.queryResult);
+    console.log("req.body.queryResult", req.body.queryResult.parameters.any);
 
     let response = {
       fulfillmentText: "Dữ liệu của bạn đây",
@@ -15,10 +15,11 @@ const handleWebhook = async (req, res) => {
   }
   else if (intentName === "Cuốn sách abc có nội dung thế nào ?") {
     // 
-    console.log("req.body.queryResult", req.body.queryResult);
+    const any = req.body.queryResult.parameters.any;
+    console.log("Tên quyển sách: ", any);
 
     let response = {
-      fulfillmentText: "Cuốn sách rất hay",
+      fulfillmentText: "Cuốn sách " + any + " rất hay.",
     };
     res.json(response);
   } else {
