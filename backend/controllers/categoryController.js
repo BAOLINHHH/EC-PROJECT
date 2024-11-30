@@ -5,13 +5,23 @@ import Category from '../models/categoryModel.js';
 // @access   Public
 const createCategory = async (req, res) => {
     try {
-        const category = new Category(req.body);
+        if (!req.body.categoryName) {
+            return res.status(400).json({ message: "Category name is required" });
+        }
+
+        const category = new Category({
+            categoryName: req.body.categoryName,
+            categoryImage: req.body.categoryImage || "",  // Nếu không có categoryImage thì gán giá trị mặc định là ""
+        });
+
         await category.save();
+        
         res.status(201).json(category);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 // @desc     Get all category
 // @route    GET api/categories
@@ -43,13 +53,25 @@ const getCategoryById = async (req, res) => {
 // @access   Public
 const updateCategory = async (req, res) => {
     try {
-        const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!category) return res.status(404).json({ message: 'Category not found' });
+        if (!req.body.categoryName) {
+            return res.status(400).json({ message: "Category name is required" });
+        }
+
+        const category = await Category.findByIdAndUpdate(req.params.id, {
+            categoryName: req.body.categoryName,
+            categoryImage: req.body.categoryImage || "",  // Nếu không có categoryImage thì gán giá trị mặc định là ""
+        }, { new: true });
+
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
         res.status(200).json(category);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 // @desc     Delete category by ID
 // @route    DELETE api/categories/:id
