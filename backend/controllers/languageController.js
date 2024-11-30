@@ -5,7 +5,7 @@ import Language from '../models/languageModel.js';
 // @access   Public
 const createLanguage = async (req, res) => { 
     try { 
-        const language = new Language(req.body); 
+        const language = new Language({languageName: "Sample"}); 
         await language.save(); 
         res.status(201).json(language); 
     } catch (error) { 

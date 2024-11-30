@@ -6,7 +6,7 @@ import Form from '../models/formModel.js';
 // @access   Public
 const createForm = async (req, res) => {
     try {
-        const form = new Form(req.body);
+        const form = new Form({form: "Sample"});
         await form.save();
         res.status(201).json(form);
     } catch (error) {

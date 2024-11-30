@@ -6,7 +6,7 @@ import Author from "../models/authorModel.js";
 // @access   Public
 const createAuthor = async (req, res) => {
   try {
-    const author = new Author(req.body);
+    const author = new Author({authorName: "Sample"});
     await author.save();
     res.status(201).json(author);
   } catch (error) {

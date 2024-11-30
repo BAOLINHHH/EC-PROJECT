@@ -6,7 +6,7 @@ import PublicCompany from '../models/publicCompanyModel.js';
 // @access   Public
 const createPublicCompany = async (req, res) => {
     try {
-        const publicCompany = new PublicCompany(req.body);
+        const publicCompany = new PublicCompany({publicCompanyName: "Sample"});
         await publicCompany.save();
         res.status(201).json(publicCompany);
     } catch (error) {
