@@ -1,6 +1,12 @@
-import asyncHandler from "../middleware/asyncHandler.js"
-import Order from '../models/orderModel.js';
-import Product from '../models/productModel.js';
+import dotenv from "dotenv";
+dotenv.config();
+import querystring  from "qs";
+import crypto from "crypto";
+import dateFormat from "dateformat";
+
+import asyncHandler from "../middleware/asyncHandler.js";
+import Order from "../models/orderModel.js";
+import Product from "../models/productModel.js";
 // import { calcPrices } from '../utils/calcPrices.js';
 // import { verifyPayPalPayment, checkIfNewTransaction } from '../utils/paypal.js';
 
@@ -25,7 +31,7 @@ import Product from '../models/productModel.js';
 //         // const itemsFromDB = await Product.find({
 //         //     _id: { $in: orderItems.map((x) => x._id) },
 //         // });
-  
+
 //         // // map over the order items and use the price from our items from database
 //         // const dbOrderItems = orderItems.map((itemFromClient) => {
 //         //     const matchingItemFromDB = itemsFromDB.find(
@@ -99,7 +105,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
           `Insufficient quantity for product ${matchingItemFromDB.name}`
         );
       }
-      
+
       // Trừ số lượng sản phẩm
       matchingItemFromDB.quantity -= itemFromClient.qty;
       await matchingItemFromDB.save();
@@ -136,94 +142,95 @@ const addOrderItems = asyncHandler(async (req, res) => {
   }
 });
 
-
 // @desc     Get logged in user orders
 // @route    GET /api/orders/mine
 // @access   Private
-const getMyOrders = asyncHandler (async (req, res)=> {
-    const orders = await Order.find({ user: req.user._id });
-    res.status(200).json(orders);
+const getMyOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({ user: req.user._id });
+  res.status(200).json(orders);
 });
 
 // @desc     Get order by ID
 // @route    GET /api/orders/:id
 // @access   Private
-const getOrderById = asyncHandler (async (req, res)=> {
-    const order = await Order.findById(req.params.id).populate('user', 'name email');
+const getOrderById = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
 
-    if (order) {
-        res.status(200).json(order);
-    } else {
-        res.status(404);
-        throw new Error('Order not found');
-    }
+  if (order) {
+    res.status(200).json(order);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
 });
 
 // @desc     Update Order to Paid
 // @route    PUT /api/orders/:id/pay
 // @access   Private
-const updateOrderToPaid = asyncHandler (async (req, res)=> {
-    // // NOTE: here we need to verify the payment was made to PayPal before marking
-    // // the order as paid
-    // const { verified, value } = await verifyPayPalPayment(req.body.id);
-    // if (!verified) throw new Error('Payment not verified');
+const updateOrderToPaid = asyncHandler(async (req, res) => {
+  // // NOTE: here we need to verify the payment was made to PayPal before marking
+  // // the order as paid
+  // const { verified, value } = await verifyPayPalPayment(req.body.id);
+  // if (!verified) throw new Error('Payment not verified');
 
-    // // check if this transaction has been used before
-    // const isNewTransaction = await checkIfNewTransaction(Order, req.body.id);
-    // if (!isNewTransaction) throw new Error('Transaction has been used before');
+  // // check if this transaction has been used before
+  // const isNewTransaction = await checkIfNewTransaction(Order, req.body.id);
+  // if (!isNewTransaction) throw new Error('Transaction has been used before');
 
-    const order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id);
 
-    if (order) {
-        // // check the correct amount was paid
-        // const paidCorrectAmount = order.totalPrice.toString() === value;
-        // if (!paidCorrectAmount) throw new Error('Incorrect amount paid');
-        
-        order.isPaid = true;
-        order.paidAt = Date.now();
-        order.paymentResult = {
-            id: req.body.id,
-            status: req.body.status,
-            update_time: req.body.update_time,
-            email_address: req.body.payer.email_address,
-        }
-        
-        const updateOrder = await order.save();
+  if (order) {
+    // // check the correct amount was paid
+    // const paidCorrectAmount = order.totalPrice.toString() === value;
+    // if (!paidCorrectAmount) throw new Error('Incorrect amount paid');
 
-        res.status(200).json(updateOrder);
-    } else {
-         res.status(404);
-         throw new Error('Order not found');
-    }
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.payer.email_address,
+    };
+
+    const updateOrder = await order.save();
+
+    res.status(200).json(updateOrder);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
 });
 
 // @desc    Update order to delivered
 // @route   GET /api/orders/:id/deliver
 // @access  Private/Admin
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
-  
-    if (order) {
-      order.isDelivered = true;
-      order.deliveredAt = Date.now();
-  
-      const updatedOrder = await order.save();
-  
-      res.json(updatedOrder);
-    } else {
-      res.status(404);
-      throw new Error('Order not found');
-    }
-  });
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    res.json(updatedOrder);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+});
 
 // @desc     Get all orders
 // @route    GET /api/orders
 // @access   Private/Admin
-const getOrders = asyncHandler (async (req, res)=> {
-    const orders = await Order.find({}).populate('user', 'id name');
-    res.status(200).json(orders)
+const getOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({}).populate("user", "id name");
+  res.status(200).json(orders);
 });
-
 
 // @desc     Get tracking
 // @route    GET /api/orders/tracking/:trackingCode
@@ -244,13 +251,68 @@ const getOrderByTrackingCode = asyncHandler(async (req, res) => {
   res.json(order); // Trả về thông tin đơn hàng
 });
 
+// @desc     create payment url
+// @route    POST /api/orders/create_payment_url
+// @access   Privie
+const createPaymentUrl = asyncHandler(async (req, res) => {
+  var ipAddr =
+    req.headers["x-forwarded-for"] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    req.connection.socket.remoteAddress;
 
-export { 
-    addOrderItems,
-    getMyOrders,
-    getOrderById,
-    updateOrderToPaid,
-    updateOrderToDelivered,
-    getOrders,
-    getOrderByTrackingCode
- };
+  var date = new Date();
+  var createDate = dateFormat(date, "yyyymmddHHmmss");
+  var orderId = dateFormat(date, "HHmmss");
+  var amount = req.body.amount;
+  var bankCode = req.body.bankCode;
+
+  var orderInfo = req.body.orderDescription;
+  var orderType = req.body.orderType;
+  var locale = req.body.language || "vn";
+  var currCode = "VND";
+
+  var vnp_Params = {
+    vnp_Version: "2.1.0",
+    vnp_Command: "pay",
+    vnp_TmnCode: process.env.VNP_TMNCODE,
+    vnp_Locale: locale,
+    vnp_CurrCode: currCode,
+    vnp_TxnRef: orderId,
+    vnp_OrderInfo: orderInfo,
+    vnp_OrderType: orderType,
+    vnp_Amount: amount * 100,
+    vnp_ReturnUrl: process.env.VNP_RETURNURL,
+    vnp_IpAddr: "127.0.0.1",
+    vnp_CreateDate: createDate,
+  };
+
+  if (bankCode) {
+    vnp_Params["vnp_BankCode"] = bankCode;
+  }
+
+  var signData = querystring.stringify(vnp_Params, { encode: false });
+  var hmac = crypto.createHmac("sha512", process.env.VNP_HASHSECRET);
+  var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+  vnp_Params["vnp_SecureHash"] = signed;
+  const paymentUrl =
+    process.env.VNP_URL +
+    "?" +
+    querystring.stringify(vnp_Params, { encode: false });
+
+    console.log("paymentUrl", paymentUrl)
+    console.log("vnp_Params", vnp_Params)
+
+  res.redirect(paymentUrl);
+});
+
+export {
+  addOrderItems,
+  getMyOrders,
+  getOrderById,
+  updateOrderToPaid,
+  updateOrderToDelivered,
+  getOrders,
+  getOrderByTrackingCode,
+  createPaymentUrl,
+};
