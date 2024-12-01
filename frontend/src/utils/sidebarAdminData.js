@@ -15,15 +15,15 @@ export const sidebarAdminData=[
         path: '/admin/userlist',
     },
     {
-        title: 'Category',
+        title: 'Quản lý sản phẩm',
         icon: <MdCategory/>,
         path: '/admin/productlist',
     },
-    // {
-    //     title: 'Archive',
-    //     icon: <FaArchive/>,
-    //     path: '/admin/vvv',
-    // },
+    {
+        title: 'Quản lý danh mục',
+        icon: <FaArchive/>,
+        path: '/admin/Categorylist',
+    },
     // {
     //     title: 'Receipt',
     //     icon: <FaReceipt/>,

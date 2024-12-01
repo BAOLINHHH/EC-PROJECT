@@ -56,7 +56,7 @@ const ProductList = () => {
         </div>
         <div className='col-md-10'>
           <div className="mb-5">
-            <h1 className=" text-[20px] font-[700] mb-2">THÔNG TIN TÀI KHOẢN</h1>
+            <h1 className=" text-[20px] font-[700] mb-2">THÔNG TIN SẢN PHẨM</h1>
             <div className="flex justify-end">
               <button className="flex items-center border-solid border-[1px] rounded-[7px] p-1 bg-[#1c7c3e] text-[15px] gap-x-1 text-end text-[#fff]" onClick={handleOpen}>
               <FaPlus />

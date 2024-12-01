@@ -53,21 +53,21 @@ const ProfileScreen = () => {
                             <button className="btn btn-danger w-[150px]">chon file</button>
                         </div>
                         <div className='flex w-[550px] pb-3'>
-                            <span className="w-[150px] p-[10px] ">Ho ten</span>
+                            <span className="w-[150px] p-[10px] ">Họ và tên</span>
                             <div className=" input-group ">
-                            <input type="text" className="form-control"  placeholder="Tên nguoi dung" />
+                            <input type="text" className="form-control"  placeholder="Tên người dùng" />
                             </div>
                         </div>
                         <div className='flex w-[550px] pb-3'>
-                            <span className="w-[150px] p-[10px]">So dien thoai</span>
+                            <span className="w-[150px] p-[10px]">Số điên thoại</span>
                             <div className=" input-group">
-                            <input type="text" className="form-control"  placeholder="Tên nguoi dung" />
+                            <input type="text" className="form-control"  placeholder="Số điên thoại"/>
                             </div>
                         </div>
                         <div className='flex w-[550px] pb-3'>
                             <span className="w-[150px] p-[10px] ">Email</span>
                             <div className=" input-group ">
-                            <input type="text" className="form-control"  placeholder="Tên nguoi dung" />
+                            <input type="text" className="form-control"  placeholder="Email" />
                             </div>
                         </div>
                         <div className="flex justify-center">

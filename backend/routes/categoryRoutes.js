@@ -1,5 +1,6 @@
 
 import express from 'express';
+import uploadCloud from '../config/cloudinaryConfig.js';
 import {
     createCategory,
     getCategories,
@@ -10,7 +11,7 @@ import {
 
 const router = express.Router();
 
-router.post('/', createCategory);
+router.post('/',  uploadCloud.array('image',5),createCategory);
 router.get('/', getCategories);
 router.get('/:id', getCategoryById);
 router.put('/:id', updateCategory);
