@@ -66,7 +66,7 @@ const router = createBrowserRouter(
       <Route path='' element = {<PrivateRoute/>}>
       <Route path='/shipping' element= {<ShippingScreen/>}/>
       <Route path='/payment' element ={<PaymentOrder/>}/>
-      <Route path='/order/:id' element ={<OrderScreen/>}/>
+      <Route path='/order' element ={<OrderScreen/>}/>
       <Route path='/profile' element ={<ProfileScreen/>}/>
       <Route path='/listorder' element ={<ListOrderScreen/>}/>
       <Route path='/favorite' element ={<FavoriteScreen/>}/>

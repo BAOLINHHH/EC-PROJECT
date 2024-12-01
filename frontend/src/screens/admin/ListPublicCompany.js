@@ -30,23 +30,41 @@ const ListPublicCompany = () => {
             toast.success('Tạo NXB thành công')
             setIsRefresh(pre => !pre)
         } catch (error) {
-            
+            toast.error(error?.response.data.message)
         }
     }
-    const handleUpdate =()=>{
-        
+    const handleUpdate =async()=>{
+        try {
+            const dataPost = {publicCompanyName: updateRow};
+            setIsLoading(pre => !pre)
+            await apiTag.updatePublicCompany(editRow,dataPost);
+            setEditRow('')
+            setIsLoading(pre => !pre);
+            setIsRefresh(pre => !pre);
+            toast.success('Cập nhật thành công');
+        } catch (error) {
+            toast.error(error?.response.data.message)
+        }
     }
     const handleInputChange = (e) => {
-    
         setUpdateRow(e.target.value)
       };
-      console.log("updateRow",updateRow)
     const handleSaveCick=(id,name)=>{
         setEditRow(id);
         setUpdateRow(name);
     }
-    const handleCanle =()=>{
+    const handleCanle =async()=>{
         setEditRow('')
+    }
+    const handleDelete =async(id)=>{
+        try {
+            await apiTag.deletePublicCompany(id);
+            setIsLoading(pre => !pre);
+            setIsRefresh(pre => !pre);
+            toast.success('Xoá thành công');
+        } catch (error) {
+            toast.error(error?.response.data.message)
+        }
     }
   return (
     <>
@@ -96,7 +114,7 @@ const ListPublicCompany = () => {
                                                 <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1 cursor-pointer" onClick={()=>handleSaveCick(item._id, item.publicCompanyName)}>
                                                 <FaPen/>
                                                 </div>
-                                                <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer">
+                                                <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer" onClick={()=>handleDelete(item._id)} >
                                                 <FaTrash/>
                                                 </div>
                                             </td>
