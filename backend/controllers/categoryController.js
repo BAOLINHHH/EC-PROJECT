@@ -8,15 +8,19 @@ const createCategory = async (req, res) => {
         if (!req.body.categoryName) {
             return res.status(400).json({ message: "Category name is required" });
         }
+        if(!req.files){
+            return res.status(400).json({ message: "Miss Input" });
+          }
+          const test = req.files.map(item => ({ url: item.path }))
+          console.log("req.files.map(item => ({ url: item.path }))",test)
+        // const category = new Category({
+        //     categoryName: req.body.categoryName,
+        //     categoryImage: req.body.categoryImage || "",  // Nếu không có categoryImage thì gán giá trị mặc định là ""
+        // });
 
-        const category = new Category({
-            categoryName: req.body.categoryName,
-            categoryImage: req.body.categoryImage || "",  // Nếu không có categoryImage thì gán giá trị mặc định là ""
-        });
-
-        await category.save();
+        // await category.save();
         
-        res.status(201).json(category);
+        // res.status(201).json(category);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

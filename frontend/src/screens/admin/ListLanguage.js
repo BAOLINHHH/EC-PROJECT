@@ -1,0 +1,102 @@
+import React, { useEffect, useState } from 'react'
+import apiTag from '../../api/apiTag';
+import Loader from '../../componets/Loader';
+import { toast } from 'react-toastify';
+import {  FaPlus, FaTrash ,FaPen,FaSave  } from 'react-icons/fa';
+import { MdCancel } from "react-icons/md";
+const ListLanguage = () => {
+    const [language,setLanguage]= useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [editRow, setEditRow] = useState('');
+    const [updateRow, setUpdateRow] = useState('')
+    const [isRefresh, setIsRefresh] = useState(false);
+    useEffect(()=>{
+        flechData();
+    },[isRefresh])
+    const flechData =async()=>{
+        const responsive = await apiTag.getAllLanguage();
+        setLanguage(responsive);
+        setIsLoading(false);
+    }
+    const handleCreate = async()=>{
+        try {
+            setIsLoading(pre => !pre)
+            await apiTag.addLanguage()
+            toast.success('Tạo hình thức thành công')
+            setIsRefresh(pre => !pre)
+        } catch (error) {
+            
+        }
+    }
+    const handleSaveCick =(id, name)=>{
+        setEditRow(id);
+        setUpdateRow(name);
+    }
+    const handleCanle = ()=>{
+        setEditRow("");
+    }
+  return (
+    <>
+        {isLoading ? (<Loader/>):(
+        <>  
+            <div className="flex justify-end mb-2">
+              <button className="flex items-center border-solid border-[1px] rounded-[7px] p-1 bg-[#1c7c3e] text-[15px] gap-x-1 text-end text-[#fff]" onClick={handleCreate}>
+                <FaPlus/>
+                Thêm ngôn ngữ
+              </button>
+            </div>
+            <div className='p-3 overflow-auto h-[310px]'>
+                <table  class="table ">
+                    <thead className="table-light">
+                    <tr>  
+                        <th className="capitalize leading-3 text-[17px]">Tên</th>
+                        <th className="capitalize leading-3 text-[17px]"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {language.map((item) =>(
+                            <tr>
+                                {editRow === item._id ? (
+                                <>
+                                     <td className="align-middle">
+                                    <input
+                                    value={updateRow}    
+                                    className='border-solid border-[1px] rounded-[5px] outline-none focus:ring-[#9b3bea] focus:border-[#3e3bd5] p-1'
+                                    type='text'
+                                    />                                      
+                                </td>
+                                <td className="align-middle w-[165px]">   
+                                        <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1 cursor-pointer"  >
+                                        <FaSave/>
+                                        </div>
+                                        <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer" onClick={handleCanle}>
+                                        <MdCancel/>
+                                    </div>
+                                </td>
+                                </>) :(
+                                <>
+                                <td className="align-middle">
+                                    {item.languageName}  
+                                </td>
+                                <td className="align-middle w-[165px]">   
+                                    <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1 cursor-pointer" onClick={()=>handleSaveCick(item._id, item.languageName)}>
+                                    <FaPen/>
+                                    </div>
+                                    <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer">
+                                    <FaTrash/>
+                                    </div>
+                                </td>
+                                </>)}
+                           
+                            </tr>
+                        ))}                   
+                    </tbody>
+                </table>    
+            </div>
+        </>
+        )}
+    </>
+  )
+}
+
+export default ListLanguage

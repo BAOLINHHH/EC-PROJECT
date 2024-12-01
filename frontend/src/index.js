@@ -9,6 +9,7 @@ import {
 import 'bootstrap/dist/css/bootstrap.css';
 //import './assets/styles/bootstrap.custom.css';
 //import './assets/styles/index.css';
+// import './assets/indexImg';
 import './App.css';
 import './index.css';
 import App from './App';
@@ -44,6 +45,7 @@ import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import EditAddressScreen from './screens/EditAddressScreen';
 import DetailProduct from './screens/admin/DetailProduct';
 import CouponScreen from './screens/CouponScreen';
+import CategoryScreen from './screens/admin/CategoryScreen';
 
 
 const router = createBrowserRouter(
@@ -88,6 +90,7 @@ const router = createBrowserRouter(
       <Route path='/admin/product/:id/edit' element={<UpdateProdctScreen/>}/>
       <Route path='/admin/productlist/:pageNumber' element={<ProductList/>}/>
       <Route path='/admin/userlist' element={<ListUsersAminScreen />}/>
+      <Route path='/admin/Categorylist' element={<CategoryScreen />}/>
       <Route path='/admin/user/:id/edit' element={<UpdateUserScreen />}/>
 
       {/* </Route> */}
