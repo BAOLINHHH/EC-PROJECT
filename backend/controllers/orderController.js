@@ -324,7 +324,7 @@ const createPaymentUrl = asyncHandler(async (req, res) => {
   let returnUrl = process.env.VNP_RETURNURL;
   let orderId = moment(date).format("DDHHmmss");
   let amount = req.body.amount;
-  let bankCode = req.body.bankCode;
+  // let bankCode = req.body.bankCode;
 
   let locale = req.body.language;
   if (locale === null || locale === "") {
@@ -339,14 +339,14 @@ const createPaymentUrl = asyncHandler(async (req, res) => {
   vnp_Params["vnp_CurrCode"] = currCode;
   vnp_Params["vnp_TxnRef"] = orderId;
   vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderId;
-  vnp_Params["vnp_OrderType"] = "other";
+  vnp_Params["vnp_OrderType"] = "topup";  //other
   vnp_Params["vnp_Amount"] = amount * 100;
   vnp_Params["vnp_ReturnUrl"] = returnUrl;
   vnp_Params["vnp_IpAddr"] = ipAddr;
   vnp_Params["vnp_CreateDate"] = createDate;
-  if (bankCode !== null && bankCode !== "") {
-    vnp_Params["vnp_BankCode"] = bankCode;
-  }
+  // if (bankCode !== null && bankCode !== "") {
+  //   vnp_Params["vnp_BankCode"] = bankCode;
+  // }
 
   vnp_Params = sortObject(vnp_Params);
 
