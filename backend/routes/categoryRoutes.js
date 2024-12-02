@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-router.post('/',  uploadCloud.array('image',5),createCategory);
+router.post('/', uploadCloud.single('image') ,createCategory);
 router.get('/', getCategories);
 router.get('/:id', getCategoryById);
 router.put('/:id', updateCategory);

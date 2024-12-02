@@ -8,10 +8,10 @@ import ListPublicCompany from './ListPublicCompany';
 import ListForm from './ListForm';
 import ListLanguage from './ListLanguage';
 const CategoryScreen = () => {
-    const [editRow, setEditRow] = useState("")
-    const handleSaveCick =(id)=>{
-        setEditRow(id);
-    }
+    // const [editRow, setEditRow] = useState("")
+    // const handleSaveCick =(id)=>{
+    //     setEditRow(id);
+    // }
     
     
   return (

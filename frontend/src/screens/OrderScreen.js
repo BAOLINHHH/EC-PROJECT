@@ -81,12 +81,12 @@ const OrderScreen = () => {
 
     };
 
-    return isLoading ? (
-      <Loader />
+    return (
+    //   <Loader />
   
-    ) : error ? (
-      <Message variant='danger'>{error}</Message>
-    ) : (
+    // ) : error ? (
+    //   <Message variant='danger'>{error}</Message>
+    // ) : (
       <>
       <section>
         <div className="container-sm">
@@ -103,7 +103,7 @@ const OrderScreen = () => {
                       <h3 className="tetx-[19px] font-[700]">  Thông Tin  đơn hằng</h3>
                     </div>
                       <div className="mb-[5px]">
-                        <p><strong>Mã đơn hàng: </strong>{order._id} </p>
+                        <p><strong>Mã đơn hàng: </strong>1111</p>
                       </div>
                       <div className="flex gap-x-[30px] mb-[5px]">
                         <div>
@@ -143,22 +143,22 @@ const OrderScreen = () => {
                     <div className="mb-[5px]">
                       <Row>
                       <Col>Thành tiền</Col>
-                     <Col>{order.itemsPrice} VND</Col>
+                     <Col>132123 VND</Col>
                     </Row>
                     </div>
                     <div className="mb-[5px]">
                       <Row>
                         <Col>Phí vận chuyển</Col>
-                        <Col>{order.shippingPrice} VND</Col>
+                        <Col>1231231 VND</Col>
                       </Row>
                     </div>
                     <div className="mb-[5px]">
                       <Row>
                         <Col>Tổng Số Tiền</Col>
-                        <Col>{order.totalPrice} VND</Col>
+                        <Col>1111111 VND</Col>
                       </Row>
                     </div>
-              {!order.isPaid && (
+              {/* {!order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
 
@@ -195,7 +195,7 @@ const OrderScreen = () => {
                           Cập nhật trạng thái vận chuyển
                         </Button>
                       </ListGroup.Item>
-                    )}
+                    )} */}
 
                     </div>
                   </div>
@@ -203,34 +203,36 @@ const OrderScreen = () => {
             </ListGroup.Item>
             <ListGroup.Item>
               <h2>Đơn Hàng</h2>
-              {order.orderItems.length === 0 ? (
+              {/* {order.orderItems.length === 0 ? (
                 <Message>Order is empty</Message>
-              ) : (
+              ) : ( */}
                 <ListGroup variant='flush'>
-                  {order.orderItems.map((item, index) => (
-                    <ListGroup.Item key={index}>
+                  {/* {order.orderItems.map((item, index) => ( */}
+                    {/* <ListGroup.Item key={index}> */}
+                    <ListGroup.Item >
                       <Row>
                         <Col md={1}>
                           <Image
-                            src={item.bookImage}
-                            alt={item.bookName}
-                            fluid
-                            rounded
+                            // src={item.bookImage}
+                            // alt={item.bookName}
+                            // fluid
+                            // rounded
                           />
                         </Col>
                         <Col>
-                          <Link to={`/product/${item.product}`}>
+                          {/* <Link to={`/product/${item.product}`}>
                             {item.bookName}
-                          </Link>
+                          </Link> */}
                         </Col>
                         <Col md={4}>
-                          {item.qty} x {item.bookPrice} VND = {item.qty * item.bookPrice} VND
+                          {/* {item.qty} x {item.bookPrice} VND = {item.qty * item.bookPrice} VND */}
+                          2 x 5 VND = 1122121 VND
                         </Col>
                       </Row>
                     </ListGroup.Item>
-                  ))}
+                   {/* ))} */}
                 </ListGroup>
-              )}
+              {/* )} */}
             </ListGroup.Item>
           </ListGroup>
               </div>
