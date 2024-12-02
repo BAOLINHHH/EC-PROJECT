@@ -26,6 +26,7 @@ import CartScreen from './screens/CartScreen';
 import ShippingScreen from './screens/ShippingScreen';
 import PaymentOrder from './screens/PaymentOrder';
 import OrderScreen from './screens/OrderScreen';
+import OrderSuccessScreen from './screens/OrderSuccessScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ListOrderScreen from './screens/ListOrderScreen';
 import DashboardScreen from './screens/admin/DashboardScreen';
@@ -46,6 +47,7 @@ import EditAddressScreen from './screens/EditAddressScreen';
 import DetailProduct from './screens/admin/DetailProduct';
 import CouponScreen from './screens/CouponScreen';
 import CategoryScreen from './screens/admin/CategoryScreen';
+import BillScreen from './screens/BillScreen';
 
 
 const router = createBrowserRouter(
@@ -66,7 +68,9 @@ const router = createBrowserRouter(
       <Route path='' element = {<PrivateRoute/>}>
       <Route path='/shipping' element= {<ShippingScreen/>}/>
       <Route path='/payment' element ={<PaymentOrder/>}/>
+      <Route path='/bill' element ={<BillScreen/>}/>
       <Route path='/order/:id' element ={<OrderScreen/>}/>
+      <Route path='/order-success/:id' element ={<OrderSuccessScreen/>}/>
       <Route path='/profile' element ={<ProfileScreen/>}/>
       <Route path='/listorder' element ={<ListOrderScreen/>}/>
       <Route path='/favorite' element ={<FavoriteScreen/>}/>

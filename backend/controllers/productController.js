@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 // @route    Get api/products
 // @access   Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = process.env.PAGINATION_LIMIT;
+  const pageSize = Number(req.query.pageSize);
   const page = Number(req.query.pageNumber) || 1;
 
   const checkValue = (value) => {

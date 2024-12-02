@@ -34,7 +34,7 @@ const App = () => {
   useEffect(() => {
     // console.log("Redux store has finished loading!");
     if (cartDataDB && cartDataDB.cartItems) {
-      console.log("cartDataDB", cartDataDB);
+      // console.log("cartDataDB", cartDataDB);
       dispatch(setCartItems(cartDataDB));
     }
   }, [isLoading, cartDataDB, dispatch]);

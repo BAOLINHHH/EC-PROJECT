@@ -91,7 +91,8 @@ const addOrderItems = asyncHandler(async (req, res) => {
     // Kiểm tra và cập nhật số lượng sản phẩm
     for (const itemFromClient of orderItems) {
       const matchingItemFromDB = itemsFromDB.find(
-        (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
+        (itemFromDB) =>
+          (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
       );
 
       if (!matchingItemFromDB) {
@@ -100,6 +101,11 @@ const addOrderItems = asyncHandler(async (req, res) => {
       }
 
       // Kiểm tra số lượng còn lại
+      if (isNaN(itemFromClient.qty) || itemFromClient.qty <= 0) {
+        res.status(400);
+        throw new Error("Invalid quantity");
+      }
+
       if (matchingItemFromDB.quantity < itemFromClient.qty) {
         res.status(400);
         throw new Error(
@@ -108,8 +114,10 @@ const addOrderItems = asyncHandler(async (req, res) => {
       }
 
       // Trừ số lượng sản phẩm
+      // console.log("Before update:", matchingItemFromDB.quantity);
       matchingItemFromDB.quantity -= itemFromClient.qty;
-      await matchingItemFromDB.save();
+      // console.log("After update:", matchingItemFromDB.quantity);
+      await matchingItemFromDB.save({ validateModifiedOnly: true });
     }
 
     // Tạo đối tượng đơn hàng mới
@@ -194,7 +202,6 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
       id: req.body.id,
       status: req.body.status,
       update_time: req.body.update_time,
-      email_address: req.body.payer.email_address,
     };
 
     const updateOrder = await order.save();
@@ -251,7 +258,6 @@ const getOrderByTrackingCode = asyncHandler(async (req, res) => {
 
   res.json(order); // Trả về thông tin đơn hàng
 });
-
 
 // @desc     create payment url
 // @route    POST /api/orders/create_payment_url
@@ -324,6 +330,8 @@ const createPaymentUrl = asyncHandler(async (req, res) => {
   let returnUrl = process.env.VNP_RETURNURL;
   let orderId = moment(date).format("DDHHmmss");
   let amount = req.body.amount;
+  let orderInfo = req.body.orderDescription;
+
   // let bankCode = req.body.bankCode;
 
   let locale = req.body.language;
@@ -338,8 +346,8 @@ const createPaymentUrl = asyncHandler(async (req, res) => {
   vnp_Params["vnp_Locale"] = locale;
   vnp_Params["vnp_CurrCode"] = currCode;
   vnp_Params["vnp_TxnRef"] = orderId;
-  vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderId;
-  vnp_Params["vnp_OrderType"] = "topup";  //other
+  vnp_Params["vnp_OrderInfo"] = orderInfo;
+  vnp_Params["vnp_OrderType"] = "topup"; //other
   vnp_Params["vnp_Amount"] = amount * 100;
   vnp_Params["vnp_ReturnUrl"] = returnUrl;
   vnp_Params["vnp_IpAddr"] = ipAddr;

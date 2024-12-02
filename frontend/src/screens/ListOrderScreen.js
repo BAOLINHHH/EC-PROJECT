@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useGetMyOrderQuery } from '../slices/ordersSlice'
 import { Table,Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -9,6 +9,11 @@ import { FaRegEye } from "react-icons/fa";
 import SidebarUser from './SidebarUser';
 const ListOrderScreen = () => {
     const {data: orders ,isLoading, error }= useGetMyOrderQuery();
+
+    useEffect(() => {
+      console.log("orders", orders)
+    }, [orders])
+
   return (
     <section>
       <div className="container">

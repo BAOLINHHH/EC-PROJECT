@@ -1,80 +1,82 @@
-import mongoose, { mongo }  from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
-const orderSchema = mongoose.Schema({
-    user:{
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "User",
+const orderSchema = mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
     },
-    orderItems:[
-    {
-        bookName: {type: String, required: true},
-        qty: {type: Number, required: true},
-        bookImage: {type: String, required: true},
-        bookPrice: {type: Number, required: true},
+    orderItems: [
+      {
+        bookName: { type: String, required: true },
+        qty: { type: Number, required: true },
+        bookImage: { type: String, required: true },
+        bookPrice: { type: Number, required: true },
         product: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: "Product",
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: "Product",
         },
-    }
+      },
     ],
-    shippingAddress:{
-        city: {type: String, required: true},
-        district: {type: String, required:true},
-        wards: {type: String, required:true},
-        address: {type: String, required:true},
-        phone: {type: String, required:true},
+    shippingAddress: {
+      city: { type: String, required: true },
+      district: { type: String, required: true },
+      wards: { type: String, required: true },
+      address: { type: String, required: true },
+      phone: { type: String, required: true },
     },
-    paymentMethod:{
-        type: String,
-        required: true,
+    paymentMethod: {
+      type: String,
+      required: true,
     },
-    paymentResult:{
-        id: {type: String},
-        status: {type: String}, //paypal,...
-        update_time: {type: String},
-        email_address: {type: String},
+    paymentResult: {
+      id: { type: String },
+      status: { type: String }, //paypal,...
+      update_time: { type: String },
     },
-    itemsPrice:{
-        type: Number,
-        required: true,
-        default: 0,
+    itemsPrice: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    shippingPrice:{
-        type: Number,
-        required: true,
-        default: 0,
+    shippingPrice: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    totalPrice:{
-        type: Number,
-        required: true,
-        default: 0,
+    totalPrice: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    isPaid:{
-        type: Boolean,
-        required: true,
-        default: false,
+    isPaid: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
-    paidAt:{
-        type: Date,
+    paidAt: {
+      type: Date,
     },
-    isDelivered:{
-        type: Boolean,
-        required: true,
-        default: false,
+    isDelivered: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
-    deliveredAt:{
-        type: Date,
+    deliveredAt: {
+      type: Date,
     },
-        trackingCode: {
-        type: String,
-        required: true,
-        unique: true,
+    trackingCode: {
+      type: String,
+      required: false,
+      unique: true,
     },
-}, {
+  },
+  {
     timestamp: true,
-});
+  }
+);
 
 const Order = mongoose.model("Order", orderSchema);
 export default Order;
