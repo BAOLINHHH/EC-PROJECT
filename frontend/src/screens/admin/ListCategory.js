@@ -3,14 +3,18 @@ import apiTag from "../../api/apiTag";
 import Loader from "../../componets/Loader";
 import { FaPlus, FaTrash, FaPen, FaSave } from "react-icons/fa";
 import AddCategory from "./AddCategory";
+import { toast } from 'react-toastify';
+import EditCategory from "./EditCategory";
 const ListCategory = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState("");
   const [isOpenAddProductDialog, setIsOpenAddProductDialog] = useState(false);
-
+  const [isOpenEditProductDialog, setIsOpenEditProductDialog] = useState(false);
+  const [isRefresh, setIsRefresh] = useState(false);
+  const [dataEditCate, setDataEditCate] = useState('')
   useEffect(() => {
     flechData();
-  }, []);
+  }, [isRefresh]);
   const flechData = async () => {
     try {
       const responsive = await apiTag.getAllCategory();
@@ -24,6 +28,24 @@ const ListCategory = () => {
   const handlingCloseAddProductDialog = () => {
     setIsOpenAddProductDialog(false);
   };
+  const handleOpenEdit = (item)=>{
+    setIsOpenEditProductDialog(true);
+    setDataEditCate(item);
+  }
+  const handlingCloseEditProductDialog = () => {
+    setIsOpenEditProductDialog(false);
+    setDataEditCate('');
+  };
+  const handleDelete= async(id)=>{
+    try {
+      await apiTag.deleteCategory(id)
+      setIsLoading(pre => !pre);
+      setIsRefresh(pre => !pre);
+      toast.success(' Xóa thành công');
+    } catch (error) {
+      toast.error(error?.response.data.message)
+    }
+  }
   return (
     <>
       {isLoading ? (
@@ -36,19 +58,24 @@ const ListCategory = () => {
               onClick={handleOpen}
             >
               <FaPlus />
-              Thêm hình thức
+              Thêm thể loại
             </button>
           </div>
           <AddCategory
             isOpen={isOpenAddProductDialog}
             handleClose={handlingCloseAddProductDialog}
           />
+          <EditCategory
+          isOpen= {isOpenEditProductDialog}
+          handleClose={handlingCloseEditProductDialog}
+          dataCate = {dataEditCate}
+          />
           <div className="p-3 overflow-auto h-[310px]">
             <table class="table ">
               <thead className="table-light">
                 <tr>
                   <th className="capitalize leading-3 text-[17px]">
-                    Hình ảnh{" "}
+                    Hình ảnh
                   </th>
                   <th className="capitalize leading-3 text-[17px]">Tên</th>
                   <th className="capitalize leading-3 text-[17px]"></th>
@@ -60,10 +87,10 @@ const ListCategory = () => {
                     <td className="align-middle">aaaaaa</td>
                     <td className="align-middle">{item.categoryName}</td>
                     <td className="align-middle ">
-                      <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1 cursor-pointer">
+                      <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1 cursor-pointer" onClick={()=> handleOpenEdit(item)}>
                         <FaPen />
                       </div>
-                      <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer">
+                      <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer" onClick={()=>handleDelete(item._id)}>
                         <FaTrash />
                       </div>
                     </td>

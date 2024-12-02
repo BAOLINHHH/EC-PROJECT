@@ -40,7 +40,7 @@ const ListLanguage = () => {
     };
     const handleUpdate=async()=>{
         try {
-            const dataPost = {language: updateRow};
+            const dataPost = {languageName: updateRow};
             setIsLoading(pre => !pre)
             await apiTag.updateLanguage(editRow,dataPost);
             setEditRow('')

@@ -35,7 +35,23 @@ const apiTag =  {
     },
     AddCategory(data){
         const url = 'categories';
-        return axios.post(url,data)
+        return axios.post(url,data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        })
+    },
+    updataCategory(data){
+        const url = 'categories';
+        return axios.post(url,data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        })
+    },
+    deleteCategory(id){
+        const url = `categories/${id}`
+        return axios.delete(url);
     },
     updatePublicCompany(id,data){
         const url = `publiccompanies/${id}`

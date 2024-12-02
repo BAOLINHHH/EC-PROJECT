@@ -4,22 +4,21 @@ import Category from '../models/categoryModel.js';
 // @route    POST api/categories
 // @access   Public
 const createCategory = async (req, res) => {
-    try {
+    try {   
         if (!req.body.categoryName) {
             return res.status(400).json({ message: "Category name is required" });
         }
-        // if(!req.files){
-        //     return res.status(400).json({ message: "Miss Input" });
-        //   }
-          console.log('req.body.image', req.body.image)
+        if(!req.file){
+            return res.status(400).json({ message: "Miss Input" });
+          }
         const category = new Category({
             categoryName: req.body.categoryName,
-            categoryImage: req.body.image || "",  // Nếu không có categoryImage thì gán giá trị mặc định là ""
+            categoryImage: req.file.path,  // Nếu không có categoryImage thì gán giá trị mặc định là ""
         });
 
         await category.save();
         
-        res.status(201).json(category);
+        res.status(201).json({success : true});
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -59,17 +58,17 @@ const updateCategory = async (req, res) => {
         if (!req.body.categoryName) {
             return res.status(400).json({ message: "Category name is required" });
         }
+        console.log('req.body', req.body)
+        // const category = await Category.findByIdAndUpdate(req.params.id, {
+        //     categoryName: req.body.categoryName,
+        //     categoryImage: req.body.categoryImage || "",  // Nếu không có categoryImage thì gán giá trị mặc định là ""
+        // }, { new: true });
+            
+        // if (!category) {
+        //     return res.status(404).json({ message: 'Category not found' });
+        // }
 
-        const category = await Category.findByIdAndUpdate(req.params.id, {
-            categoryName: req.body.categoryName,
-            categoryImage: req.body.categoryImage || "",  // Nếu không có categoryImage thì gán giá trị mặc định là ""
-        }, { new: true });
-
-        if (!category) {
-            return res.status(404).json({ message: 'Category not found' });
-        }
-
-        res.status(200).json(category);
+        // res.status(200).json(category);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
