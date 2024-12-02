@@ -351,8 +351,23 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @route    GET api/users
 // @access   Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({});
-  res.json(users);
+  const pageSize = Number(req.query.pageSize) || 10; // Số người dùng mỗi trang
+  const page = Number(req.query.pageNumber) || 1; // Trang hiện tại
+
+  // Tính tổng số người dùng
+  const count = await User.countDocuments();
+
+  // Lấy danh sách người dùng theo phân trang
+  const users = await User.find()
+    .limit(pageSize) // Giới hạn số lượng người dùng mỗi trang
+    .skip(pageSize * (page - 1)); // Bỏ qua số người dùng đã qua trong các trang trước
+
+  // Trả về kết quả, bao gồm người dùng, trang hiện tại và tổng số trang
+  res.json({
+    users,
+    page,
+    pages: Math.ceil(count / pageSize), // Tính tổng số trang
+  });
 });
 
 // @desc     Delete user

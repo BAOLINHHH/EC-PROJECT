@@ -162,6 +162,26 @@ const getProducts = asyncHandler(async (req, res) => {
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
+// @desc     Fetch all products (ADMIN)
+// @route    Get api/products/admin
+// @access   Public
+const getProductsAdmin = asyncHandler(async (req, res) => {
+  const pageSize = 10; // Số sản phẩm mỗi trang
+  const page = Number(req.query.pageNumber) || 1;
+
+  // Tính tổng số sản phẩm
+  const count = await Product.countDocuments();
+
+  // Lấy các sản phẩm và phân trang
+  const products = await Product.find()
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  // Trả về kết quả
+  res.json({ products, page, pages: Math.ceil(count / pageSize) });
+});
+
+
 // @desc     Fetch a product
 // @route    Get /api/products/:id
 // @access   Public
@@ -562,6 +582,7 @@ const getSimilarProducts = asyncHandler(async (req, res) => {
 
 export {
   getProducts,
+  getProductsAdmin,
   getProductById,
   createProduct,
   updateProduct,
