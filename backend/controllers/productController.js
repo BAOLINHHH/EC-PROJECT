@@ -166,18 +166,123 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route    Get api/products/admin
 // @access   Public
 const getProductsAdmin = asyncHandler(async (req, res) => {
-  const pageSize = 10; // Số sản phẩm mỗi trang
+  const pageSize = Number(req.query.pageSize) || 10; // Giá trị mặc định là 10 nếu không có
   const page = Number(req.query.pageNumber) || 1;
 
-  // Tính tổng số sản phẩm
-  const count = await Product.countDocuments();
+  const checkValue = (value) => {
+    return !value || (!!value && typeof value === "string" && value === "null");
+  };
 
-  // Lấy các sản phẩm và phân trang
-  const products = await Product.find()
+  const keyword = !checkValue(req.query.keyword)
+    ? { bookName: { $regex: req.query.keyword, $options: "i" } }
+    : {};
+
+  // Helper function to build the category query
+  const categoryCondition = (category) => {
+    if (mongoose.Types.ObjectId.isValid(category)) {
+      return { category: new mongoose.Types.ObjectId(category) };
+    } else {
+      return { category: { $regex: category, $options: "i" } };
+    }
+  };
+
+  const category = !checkValue(req.query.category)
+    ? categoryCondition(req.query.category)
+    : {};
+
+  // Filter Price
+  const minPrice = req.query.minPrice;
+  const maxPrice = req.query.maxPrice;
+
+  const price =
+    !checkValue(minPrice) && !checkValue(maxPrice)
+      ? { bookPrice: { $gte: minPrice, $lte: maxPrice } }
+      : {};
+
+  // Public Company filter
+  const publicCompanyCondition = (publicCompany) => {
+    if (mongoose.Types.ObjectId.isValid(publicCompany)) {
+      return { publicCompany: new mongoose.Types.ObjectId(publicCompany) };
+    } else {
+      return { publicCompany: { $regex: publicCompany, $options: "i" } };
+    }
+  };
+
+  const publicCompany = !checkValue(req.query.publicCompany)
+    ? publicCompanyCondition(req.query.publicCompany)
+    : {};
+
+  // Author filter
+  const authorCondition = (author) => {
+    if (mongoose.Types.ObjectId.isValid(author)) {
+      return { author: new mongoose.Types.ObjectId(author) };
+    } else {
+      return { author: { $regex: author, $options: "i" } };
+    }
+  };
+
+  const author = !checkValue(req.query.author)
+    ? authorCondition(req.query.author)
+    : {};
+
+  // Filter form
+  const formCondition = (form) => {
+    if (mongoose.Types.ObjectId.isValid(form)) {
+      return { form: new mongoose.Types.ObjectId(form) };
+    } else {
+      return { form: { $regex: form, $options: "i" } };
+    }
+  };
+
+  const form = !checkValue(req.query.form) ? formCondition(req.query.form) : {};
+
+  // Filter language
+  const languageCondition = (language) => {
+    if (mongoose.Types.ObjectId.isValid(language)) {
+      return { language: new mongoose.Types.ObjectId(language) };
+    } else {
+      return { language: { $regex: language, $options: "i" } };
+    }
+  };
+
+  const language = !checkValue(req.query.language)
+    ? languageCondition(req.query.language)
+    : {};
+
+  // Filter rate
+  const rate = !checkValue(req.query.rate)
+    ? { rating: { $lte: req.query.rate } }
+    : {};
+
+  // Pagination logic
+  const count = await Product.countDocuments({
+    ...keyword,
+    ...category,
+    ...price,
+    ...publicCompany,
+    ...form,
+    ...author,
+    ...language,
+    ...rate,
+  });
+
+  const products = await Product.find({
+    ...keyword,
+    ...category,
+    ...price,
+    ...publicCompany,
+    ...form,
+    ...author,
+    ...language,
+    ...rate,
+  })
     .limit(pageSize)
-    .skip(pageSize * (page - 1));
-
-  // Trả về kết quả
+    .skip(pageSize * (page - 1))
+    .populate("category")
+    .populate("author")
+    .populate("form")
+    .populate("publicCompany")
+    .populate("language");
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
