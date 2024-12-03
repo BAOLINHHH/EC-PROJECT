@@ -28,10 +28,9 @@ export default function EditCategory(props) {
     props.handleClose();
     setImagePreview("");
   };
-  // const handleChangeInput = (e)=>{
-  //   console.log(87415)
-  //     setCategory(e.target.value)
-  // }
+  const handleChangeInput = (e)=>{
+      setCategory(e.target.value)
+  }
   const handleSave = async(e) => {
     e.preventDefault();
     console.log("category", category)
@@ -119,7 +118,7 @@ export default function EditCategory(props) {
                 type="text"
                 value={props.dataCate.categoryName}
                 className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"
-                onChange={(e)=>setCategory(e.target.value)}
+                onChange={handleChangeInput}
                 placeholder="Tên sản phẩm"
               />
             </div>

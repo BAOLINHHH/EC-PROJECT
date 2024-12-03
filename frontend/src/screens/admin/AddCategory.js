@@ -33,7 +33,7 @@ export default function AddCategory(props) {
       return;
     }
     try {
-      console.log("asdasa", image)
+      
       const formData = new FormData();
       formData.append("categoryName", category);
       formData.append("image", image);
@@ -42,7 +42,6 @@ export default function AddCategory(props) {
       // }
       const response = await apiTag.AddCategory(formData);
     } catch (error) {
-      console.error(error);
     }
   };
 
