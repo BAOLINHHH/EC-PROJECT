@@ -100,7 +100,7 @@ const PaymentOrder = () => {
       } else {
         const payload = {
           amount: totalItem.totalcalc,
-          orderDescription: "Thanh toan don hang: " + response._id,
+          orderDescription: "Thanh toan don hang: #" + response._id,
           orderType: "billpayment",
           language: "vn",
         };
@@ -109,8 +109,9 @@ const PaymentOrder = () => {
           dispatch(clearCartItems());
 
           const { vnpUrl } = responseVNPay;
+          navigate("/order-success/" + response._id);
           // Chuyển hướng tới VNPAY
-          window.location.href = vnpUrl;
+          window.open(vnpUrl, '_blank');
         }
       }
     }

@@ -62,7 +62,7 @@ const OrderSuccessScreen = () => {
                     icon={faExclamationTriangle}
                     className="me-2"
                   />
-                  Thanh toán GIÁN ĐOẠN:
+                  Bạn cần hoàn thành thanh toán
                 </div>
                 Shop đã lên đơn hàng cho bạn, bạn vui lòng thanh toán đơn hàng
                 để shop gửi hàng cho bạn nhé!
@@ -71,7 +71,17 @@ const OrderSuccessScreen = () => {
               <></>
             )}
           </p>
-          <div>
+          <p>
+            Mã đơn hàng:{" "}
+            <span
+              className="text-primary text-decoration-underline cursor-pointer"
+              onClick={() => navigate(`/order/${orderId}`)}
+              style={{ cursor: "pointer" }}
+            >
+              #{orderId}
+            </span>
+          </p>
+          <div className="mt-4">
             <Button
               variant="outline-primary"
               className="mr-3"
