@@ -13,7 +13,6 @@ const port = process.env.PORT || 4000;
 import cartRoutes from './routes/cartRoutes.js';
 import wishlistRoutes from './routes/wishlistRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
-import authorRoutes from './routes/authorRoutes.js';
 import formRoutes from './routes/formRoutes.js';
 import couponRoutes from './routes/couponRoutes.js';
 
@@ -45,7 +44,6 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/categories', categoryRoutes);
-app.use('/api/authors', authorRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/publiccompanies', publicCompanyRoutes);
 app.use('/api/languages', languageRoutes);

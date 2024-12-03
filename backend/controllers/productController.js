@@ -323,9 +323,7 @@ const createProduct = asyncHandler(async (req, res) => {
     bookPrice: req.body.bookPrice,
     bookDetail: req.body.bookDetail,
     bookImage: req.body.bookImage,
-    quantity: req.body.
-    
-    tity,
+    quantity: req.body.quantity,
     audioUrl: req.body.audioUrl,
     pdfUrl: req.body.pdfUrl,
   });

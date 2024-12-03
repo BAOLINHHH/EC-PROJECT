@@ -37,9 +37,8 @@ const productSchema = mongoose.Schema(
       ref: 'Category',
     },
     author: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
-      ref: 'Author',
     },
     publicCompany: {
       type: mongoose.Schema.Types.ObjectId,
