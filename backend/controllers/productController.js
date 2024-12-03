@@ -323,7 +323,9 @@ const createProduct = asyncHandler(async (req, res) => {
     bookPrice: req.body.bookPrice,
     bookDetail: req.body.bookDetail,
     bookImage: req.body.bookImage,
-    bookQuaranty: req.body.bookQuaranty,
+    quantity: req.body.
+    
+    tity,
     audioUrl: req.body.audioUrl,
     pdfUrl: req.body.pdfUrl,
   });
@@ -336,6 +338,7 @@ const createProduct = asyncHandler(async (req, res) => {
 // @route    PUT /api/products/:id
 // @access   Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
+  // Lấy thông tin từ request body
   const {
     bookName,
     bookPrice,
@@ -344,7 +347,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     author,
     category,
     publicCompany,
-    bookQuaranty,
+    quantity,
     language,
     form,
     pageNumber,
@@ -352,23 +355,26 @@ const updateProduct = asyncHandler(async (req, res) => {
     pdfUrl,
   } = req.body;
 
+  // Tìm sản phẩm theo id
   const product = await Product.findById(req.params.id);
 
   if (product) {
-    product.bookName = bookName;
-    product.bookPrice = bookPrice;
-    product.bookDetail = bookDetail;
-    product.bookImage = bookImage;
-    product.author = author;
-    product.category = category;
-    product.publicCompany = publicCompany;
-    product.bookQuaranty = bookQuaranty;
-    product.language = language;
-    product.form = form;
-    product.pageNumber = pageNumber;
-    product.audioUrl = audioUrl;
-    product.pdfUrl = pdfUrl;
+    // Chỉ cập nhật những thuộc tính có trong request body
+    if (bookName) product.bookName = bookName;
+    if (bookPrice) product.bookPrice = bookPrice;
+    if (bookDetail) product.bookDetail = bookDetail;
+    if (bookImage) product.bookImage = bookImage;
+    if (author) product.author = author;
+    if (category) product.category = category;
+    if (publicCompany) product.publicCompany = publicCompany;
+    if (quantity) product.quantity = quantity;
+    if (language) product.language = language;
+    if (form) product.form = form;
+    if (pageNumber) product.pageNumber = pageNumber;
+    if (audioUrl) product.audioUrl = audioUrl;
+    if (pdfUrl) product.pdfUrl = pdfUrl;
 
+    // Lưu sản phẩm đã được cập nhật
     const updatedProduct = await product.save();
     res.json(updatedProduct);
   } else {
@@ -376,6 +382,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error("Resource not found");
   }
 });
+
 
 // @desc     Delete a product
 // @route    DELETE /api/products/:id
@@ -554,7 +561,7 @@ const getLatestProducts = asyncHandler(async (req, res) => {
 // @route   GET /api/products/discounted
 // @access  Public
 const getDiscountedProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({ bookQuaranty: { $gt: 0 } }).limit(5);
+  const products = await Product.find({ quantity: { $gt: 0 } }).limit(5);
   res.status(200).json(products);
 });
 

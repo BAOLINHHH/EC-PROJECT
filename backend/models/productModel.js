@@ -2,12 +2,15 @@ import mongoose from 'mongoose';
 
 const reviewSchema = mongoose.Schema(
   {
-    name: { type: String, required: true },
-    rating: { type: Number, required: true },
-    comment: { type: String, required: true },
+    // name: { type: String, required: true },
+    // rating: { type: Number, required: true },
+    // comment: { type: String, required: true },
+    name: { type: String},
+    rating: { type: Number},
+    comment: { type: String},
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      //required: true,
       ref: 'User',
     },
   },
@@ -72,11 +75,6 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
       default: '/imageshome/tieuthuyet.jpg',
-    },
-    bookQuaranty: {
-      type: Number,
-      required: true,
-      default: 0,
     },
     quantity: {
       type: Number,
