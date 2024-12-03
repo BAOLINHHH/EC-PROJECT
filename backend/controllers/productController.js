@@ -166,7 +166,7 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route    Get api/products/admin
 // @access   Public
 const getProductsAdmin = asyncHandler(async (req, res) => {
-  const pageSize = Number(req.query.pageSize) || 10; // Giá trị mặc định là 10 nếu không có
+  const pageSize = Number(req.query.pageSize) || 5; // Giá trị mặc định là 10 nếu không có
   const page = Number(req.query.pageNumber) || 1;
 
   const checkValue = (value) => {

@@ -238,7 +238,7 @@ const FlashSale = () => {
                                     </div>
                                 </div>
                                 <h2 className="font-normal text-[25px] h-[40px] pt-2 line-clamp-2 mb-[3px] leading-[28px] text-[#050c13] capitalize hover:text-[#5caf90]">{product.bookName}</h2>
-                                <h6 className="font-normal text-[14px]  truncate mb-[10px] leading-[28px] text-[#4b5966] capitalize">{product.author.authorName}</h6>
+                                {/* <h6 className="font-normal text-[14px]  truncate mb-[10px] leading-[28px] text-[#4b5966] capitalize"> {product.author.authorName} </h6> */}
                                 <div className="flex  items-center"> 
                                 <span className="text-[#4b5966] text-[24px] font-bold  ">{product.bookPrice}</span>
 

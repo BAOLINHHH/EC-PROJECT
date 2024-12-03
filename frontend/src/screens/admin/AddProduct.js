@@ -4,11 +4,26 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import { MdCancel } from "react-icons/md";
 import images from '../../assets/indexImg'
+import apiTag from '../../api/apiTag';
+import { useEffect } from 'react';
+
 export default function AddProduct(props){
   const inputFileRef = useRef();
   const [imagePreview,setImagePreview] = useState('');
+  const [category, setCategory] = useState('');
   const handlingClickUpload =()=>{
     inputFileRef.current.click();
+  }
+  useEffect (() =>{
+      flechData()
+  },[])
+  const flechData = async ()=>{
+    try {
+      const responseCategory = await apiTag.getAllCategory()
+      setCategory(responseCategory)  
+    } catch (error) {
+      
+    }
   }
 
   const handleFileUpload =(e)=>{
@@ -40,6 +55,7 @@ export default function AddProduct(props){
           </div>
         </DialogTitle>
         <DialogContent>
+          <form>
           <div className='mb-3 flex'>
             <span className='w-[250px]'>Hình ảnh: </span>
             <div className='mt-2'>
@@ -71,13 +87,26 @@ export default function AddProduct(props){
               <input type="file" className=" w-[500px]  outline-none "    placeholder="File audio book" />
           </div>
           <div className="flex items-center mb-3">
-            <span className="w-[250px]">Só lượng sản phẩm </span>
-            <input type="text" className=" w-[500px] outline-none h-[30px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
+            <span className="w-[250px]">Thể loại </span>
+            {/* <input type="text" className=" w-[500px] outline-none h-[30px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" /> */}
+            {/* <select value={} onChange={} className="outline-none h-[43px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px] w-full p-[9px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]">
+                                    <option value="">-- Chọn Thể loại --</option>
+                                        {category?.map((item)=>(
+                                              <option
+                                              key={item._id}
+                                              value={item.DistrictID}
+                                              selected="selected"
+                                              disabled={!handleProvinceChange}
+                                            >
+                                              {item.DistrictName}
+                                            </option>
+                                       ))}
+            </select> */}
           </div>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Giá sản phẩm: </span>
             <input type="text" className=" w-[500px] outline-none h-[30px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
-          </div>
+          </div>  
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Thể loại: </span>
             <input type="text" className=" w-[500px] outline-none h-[30px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
@@ -107,6 +136,7 @@ export default function AddProduct(props){
               Lưu
             </button>
           </div>
+          </form>
         </DialogContent>
       </Dialog>
     </>

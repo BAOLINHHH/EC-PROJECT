@@ -7,25 +7,31 @@ import { toast } from 'react-toastify';
 import Message from '../../componets/Message';
 import Loader from '../../componets/Loader';
 import { useGetProductsQuery,useCreateProductMutation,useDeleteProductMutation} from '../../slices/productsApiSlice';
-import Paginate from '../../componets/Paginate';
+// import Paginate from '../../componets/Paginate';
 import AddProduct from './AddProduct';
 import { useState } from 'react';
 import listProduct from '../../api/productsAPI';
 import { useEffect } from 'react';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import { optionCurrency,transform } from "../../componets/money"
+import formatCurrency from "../../utils/format"
+import dayjs from "dayjs";
 const ProductList = () => {
     // const {pageNumber} = useParams()
     const [searchParams] = useSearchParams()
     const [dataProduct, setDataProduct] = useState('');
     const [isLoading,SetIsLoading] = useState(true);
-    const [pageNumber, setPageNumber] = useState(1);
+    const [pageNumber, setPageNumber] = useState('');
     // const pageParam = searchParams.get("pageNumber")||'';
     // const { data,  error, refetch } = useGetProductsQuery({pageNumber: (pageNumber||pageParam)});
-    // useEffect(()=>{
-    //   flechData()
-    // },[])
+    useEffect(()=>{
+      flechData()
+    },[pageNumber])
+    
     const flechData = async()=>{
       try {
-        const response = await listProduct.getAllProducts();
+        const response = await listProduct.getAllAdminProduct(pageNumber);
         setDataProduct(response);
         SetIsLoading(false);
       } catch (error) {
@@ -53,6 +59,10 @@ const ProductList = () => {
     const handlingCloseAddProductDialog = () => {
       setIsOpenAddProductDialog(false);
     };
+    const handlePaginate = (event,value) =>{
+      const currentPage = value ; 
+        setPageNumber(currentPage)
+    }
     // const deleteHandler = async (id) => {
     //   if (window.confirm('Bạn có muốn xóa?')) {
     //     try {
@@ -100,30 +110,38 @@ const ProductList = () => {
                     </tr>
                   </thead>
                   <tbody>
-                  {/* {dataProduct.map((item)=>(
+                  {dataProduct && dataProduct?.products?.map((item)=>(
                      <tr>
                       
                      <td className="align-middle">
                          doan bao linh
                      </td>
-                     <td className="align-middle">
-                       linh@gmail.com  
+                     <td className="align-middle  ">
+                        <p className='w-[330px] line-clamp-1 text-[17px] text-[#100707]'>{item.bookName}</p> 
                      </td>
                      <td className="align-middle">
-                       admin  
+                        <p className='text-[17px] text-[#100707]'>{item.category.categoryName} </p>
                      </td>
                      <td className="align-middle">
-                       admin  
+                     {item.bookQuaranty > 0 ? (
+                        <span className='bg-[#a6e157] text-[#fff] border-solid border-[1px] rounded-[8px] p-1'>
+                          Còn hàng
+                        </span>
+                        ):(<>
+                        <span className='bg-[#e62f2f] text-[#fff] border-solid border-[1px] rounded-[8px] p-1'>
+                          Hết hàng
+                        </span>
+                        </>)}
                      </td>
                      <td className="align-middle">
-                       admin  
+                          <p className='text-[#c53533] text-[17px]'> { transform(item.bookPrice,optionCurrency)}</p>  
                      </td>
                      <td className="align-middle">
-                       admin  
+                     {dayjs(item.createdAt).format("DD/MM/YYYY")}
                      </td>
                      
                      <td className="align-middle">
-                       <Link to='/admin/productlist/detailproduct'>
+                       <Link to={`detailproduct/${item._id}`}>
                        <div className="cursor-pointer border-solid border-[1px] rounded-[9px] bg-[#8e8584] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1">
                        <FaEye/>
                        </div>
@@ -136,10 +154,14 @@ const ProductList = () => {
                        </div>
                      </td>
                    </tr>  
-                  ))}              */}
+                  ))}             
                   </tbody>
               </table>
-            
+                <div className='flex justify-center mt-3'>
+                  <Stack spacing={2}>
+                      <Pagination count={dataProduct.pages} onChange={handlePaginate}/>
+                  </Stack>
+                </div>
             </div>
             </>) } 
             {/* {isLoading ? (

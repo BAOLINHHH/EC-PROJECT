@@ -19,7 +19,6 @@ const Paginate = ({pages, isAdmin = false, keyword = '',pageNumberParamTest=' ' 
     const currentPage = value
     if(!isAdmin){
       queryParams.set("pageNumber", currentPage);
-      console.log("currentPage",currentPage)
       navigate({ search: queryParams.toString() });
     }else{
       navigate(`/admin/productlist?pageNumber=${currentPage}`)

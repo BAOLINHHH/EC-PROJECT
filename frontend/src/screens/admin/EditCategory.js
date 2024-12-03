@@ -12,9 +12,7 @@ export default function EditCategory(props) {
   const [imagePreview, setImagePreview] = useState("");
   const [categoryPre, setCategoryPre] = useState('');
   const [category, setCategory] = useState('');
-  
-  // console.log("asdasd", dataName)
-  console.log("category", props)
+
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -27,16 +25,16 @@ export default function EditCategory(props) {
     reader.readAsDataURL(file);
   };
   const handlingCloseDialog = () => {
-    console.log("props", props)
     props.handleClose();
     setImagePreview("");
   };
   // const handleChangeInput = (e)=>{
+  //   console.log(87415)
   //     setCategory(e.target.value)
   // }
   const handleSave = async(e) => {
     e.preventDefault();
-
+    console.log("category", category)
     try {
 
       if(image){
@@ -80,7 +78,7 @@ export default function EditCategory(props) {
           </div>
         </DialogTitle>
         <DialogContent>
-          <form>
+          
             <div className="mb-3 flex">
               <span className="w-[250px]">Hình ảnh: </span>
               <div className="mt-2">
@@ -114,13 +112,14 @@ export default function EditCategory(props) {
                 </label>
               </div>
             </div>
+            <form>
             <div className="flex items-center mb-3">
               <span className="w-[250px]">Tên thể loại: </span>
               <input
                 type="text"
                 value={props.dataCate.categoryName}
                 className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"
-                onChange={(e)=>setCategory(e.target.value) }
+                onChange={(e)=>setCategory(e.target.value)}
                 placeholder="Tên sản phẩm"
               />
             </div>
@@ -131,9 +130,9 @@ export default function EditCategory(props) {
                 onClick={handleSave}
               >
                 Lưu
-              </button>
+                </button>
             </div>
-          </form>
+           </form>
         </DialogContent>
       </Dialog>
     </>
