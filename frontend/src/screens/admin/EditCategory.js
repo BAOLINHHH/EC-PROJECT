@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -11,7 +11,7 @@ export default function EditCategory(props) {
   const [image, setImage] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [categoryPre, setCategoryPre] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState("");
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -28,6 +28,12 @@ export default function EditCategory(props) {
     props.handleClose();
     setImagePreview("");
   };
+
+  useEffect(() => {
+    console.log("props.dataCate.categoryName", props.dataCate.categoryName);
+    setCategory(props.dataCate.categoryName)
+  }, [props])
+
   const handleChangeInput = (e)=>{
       setCategory(e.target.value)
   }
@@ -116,7 +122,7 @@ export default function EditCategory(props) {
               <span className="w-[250px]">Tên thể loại: </span>
               <input
                 type="text"
-                value={props.dataCate.categoryName}
+                value={category}
                 className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"
                 onChange={handleChangeInput}
                 placeholder="Tên sản phẩm"

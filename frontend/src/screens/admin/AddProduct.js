@@ -143,10 +143,10 @@ export default function AddProduct(props){
                 ) : (
                   <img src={imagePreview} className='h-[150px] w-[150px] mb-2'  alt=""/>
                 )}
-              <span className='border-[1px] border-solid rounded-[5px] p-1 bg-[#ce3a1d] text-[#fff] cursor-pointer'  
+              <label className='border-[1px] border-solid rounded-[5px] p-1 bg-[#ce3a1d] text-[#fff] cursor-pointer'  
               htmlFor="uploadFile" >
                 Chọn hình ảnh
-              </span>
+              </label>
             </div>
           </div>
           <div className="flex items-center mb-3">
