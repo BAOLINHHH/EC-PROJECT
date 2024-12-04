@@ -6,6 +6,7 @@ import { MdCancel } from "react-icons/md";
 import images from '../../assets/indexImg'
 import apiTag from '../../api/apiTag';
 import { useEffect } from 'react';
+import { RiMoneyEuroCircleFill } from "react-icons/ri";
 
 export default function AddProduct(props){
   const inputFileRef = useRef();
@@ -21,9 +22,13 @@ export default function AddProduct(props){
   const [selectForm , setSelectForm] = useState("");
   const [language, setLanguage]= useState('');
   const [selectLanguage , setSelectLanguage] = useState("");
-  // const handlingClickUpload =()=>{
-  //   inputFileRef.current.click();
-  // }
+  const [bookName,setBookName] = useState('');
+  const [author,setAuthor] = useState('');
+  const [pageNumber, setPageNumber] = useState('');
+  const [bookPrice , setBookPrice ]  = useState(''); 
+  const [bookDetail, setBookDetail] = useState('');
+  const [quantity, setQuantity] = useState('');
+
   useEffect (() =>{
       flechData()
   },[])
@@ -151,7 +156,7 @@ export default function AddProduct(props){
           </div>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Tên sản phẩm: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
+            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setBookName(e.target.value)} placeholder="Tên sản phẩm" />
           </div>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">File Mp3 </span>
@@ -229,30 +234,30 @@ export default function AddProduct(props){
                                        ))}
             </select>
           </div>
-          <div className="flex items-center mb-3">
+          <div className="flex items-center mb-3 gap-x-20">
             <span className="w-[250px]">Giá sản phẩm: </span>
-            <input type="text" className=" w-[500px] outline-none h-[30px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
+            <div className="input-group flex-fill mb-0">
+              <input type="text" className=" w-[470px] outline-none h-[50px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]" onChange={(e) =>setBookPrice(e.target.value)}   placeholder="Giá sản phẩm" />
+              <span className=' input-group-text' id= 'icon-envelope'><RiMoneyEuroCircleFill/> </span>
+            </div>
           </div>  
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Tên tác giả: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
+            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"  onChange={(e)=>setAuthor(e.target.value)}  placeholder="Tên tác giả" />
           </div>
           <div className="flex items-center mb-3">
-            <span className="w-[250px]">Nhà xuất bản: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
-          </div>
-          <div className="flex items-center mb-3">
-            <span className="w-[250px]">Hình thức: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
-          </div>
-          <div className="flex items-center mb-3">
-            <span className="w-[250px]">Ngôn ngữ: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
+            <span className="w-[250px]">Số lượng: </span>
+            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setQuantity(e.target.value)} placeholder="Số lượng" />
           </div>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Số trang: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"    placeholder="Tên sản phẩm" />
+            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setPageNumber(e.target.value)} placeholder="Tên sản phẩm" />
           </div>
+          <div className="flex items-center mb-3">
+            <span className="w-[250px]">Sơ lược nội dung: </span>
+            <textarea rows='7' cols='58' className='outline-none  border-[1px] border-[#32e9e9] text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]'  onChange={(e) =>setBookDetail(e.target.value)} />
+          </div>
+         
           <div className='flex justify-center'>
             <button className=' border-solid w-[50px] rounded-[7px] bg-[#2d3748] text-[#fff]' onClick={handleSave}>
               Lưu

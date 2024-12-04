@@ -31,6 +31,10 @@ const listProduct =  {
     addToFavorite(){
         const url = 'wishlist'
         return axios.post(url)
+    },
+    deleteProduct(id){
+        const url = `products/${id}`
+        return axios.delete(url)
     }
 };
 export default listProduct

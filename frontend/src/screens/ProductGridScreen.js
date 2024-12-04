@@ -396,15 +396,20 @@ navigate({ search: searchParams.toString()});
                               <img className="max-h-[210px] w-[210px]" src={product.bookImage}/>
                               </Link>
                           </div>
-                          <span className=" text-[#eee] left-[8px] top-[8px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
-                          <span className=" text-[#eee] top-[45px] left-[8px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
-                          <div className="flex flex-row justify-center opacity-0 group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
+                          
+                          {/* <div className="flex flex-row justify-center opacity-0 group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
                                   <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center" > < BsSuitHeart /> </button>
                                   <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsEye /> </button>
                                   <button className=" mx-2 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
-                          </div>
+                          </div> */}
                           <div className=" card-body border-t-[1px] ">
-                                  <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">Tieu Thuyet</h6>
+                          <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">
+                                  {product?.category ? (<>
+                                  <>
+                                  {product.category.categoryName}
+                                  </>
+                                  </>): ""}
+                                  </h6>
                                   <Link to={`product/${product._id}`}>
                                   <h2 className="font-normal text-[17px] h-[70px] pt-2  line-clamp-2 mb-[10px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90]">
                                   {product.bookName}
@@ -425,7 +430,6 @@ navigate({ search: searchParams.toString()});
               )}
               <div className="d-flex justify-content-center mt-3">
             <Paginate pages={dataProduct.pages}/>
-           
             </div>
             </div>
           </div>

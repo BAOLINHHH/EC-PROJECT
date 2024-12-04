@@ -24,14 +24,16 @@ export const sidebarAdminData=[
         icon: <FaArchive/>,
         path: '/admin/Categorylist',
     },
+
+     {
+        title: 'Coupon',
+        icon: <RiCoupon2Fill/>,
+        path: '/admin/coupon',
+    },
     // {
     //     title: 'Receipt',
     //     icon: <FaReceipt/>,
     //     path: '/admin/aaaaa',
     // },
-    // {
-    //     title: 'Coupon',
-    //     icon: <RiCoupon2Fill/>,
-    //     path: '/admin/aaaaaaaaaaaa',
-    // },
+   
 ]

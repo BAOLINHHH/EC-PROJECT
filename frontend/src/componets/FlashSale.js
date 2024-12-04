@@ -139,17 +139,25 @@ const FlashSale = () => {
                         <div className="flex justify-center my-2 relative">
                             <img className="max-h-[350px] w-[350px] rounded-[5px]" src={product.bookImage} alt='imgBook'/>
                         </div>
-                        <span className=" text-[#eee]  left-[8px] top-[8px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
-                        <span className=" text-[#eee] top-[45px] left-[8px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
-                        <div className="flex absolute ml-3 opacity-0 left-[120px] top-[318px] group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
+                        {/* <div className="flex absolute ml-3 opacity-0 left-[120px] top-[318px] group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
                             <button className=" mx-1 h-[40px] w-[40px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center" > < BsSuitHeart /> </button>
                             <button className=" mx-1 h-[40px] w-[40px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsEye /> </button>
                             <button className=" mx-1 h-[40px] w-[40px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
-                        </div>
+                        </div> */}
                         <div>
                             <div className="flex justify-center">
                                     <div className="basis-[100px] ">
-                                        <h6 className="  flex justify-center items-center h-[40px] bg-[#a6c7f2] border-[1px] border-solid rounded-[5px] text-[#4c43cc] ">{product.category.categoryName}</h6> 
+                                    <h6 className="flex justify-center items-center h-[40px] bg-[#a6c7f2] border-[1px] border-solid rounded-[5px] text-[#4c43cc]">
+
+                                            {product?.category ? ( 
+
+                                                <>                                                                            
+                                                                                    
+                                                {product?.category?.categoryName}
+
+                                                </>
+                                                ) : ""}
+                                                                                                </h6>
                                     </div>
                                     <div className="basis-[100px] flex items-center ml-3">
                                         <Rating name="half-rating-read " defaultValue={product.rating} precision={0.5} readOnly /> 
@@ -162,7 +170,6 @@ const FlashSale = () => {
                             </div>
                             <div className="flex justify-center items-center gap-5 "> 
                                 <span className="text-[#4b5966] text-[24px] font-bold  ">{product.bookPrice}</span>
-                                <span className="text-[14px] text-[#777] line-through ">7500</span>
                             </div>   
                         </div>
                         <div className="flex justify-center mt-3">
@@ -223,15 +230,20 @@ const FlashSale = () => {
                             </div>
                             <span className=" text-[#eee]  left-[3px] top-[2px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
                             <span className=" text-[#eee] top-[37px] left-[3px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
-                            <div className="flex flex-row absolute left-[20px] top-[80%]  opacity-0 group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
+                            {/* <div className="flex flex-row absolute left-[20px] top-[80%]  opacity-0 group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
                                     <button className=" mx-1 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center" > < BsSuitHeart /> </button>
                                     <button className=" mx-1 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsEye /> </button>
                                     <button className=" mx-1 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
-                            </div>
+                            </div> */}
                             <div className="w-[calc(100%-150px)] basis-[calc(100%-150px)] pl-3">                 
                                 <div className="flex flex-row ">
                                     <div className="basis-[100px] ">
-                                        <h6 className="  flex justify-center items-center h-[40px] bg-[#a6c7f2] border-[1px] border-solid rounded-[5px] text-[#4c43cc] ">{product.category.categoryName}</h6> 
+                                    <h6 className="flex justify-center items-center h-[40px] bg-[#a6c7f2] border-[1px] border-solid rounded-[5px] text-[#4c43cc]"></h6>
+                                    {product?.category ? ( 
+                                            <>
+                                        {product?.category?.categoryName}
+                                        </>
+                                        ) : ""}
                                     </div>
                                     <div className="basis-[100px] ">
                                         <span className="  flex justify-center items-center h-[40px] ml-5 bg-[#c48d20]  border-[1px] border-solid rounded-[5px] text-[#f8e825] "><  FaStar style={{ color:'#f8e825',fontSize:'21px', paddingRight: '3px'}} /> {product.rating} </span>
@@ -276,13 +288,22 @@ const FlashSale = () => {
                                 </div>
                                 <span className=" text-[#eee]  left-[3px] top-[2px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
                                 <span className=" text-[#eee] top-[37px] left-[3px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
-                                <div className="flex absolute  flex-row top-[47%] left-[28%] opacity-0  group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
+                                {/* <div className="flex absolute  flex-row top-[47%] left-[28%] opacity-0  group-hover:!opacity-[1]  transition-all ease-in-out duration-[0.3s] group-hover:-translate-y-1  items-center">
                                     <button className=" mx-1 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center" > < BsSuitHeart /> </button>
                                     <button className=" mx-1 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsEye /> </button>
                                     <button className=" mx-1 h-[30px] w-[30px] bg-[#fff] border-[1px] border-solid rounded-[5px] border-[#eee] flex justify-center items-center"><BsCart /> </button>
-                                </div>
-                                <div className="py-1"> 
-                                    <h6 className="font-normal text-[#999] text-[14px] my-2  leading-[1.2] capitalize">{product.category.categoryName}</h6>
+                                </div> */}
+                                <div className="py-1">
+                                <h6 className="font-normal text-[#999] text-[14px] my-2  leading-[1.2] capitalize">
+                                {product?.category ? ( 
+
+                                        
+                                                                    
+                                        <>                                    
+                                        {product?.category?.categoryName}
+                                        </>
+                                        ) : ""}
+                                        </h6>
                                     <h2 className="font-normal text-[17px] w-[250px] pt-1  line-clamp-1 mb-[5px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90]">
                                     {product.bookName}
                                     </h2>
@@ -290,7 +311,7 @@ const FlashSale = () => {
                                 <div className="flex items-center gap-2">
                                     <span className="  flex justify-center text-[22px] items-center h-[40px] text-[#f52525] "><  FaStar style={{color:'#f8e825',fontSize:'25px', paddingRight: '3px'}} />{product.rating} </span>
                                     <span className="text-[#4b5966] text-[22px] font-bold  ">{product.bookPrice}</span>
-                                    <span className="text-[14px] text-[#777] line-through  ">7500</span>
+                                    {/* <span className="text-[14px] text-[#777] line-through  ">7500</span> */}
                                 </div>
                             </div>    
                             </SwiperSlide> 

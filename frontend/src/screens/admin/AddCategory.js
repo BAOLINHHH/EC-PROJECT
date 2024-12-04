@@ -5,6 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import { MdCancel } from "react-icons/md";
 import images from "../../assets/indexImg";
 import apiTag from "../../api/apiTag";
+import { toast } from 'react-toastify';
 export default function AddCategory(props) {
   const inputFileRef = useRef();
   const [image, setImage] = useState("");

@@ -5,6 +5,7 @@ import { FaPlus, FaTrash, FaPen, FaSave } from "react-icons/fa";
 import AddCategory from "./AddCategory";
 import { toast } from 'react-toastify';
 import EditCategory from "./EditCategory";
+import images from '../../assets/indexImg'
 const ListCategory = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState("");
@@ -84,7 +85,13 @@ const ListCategory = () => {
               <tbody>
                 {category?.map((item) => (
                   <tr>
-                    <td className="align-middle">aaaaaa</td>
+                    <td className="align-middle">
+                     { !item.categoryImage ? (
+                        <img src={images.noImage} className='h-[80px] w-[80px] mb-2'  alt=""/>
+                      ) : (
+                        <img src={item.categoryImage} className='h-[80px] w-[80px] mb-2'  alt=""/>
+                      )}
+                    </td>
                     <td className="align-middle">{item.categoryName}</td>
                     <td className="align-middle ">
                       <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1 cursor-pointer" onClick={()=> handleOpenEdit(item)}>

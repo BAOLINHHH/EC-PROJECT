@@ -11,6 +11,10 @@ import { AiFillCaretLeft } from "react-icons/ai";
 import listProduct from '../../api/productsAPI';
 import Loader from '../../componets/Loader';
 import { useEffect } from 'react';
+import images from "../../assets/indexImg";
+import ReadSampleScreen from '../ReadSampleScreen';
+import ReadSampleAdmin from '../../componets/ReadSampleAdmin';
+import AudioSampleAdmin from '../../componets/AudioSampleAdmin';
 const DetailProduct = () => {
     const [value,setValue] = useState('1');
     const {id} = useParams()
@@ -22,7 +26,6 @@ const DetailProduct = () => {
 
     const flechData = async () =>{
       try {
-        
         const response = await listProduct.getProductDetail(id);
         setProduct(response);
         SetIsLoading(false);
@@ -30,7 +33,6 @@ const DetailProduct = () => {
         
       }
     }
-    console.log("product", product)
     const handleChange = (event,newValue) => {
         setValue(newValue);
       };
@@ -47,16 +49,24 @@ const DetailProduct = () => {
                     <button className='h-[30px] cursor-pointer w-[40px] border-solid border-[1px] rounded-[5px] bg-[#2d3748] text-[#fff] flex justify-center items-center '> <AiFillCaretLeft  size={20}/> 
                     </button>
                     </Link>
-                    <h1 className="mb-4 d-flex justify-content-center">THÔNG TIN SẢN PHẨM</h1>
+                    <h1 className="mb-4 d-flex justify-content-center text-[20px] font-700">THÔNG TIN SẢN PHẨM</h1>
                 </div> 
                 <section>
                     <div className="container-sm">
                         <div className='grid grid-cols-2 gap-x-3'>
                             <div className='col-span-1'>
                                 <div className="border-solid rounded-[7px] border-[1px] flex flex-col items-center w-[500px] mb-3">
-                                    <div className="max-h-[300px] max-w-[300px] border-[1px] border-solid border-[#e9e9e9] bg-[#f7f7f8] rounded-[5px] mb-3"> 
-                                        <img src={logoaBook} alt fluid/>
+                                    {product.bookImage ?
+                                     (
+                                      <div className="max-h-[300px] max-w-[300px] border-[1px] border-solid border-[#e9e9e9] bg-[#f7f7f8] rounded-[5px] mb-3"> 
+                                      <img src={product.bookImage} alt fluid/>
+                                      </div>  
+                                     ): 
+                                     ( 
+                                      <div className="max-h-[300px] max-w-[300px] border-[1px] border-solid border-[#e9e9e9] bg-[#f7f7f8] rounded-[5px] mb-3"> 
+                                        <img src={images.noImage} alt fluid/>
                                     </div>  
+                                     ) }
                                     <p className="text-[#04070a] text-[22px] mb-[20px] leading-[35px] captitalize">
                                         {product.bookName}
                                     </p>
@@ -84,23 +94,55 @@ const DetailProduct = () => {
                                                       </tr> */}
                                                       <tr>
                                                         <th>Tên tác giả</th>
-                                                        {/* <td> {product.author.authorName} </td> */}
+                                                        {/* {product.author ?
+                                                          ( <p className='text-[17px] text-[#100707]'>{product.author.categoryName} </p> )
+                                                          : "" } */}
+                                                        <td> {product.author} </td>
                                                       </tr>
                                                       <tr>
                                                         <th>Nhà xuất bản</th>
-                                                        <td>{product.publicCompany.publicCompanyName}</td>
+                                                        <td>
+                                                          {product.publicCompany ?
+                                                           (
+                                                            <p> {product.publicCompany?.publicCompanyName} </p>
+                                                           ):
+                                                          " "
+                                                          }
+                                                          </td>
                                                       </tr>
                                                       <tr>
                                                         <th>Thể loại</th>
-                                                        <td>{product.category.categoryName}</td>
+                                                        <td>
+                                                        {product.category ?
+                                                           (
+                                                            <p> {product.category?.categoryName} </p>
+                                                           ):
+                                                          " "
+                                                          }
+                                                        </td>
                                                       </tr>
                                                       <tr>
                                                         <th>Hình thức</th>
-                                                        <td>{product.form.form}</td>
+                                                        <td>
+                                                        {product.form ?
+                                                           (
+                                                            <p> {product.form?.form} </p>
+                                                           ):
+                                                          " "
+                                                          }
+                                                          
+                                                        </td>
                                                       </tr>
                                                       <tr>
                                                         <th>Ngôn Ngữ</th>
-                                                        <td>{product.language.languageName}</td>
+                                                        <td>
+                                                        {product.language ?
+                                                           (
+                                                            <p> {product.language.languageName} </p>
+                                                           ):
+                                                          " "
+                                                          }
+                                                          </td>
                                                       </tr>
                                                       <tr>
                                                         <th>Số trang</th>
@@ -122,35 +164,50 @@ const DetailProduct = () => {
                                     <ul>
                                         <li className="flex my-[10px] capitalize">
                                             <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Thể loại <span>:</span> </label>
-                                            {product.category.categoryName}
+                                            {product.category ?
+                                                           (
+                                                            <p> {product.category?.categoryName} </p>
+                                                           ):
+                                                          " "
+                                            }
                                         </li>
                                         <li className="flex my-[10px] capitalize"> 
                                             <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Tên tác giả <span>:</span></label>
-                                            {/* {product.author.authorName} */}
+                                            {product.author}
                                         </li>
                                         <li className="flex my-[10px] capitalize">
                                             <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Nhà xuất bản <span>:</span> </label>
-                                            {product.publicCompany.publicCompanyName}
+                                            {product.publicCompany ?
+                                                           (
+                                                            <p> {product.publicCompany?.publicCompanyName} </p>
+                                                           ):
+                                                          " "
+                                                          }
                                         </li>
                                         <li className="flex my-[10px] capitalize">
                                             <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Hình thức <span>:</span></label>
-                                            {product.form.form}
+                                                  {product.form ?
+                                                           (
+                                                            <p> {product.form?.form} </p>
+                                                           ):
+                                                          " "
+                                                          }
                                         </li>
                                                               
                                     </ul>
                                 </div>
                                 <div className="border-solid rounded-[7px] border-[1px] py-3 px-4 mb-3" >
-                                    <h3 className="text-[20px] font-[600]">Lượt bán</h3>
+                                    {/* <h3 className="text-[20px] font-[600]">Lượt bán</h3> */}
                                     <ul>
                                         <li className="flex my-[10px] capitalize">
                                             <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Số lượng tồn kho <span>:</span> </label>
 
                                             {product.bookQuaranty}
                                         </li>
-                                        <li className="flex my-[10px] capitalize"> 
+                                        {/* <li className="flex my-[10px] capitalize"> 
                                             <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Lượt bán<span>:</span></label>
                                             3
-                                        </li>                     
+                                        </li>                      */}
                                     </ul>
                                 </div>
                                 <div className="border-solid rounded-[7px] border-[1px] py-3 px-4 mb-3" >
@@ -166,8 +223,15 @@ const DetailProduct = () => {
                                         </li>                     
                                     </ul>
                                 </div>
+                                <div className="border-solid rounded-[7px] border-[1px] py-3 px-4 mb-3" >
+                                    <h3 className="text-[20px] font-[600]">Audio Boook</h3>
+                                    <AudioSampleAdmin props={product}/>
+                                </div>
                             </div>
                             
+                        </div>
+                        <div className='mt-5'>
+                          <ReadSampleAdmin props ={product} />
                         </div>
                     </div>
                 </section>

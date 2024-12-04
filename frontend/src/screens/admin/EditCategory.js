@@ -10,9 +10,8 @@ export default function EditCategory(props) {
   
   const [image, setImage] = useState("");
   const [imagePreview, setImagePreview] = useState("");
-  const [categoryPre, setCategoryPre] = useState('');
   const [category, setCategory] = useState("");
-
+  const [categoryId, setCategoryId] = useState("");
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -31,6 +30,8 @@ export default function EditCategory(props) {
 
   useEffect(() => {
     console.log("props.dataCate.categoryName", props.dataCate.categoryName);
+    console.log("props.dataCate._id", props.dataCate._id);
+    setCategoryId(props.dataCate._id)
     setCategory(props.dataCate.categoryName)
   }, [props])
 
@@ -39,26 +40,17 @@ export default function EditCategory(props) {
   }
   const handleSave = async(e) => {
     e.preventDefault();
-    console.log("category", category)
     try {
 
-      if(image){
         const formData = new FormData();
         formData.append("categoryName", category);
         formData.append("image", image);
         
-        for (const value of formData.values()) {
-          console.log(value);
-        }
-        // const response = await apiTag.AddCategory(formData);
-      }else{
-        const postData = { 
-          categoryName: category,
-          image : props.dataCate.categoryImage
-        }
-        console.log('postData',postData)
-
-      }
+        // for (const value of formData.values()) {
+        //   console.log(value);
+        // }
+        const response = await apiTag.updataCategory(categoryId,formData);
+     
       
     } catch (error) {
       console.error(error);

@@ -41,9 +41,9 @@ const apiTag =  {
             }
         })
     },
-    updataCategory(data){
-        const url = 'categories';
-        return axios.post(url,data, {
+    updataCategory(id,data){
+        const url = `categories/${id}`
+        return axios.put(url,data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }

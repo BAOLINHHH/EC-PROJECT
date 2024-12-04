@@ -155,11 +155,17 @@ const NewProduct = () => {
                                 <div className='absolute z-[20] h-[45px] w-[45px] bg-[#fff] border-solid rounded-[100%] border-[#eee] left-[-70px] top-1 flex  justify-center border-[1px]'>
                                 <ActionButton props={item} />
                                 </div>
-                                <span className=" text-[#eee]  left-[8px] top-[8px] border-[1px] border-solid rounded-[5px] bg-red-500 p-[4px] absolute ">25%</span>
-                                <span className=" text-[#eee] top-[45px] left-[8px] border-[1px] border-solid rounded-[5px] bg-[#eeb900] p-[4px] absolute ">New</span>
-                              
+                    
                             <div className="card-body border-t-[1px] ">
-                                <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">{item?.category?.categoryName}</h6>
+                                <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">
+
+                                {item?.category ? (                                                                 
+                                <>                                   
+                                    {item?.category?.categoryName}
+                                </>
+                                    
+                                ) : ""}
+                                </h6>
                                 <Link to={`product/${item._id}`}>
                                 <h2 className="font-normal text-[17px] h-[70px] pt-2  line-clamp-2 mb-[10px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90]">
                                 {item.bookName}
@@ -168,7 +174,7 @@ const NewProduct = () => {
                                 <Rating name="half-rating-read mb-[10px]" defaultValue={item.rating} precision={0.5} readOnly />
                                 <div> 
                                     <span className="text-[#4b5966] text-[18px] font-bold mr-[7px]">{item.bookPrice}</span>
-                                    <span className="text-[14px] text-[#777] line-through mr-[7px]">7500</span>
+                                    {/* <span className="text-[14px] text-[#777] line-through mr-[7px]">7500</span> */}
                                 </div>             
                             </div>
                             </div>

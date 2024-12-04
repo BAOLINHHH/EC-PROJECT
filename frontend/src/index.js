@@ -48,6 +48,7 @@ import DetailProduct from './screens/admin/DetailProduct';
 import CouponScreen from './screens/CouponScreen';
 import CategoryScreen from './screens/admin/CategoryScreen';
 import BillScreen from './screens/BillScreen';
+import CouponScreenAdmin from './screens/admin/CouponScreenAdmin';
 
 
 const router = createBrowserRouter(
@@ -81,13 +82,12 @@ const router = createBrowserRouter(
       <Route path='/address/new/:id' element ={<EditAddressScreen/>}/>
       <Route path='/readsample' element ={<ReadSampleScreen/>}/>
       <Route path='/audio' element ={<AudioSampleScreen/>}/>
-
       <Route path='/forgetpassword' element ={<ForgetPasswordScreen/>}/>
       </Route>
 
       {/* <Route path='' element = {<AdminRoute/>}> */}
       <Route path='/admin/home' element={<DashboardScreen/>}/>
-
+      <Route path='/admin/coupon' element={<CouponScreenAdmin />}/>
       <Route path='/admin/orderlist' element={<ListOrderAdminScreen />}/>
       <Route path='/admin/productlist' element={<ProductList/>}/>
       <Route path='/admin/productlist/detailproduct/:id' element={<DetailProduct/>}/>
@@ -96,6 +96,7 @@ const router = createBrowserRouter(
       <Route path='/admin/userlist' element={<ListUsersAminScreen />}/>
       <Route path='/admin/Categorylist' element={<CategoryScreen />}/>
       <Route path='/admin/user/:id/edit' element={<UpdateUserScreen />}/>
+      
 
       {/* </Route> */}
 

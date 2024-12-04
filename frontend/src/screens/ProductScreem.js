@@ -103,14 +103,14 @@ const addToFavoriteHandler = async () =>{
     const qty = count.valueAsNumber + 1;
     setQuantity(qty);
   }
-  const addToCartAndBuyHandler = () =>{
-    dispatch (addToCart({...dataProduct, qty}));
-    navigate ('/cart');
-  }
+  // const addToCartAndBuyHandler = () =>{
+  //   dispatch (addToCart({...dataProduct, qty}));
+  //   navigate ('/cart');
+  // }
 
-  const checkoutHandler = ()=>{
-    navigate('/login?redirect=/shipping');
-  }
+  // const checkoutHandler = ()=>{
+  //   navigate('/login?redirect=/shipping');
+  // }
 
 //   const addToCartHandler = async () =>{
 //     const cartItems={...dataProduct}
@@ -222,26 +222,35 @@ const addToFavoriteHandler = async () =>{
                                   </div>
                                   <div className>
                                     <span className="text-[#4b5966] text-[22px] font-bold mr-[7px]">{dataProduct.bookPrice}</span>
-                                    <span className="text-[17px] text-[#777] line-through mr-[7px]">7500</span>
-                                    <span className=" text-[20px] text-[hsl(9,80%,55%)]  ">25%</span>
                                   </div>
                                   <div className="mb-[15px]" >
                                     <ul>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Thể loại <span>:</span></label>
-                                          { dataProduct.category.categoryName }
+                                          
+                                          {dataProduct?.category ? (<>
+                                          
+                                            { dataProduct.category.categoryName }
+                                          </>): ' ' }
+                                          
                                         </li>
                                         <li className="flex my-[10px] capitalize"> 
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Tên tác giả <span>:</span></label>
-                                          {/* {dataProduct.author} */}
+                                          {dataProduct.author}
                                         </li>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Nhà xuất bản <span>:</span></label>
-                                          {dataProduct.publicCompany.publicCompanyName}
+                                          
+                                          {dataProduct?.publicCompany ? (<>
+                                          
+                                            {dataProduct.publicCompany.publicCompanyName}
+                                          </>): "" }
                                         </li>
                                         <li className="flex my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Hình thức <span>:</span></label>
+                                          {dataProduct.form ? (<>
                                           {dataProduct.form.form}
+                                          </>) : ' '}
                                         </li>
                                         <li className="flex items-center my-[10px] capitalize">
                                           <label className="min-w-[100px] mr-[10px] text-[#2b2b2d] font-semibold flex justify-between">Trạng thái<span>:</span></label>
@@ -388,23 +397,42 @@ const addToFavoriteHandler = async () =>{
                                                   </tr>
                                                   <tr>
                                                     <th>Tên tác giả</th>
-                                                    {/* <td>{dataProduct.author}</td> */}
+                                                    <td>{dataProduct.author}</td>
                                                   </tr>
                                                   <tr>
                                                     <th>Nhà xuất bản</th>
-                                                    <td>{dataProduct.publicCompany.publicCompanyName}</td>
+                                                    <td>
+                                                      {dataProduct.publicCompany ? ( <>
+                                                        {dataProduct.publicCompany.publicCompanyName}
+                                                      </>): ' '}
+                                                      </td>
                                                   </tr>
                                                   <tr>
                                                     <th>Thể loại</th>
-                                                    <td>{dataProduct.category.categoryName}</td>
+                                                    <td>
+                                                      {dataProduct?.category ? (<>
+                                                      
+                                                      
+                                                        {dataProduct.category.categoryName}
+                                                      </>): ' ' }
+                                                      
+                                                      </td>
                                                   </tr>
                                                   <tr>
                                                     <th>Hình thức</th>
-                                                    <td>{dataProduct.form.form}</td>
+                                                    <td>
+                                                      {dataProduct?.form  ? (<>
+                                                        {dataProduct.form.form}
+                                                      </>): ' ' }
+                                                      </td>
                                                   </tr>
                                                   <tr>
                                                     <th>Ngôn Ngữ</th>
-                                                    <td>{dataProduct.language.languageName}</td>
+                                                    <td>
+                                                      {dataProduct.language ? (<>
+                                                        {dataProduct.language.languageName}
+                                                      </>) : ''}
+                                                      </td>
                                                   </tr>
                                                   <tr>
                                                     <th>Số trang</th>

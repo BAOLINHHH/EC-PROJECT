@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import Message from '../../componets/Message';
 import Loader from '../../componets/Loader';
 import { useGetProductsQuery,useCreateProductMutation,useDeleteProductMutation} from '../../slices/productsApiSlice';
-// import Paginate from '../../componets/Paginate';
 import AddProduct from './AddProduct';
 import { useState } from 'react';
 import listProduct from '../../api/productsAPI';
@@ -17,23 +16,25 @@ import Stack from '@mui/material/Stack';
 import { optionCurrency,transform } from "../../componets/money"
 import formatCurrency from "../../utils/format"
 import dayjs from "dayjs";
+import images from '../../assets/indexImg'
 const ProductList = () => {
     // const {pageNumber} = useParams()
     const [searchParams] = useSearchParams()
     const [dataProduct, setDataProduct] = useState('');
-    const [isLoading,SetIsLoading] = useState(true);
+    const [isLoading,setIsLoading] = useState(true);
     const [pageNumber, setPageNumber] = useState('');
+    const [isRefresh, setIsRefresh] = useState(false);
     // const pageParam = searchParams.get("pageNumber")||'';
     // const { data,  error, refetch } = useGetProductsQuery({pageNumber: (pageNumber||pageParam)});
     useEffect(()=>{
       flechData()
-    },[pageNumber])
+    },[pageNumber,isRefresh])
     
     const flechData = async()=>{
       try {
         const response = await listProduct.getAllAdminProduct(pageNumber);
         setDataProduct(response);
-        SetIsLoading(false);
+        setIsLoading(false);
       } catch (error) {
         toast.error(error?.response.data.message)
       }
@@ -63,6 +64,16 @@ const ProductList = () => {
       const currentPage = value ; 
         setPageNumber(currentPage)
     }
+    const handleDelete = async(id) =>{
+      try {
+        await listProduct.deleteProduct(id)
+        setIsLoading(pre => !pre);
+        setIsRefresh(pre => !pre);
+        toast.success(' Xóa thành công');
+      } catch (error) {
+        toast.error(error?.response?.data?.message )
+      }
+    } 
     // const deleteHandler = async (id) => {
     //   if (window.confirm('Bạn có muốn xóa?')) {
     //     try {
@@ -75,9 +86,6 @@ const ProductList = () => {
     // }
   return (
     <>
-      
-      
-      
         <div className='row'>
             <div className='col-md-2'>
                 <SidebarAdmin />
@@ -100,12 +108,15 @@ const ProductList = () => {
               <table  class="table  border-[1px] border-solid">
                     <thead className="table-light">
                     <tr>  
-                      <th className="capitalize leading-3 text-[17px]">Hình ảnh sản phẩm</th>
-                      <th className="capitalize leading-3 text-[17px]">Tên sản Phẩm</th>
+                      <th className="capitalize leading-3 text-[17px]">Hình ảnh</th>
+                      <th className="capitalize leading-3 text-[17px]">Tên </th>
                       <th className="capitalize leading-3 text-[17px]">Thể loại</th>
+                      <th className="capitalize leading-3 text-[17px]">NXB</th>
+                      <th className="capitalize leading-3 text-[17px]">Hình thức</th>
+                      <th className="capitalize leading-3 text-[17px]">Ngôn ngữ</th>
                       <th className="capitalize leading-3 text-[17px]">Trạng thái</th>
-                      <th className="capitalize leading-3 text-[17px]">Giá sản phẩm </th>
-                      <th className="capitalize leading-3 text-[17px]">Ngày tạo</th>
+                      <th className="capitalize leading-3 text-[17px]">Giá </th>
+                   
                       <th className=""></th>
                     </tr>
                   </thead>
@@ -114,13 +125,34 @@ const ProductList = () => {
                      <tr>
                       
                      <td className="align-middle">
-                         doan bao linh
+                      { !dataProduct.bookImage ? (
+                        <img src={images.noImage} className='h-[80px] w-[80px] mb-2'  alt=""/>
+                      ) : (
+                        <img src={dataProduct.bookImage} className='h-[80px] w-[80px] mb-2'  alt=""/>
+                      )}
                      </td>
                      <td className="align-middle  ">
-                        <p className='w-[330px] line-clamp-1 text-[17px] text-[#100707]'>{item.bookName}</p> 
+                        <p className='w-[280px] line-clamp-1 text-[17px] text-[#100707]'>{item.bookName}</p> 
                      </td>
                      <td className="align-middle">
-                        <p className='text-[17px] text-[#100707]'>{item.category.categoryName} </p>
+                        {item?.category ?
+                         ( <p className='text-[17px] text-[#100707]'>{item.category.categoryName} </p> )
+                          : "" }
+                     </td>
+                     <td className="align-middle">
+                        {item?.publicCompany ?
+                         ( <p className='text-[17px] text-[#100707]'>{item.publicCompany.publicCompanyName} </p> )
+                          : "" }
+                     </td>
+                     <td className="align-middle">
+                        {item?.form ?
+                         ( <p className='text-[17px] text-[#100707]'>{item.form.form} </p> )
+                          : "" }
+                     </td>
+                     <td className="align-middle">
+                        {item?.language ?
+                         ( <p className='text-[17px] text-[#100707]'>{item.language.languageName} </p> )
+                          : "" }
                      </td>
                      <td className="align-middle">
                      {item.bookQuaranty > 0 ? (
@@ -136,9 +168,9 @@ const ProductList = () => {
                      <td className="align-middle">
                           <p className='text-[#c53533] text-[17px]'> { transform(item.bookPrice,optionCurrency)}</p>  
                      </td>
-                     <td className="align-middle">
+                     {/* <td className="align-middle">
                      {dayjs(item.createdAt).format("DD/MM/YYYY")}
-                     </td>
+                     </td> */}
                      
                      <td className="align-middle">
                        <Link to={`detailproduct/${item._id}`}>
@@ -149,7 +181,7 @@ const ProductList = () => {
                        <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1">
                        <FaPen/>
                        </div>
-                       <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px]">
+                       <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer " onClick={()=>handleDelete(item._id)}>
                          <FaTrash/>
                        </div>
                      </td>
@@ -244,10 +276,6 @@ const ProductList = () => {
           )} */}
 
         </div>
-      
-      
-    
-        
     </>
   )
 }
