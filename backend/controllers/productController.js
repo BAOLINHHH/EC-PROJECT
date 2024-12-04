@@ -326,11 +326,15 @@ const createProduct = asyncHandler(async (req, res) => {
     quantity: req.body.quantity,
     audioUrl: req.body.audioUrl,
     pdfUrl: req.body.pdfUrl,
+    ebook: req.body.ebook !== undefined ? req.body.ebook : false,
+    pdfUrlPresent: req.body.pdfUrlPresent || '',
+    audioUrlPresent: req.body.audioUrlPresent || '',
   });
 
   const createdProduct = await product.save();
   res.status(201).json(createdProduct);
 });
+
 
 // @desc     Update a product
 // @route    PUT /api/products/:id
@@ -351,6 +355,9 @@ const updateProduct = asyncHandler(async (req, res) => {
     pageNumber,
     audioUrl,
     pdfUrl,
+    ebook,
+    pdfUrlPresent,
+    audioUrlPresent,
   } = req.body;
 
   // Tìm sản phẩm theo id
@@ -371,6 +378,9 @@ const updateProduct = asyncHandler(async (req, res) => {
     if (pageNumber) product.pageNumber = pageNumber;
     if (audioUrl) product.audioUrl = audioUrl;
     if (pdfUrl) product.pdfUrl = pdfUrl;
+    if (ebook !== undefined) product.ebook = ebook;
+    if (pdfUrlPresent) product.pdfUrlPresent = pdfUrlPresent;
+    if (audioUrlPresent) product.audioUrlPresent = audioUrlPresent;
 
     // Lưu sản phẩm đã được cập nhật
     const updatedProduct = await product.save();
@@ -380,6 +390,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error("Resource not found");
   }
 });
+
 
 
 // @desc     Delete a product

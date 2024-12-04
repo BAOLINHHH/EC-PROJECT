@@ -99,6 +99,19 @@ const productSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
+    ebook: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    pdfUrlPresent: {
+      type: String,
+      required: false,
+    },
+    audioUrlPresent: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,
