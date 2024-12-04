@@ -36,6 +36,10 @@ const orderSchema = mongoose.Schema(
       status: { type: String }, //paypal,...
       update_time: { type: String },
     },
+    status: {
+      status: { type: String }, //paypal,...
+      update_time: { type: String },
+    },
     itemsPrice: {
       type: Number,
       required: true,

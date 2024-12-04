@@ -18,7 +18,7 @@ router.route('/mine').get(protect, getMyOrders);
 router.route('/:id').get(protect, getOrderById);
 router.route('/:id/pay').put(protect, updateOrderToPaid);
 router.route('/:id/deliver').put(protect, admin, updateOrderToDelivered);
-router.get("/tracking/:trackingCode", protect, getOrderByTrackingCode);
+router.get("/tracking/:trackingCode", getOrderByTrackingCode);
 router.post("/create_payment_url", protect, createPaymentUrl);
 
 export default router;
