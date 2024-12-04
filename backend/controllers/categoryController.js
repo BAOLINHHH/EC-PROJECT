@@ -55,20 +55,24 @@ const getCategoryById = async (req, res) => {
 // @access   Public
 const updateCategory = async (req, res) => {
     try {
-        if (!req.body.categoryName) {
-            return res.status(400).json({ message: "Category name is required" });
-        }
-        console.log('req.body', req.body)
-        // const category = await Category.findByIdAndUpdate(req.params.id, {
-        //     categoryName: req.body.categoryName,
-        //     categoryImage: req.body.categoryImage || "",  // Nếu không có categoryImage thì gán giá trị mặc định là ""
-        // }, { new: true });
-            
-        // if (!category) {
-        //     return res.status(404).json({ message: 'Category not found' });
-        // }
+        const { categoryName, categoryImage } = req.body;
 
-        // res.status(200).json(category);
+        // Tìm kiếm category
+        const category = await Category.findById(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
+        // Chỉ cập nhật những thuộc tính có trong request body
+        if (categoryName) category.categoryName = categoryName;
+        if (categoryImage !== undefined) category.categoryImage = categoryImage || "";  // Nếu không có categoryImage, mặc định là ""
+        
+        // Lưu kết quả cập nhật
+        await category.save();
+
+        // Trả về kết quả sau khi cập nhật
+        res.status(200).json(category);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
