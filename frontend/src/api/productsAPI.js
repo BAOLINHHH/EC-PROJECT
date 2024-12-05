@@ -1,5 +1,6 @@
 
 
+import { create } from "@mui/material/styles/createTransitions";
 import axios  from "./axios";
 
 const listProduct =  {
@@ -31,6 +32,14 @@ const listProduct =  {
     addToFavorite(){
         const url = 'wishlist'
         return axios.post(url)
+    },
+    createProduct(data){
+        const url = 'products';
+        return axios.post(url,data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        })
     },
     deleteProduct(id){
         const url = `products/${id}`

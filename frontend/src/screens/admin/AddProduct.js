@@ -8,6 +8,8 @@ import apiTag from '../../api/apiTag';
 import { useEffect } from 'react';
 import { RiMoneyEuroCircleFill } from "react-icons/ri";
 import Checkbox from '@mui/material/Checkbox';
+import { toast } from 'react-toastify';
+import listProduct from '../../api/productsAPI';
 export default function AddProduct(props){
   const inputFileRef = useRef();
   const [image, setImage] = useState("");
@@ -94,14 +96,14 @@ export default function AddProduct(props){
       }
   }; reader.readAsDataURL(file);
   };
-  const handleSave=(e)=>{
+  const handleSave=async(e)=>{
     e.preventDefault();
     if (!image || !audioPre || !pdfPre ) {
       alert("Vui lòng chọn File!");
       return;
     };
-
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
       if (checked){
         formData.append("audioUrl", audio);
         formData.append("pdfUrl", pdf);        
@@ -117,9 +119,15 @@ export default function AddProduct(props){
       formData.append("form",selectForm );
       formData.append("pageNumber",pageNumber );
       formData.append("ebook",checked);
-      for (const value of formData.values()) {
-        console.log(value);
-      }
+      await listProduct.createProduct(formData)
+      toast.success('Thêm thành công')
+    } catch (error) {
+      toast.error('Thêm thất bại')
+    }
+    
+      // for (const value of formData.values()) {
+      //   console.log(value);
+      // }
   }
 
   const handleCategoryChange =(e)=>{
@@ -300,11 +308,11 @@ export default function AddProduct(props){
           </div>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Số lượng: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setQuantity(e.target.value)} placeholder="Số lượng" />
+            <input type="number" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setQuantity(e.target.value)} placeholder="Số lượng" />
           </div>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Số trang: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setPageNumber(e.target.value)} placeholder="Tên sản phẩm" />
+            <input type="number" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setPageNumber(e.target.value)} placeholder="Số trang" />
           </div>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Sơ lược nội dung: </span>

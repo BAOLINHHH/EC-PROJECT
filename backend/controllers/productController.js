@@ -311,28 +311,38 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route    POST /api/products
 // @access   Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
-  const product = new Product({
-    bookName: req.body.bookName,
-    user: req.user._id,
-    category: req.body.category,
-    author: req.body.author,
-    publicCompany: req.body.publicCompany,
-    language: req.body.language,
-    form: req.body.form,
-    pageNumber: req.body.pageNumber,
-    bookPrice: req.body.bookPrice,
-    bookDetail: req.body.bookDetail,
-    bookImage: req.body.bookImage,
-    quantity: req.body.quantity,
-    audioUrl: req.body.audioUrl,
-    pdfUrl: req.body.pdfUrl,
-    ebook: req.body.ebook !== undefined ? req.body.ebook : false,
-    pdfUrlPresent: req.body.pdfUrlPresent || '',
-    audioUrlPresent: req.body.audioUrlPresent || '',
-  });
 
-  const createdProduct = await product.save();
-  res.status(201).json(createdProduct);
+  console.log("req.file", req.file)
+  console.log("req.file.bookImage", req.file.bookImage)
+  console.log("req.file.audioUrlPresent", req.file.audioUrlPresent)
+  console.log("req.file.pdfUrlPresent", req.file.pdfUrlPresent)
+  console.log("req.file.audioUrl", req.file.audioUrl)
+  console.log("req.file.pdfUrl", req.file.pdfUrl)
+
+  // const product = new Product({
+  //   bookName: req.body.bookName,
+  //   user: req.user._id,
+  //   category: req.body.category,
+  //   author: req.body.author,
+  //   publicCompany: req.body.publicCompany,
+  //   language: req.body.language,
+  //   form: req.body.form,
+  //   pageNumber: req.body.pageNumber,
+  //   bookPrice: req.body.bookPrice,
+  //   bookDetail: req.body.bookDetail,
+  //   bookImage: req.body.bookImage,
+  //   quantity: req.body.quantity,
+  //   audioUrl: req.body.audioUrl,
+  //   pdfUrl: req.body.pdfUrl,
+  //   ebook: req.body.ebook !== undefined ? req.body.ebook : false,
+  //   pdfUrlPresent: req.body.pdfUrlPresent || '',
+  //   audioUrlPresent: req.body.audioUrlPresent || '',
+  // });
+  
+  // const createdProduct = await product.save();
+  res.status(201).json({success : true});
+  
+  // res.status(201).json(createdProduct);
 });
 
 
