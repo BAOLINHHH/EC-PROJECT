@@ -6,7 +6,7 @@ import {
     registerAndVerifyUser,
     logoutUser,
     getUserProfile,
-    updateUserProfile,
+    //updateUserProfile,
     getUsers,
     deleteUser,
     getUserById,
@@ -27,7 +27,7 @@ router.route('/change-password').put(protect, changePassword);
 //router.route('/verify-otp').post(verifyOtp);
 router.post('/logout', logoutUser);
 router.post('/auth', authUser);
-router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+//router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
 router.route('/:id').delete(protect, admin, deleteUser).get(protect, admin, getUserById).put(protect, admin, updateUser);
 
 export default router;
