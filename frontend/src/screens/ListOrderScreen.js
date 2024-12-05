@@ -53,12 +53,10 @@ const ListOrderScreen = () => {
                   <tr>
                     <td className="align-middle">{order._id}</td>
                     <td className="align-middle">
-                      <td>{order.orderItems.length}</td>
+                      <td>{order.orderItems.createdAt}</td>
                     </td>
                     <td className="align-middle">
-                      <div className="border-solid border-[1px] rounded-[3px] bg-[#ffc107] flex justify-center w-[120px]">
-                        <p className="text-[#fff]"> hoan thanh </p>
-                      </div>
+                        <p>{order.orderItems.orderStatus}</p>
                     </td>
                     <td className="align-middle">{order.itemsPrice}</td>
                     <td className="align-middle">

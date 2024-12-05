@@ -39,9 +39,9 @@ const orderSchema = mongoose.Schema(
     orderStatus: {
       type: String,
       required: true,
-      default: "Đã đặt hàng", // Trạng thái mặc định
+      default: "Đã tạo đơn đặt hàng", // Trạng thái mặc định
       enum: [
-        "Đã đặt hàng",
+        "Đã tạo đơn đặt hàng",
         "Đang chờ đơn vị vận chuyển",
         "Đang vận chuyển",
         "Đơn hàng đã được giao",
@@ -93,7 +93,7 @@ const orderSchema = mongoose.Schema(
     },
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 
