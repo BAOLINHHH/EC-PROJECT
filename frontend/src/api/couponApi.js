@@ -13,9 +13,13 @@ const couponApi =  {
         return axios.post(url,data)
     },
     update(id, data){
-        console.log(id)
+
         const url = `coupon/${id}`
         return axios.put(url,data)
+    },
+    delete(id){
+        const url = `coupon/${id}`
+        return axios.delete(url)
     }
     
     

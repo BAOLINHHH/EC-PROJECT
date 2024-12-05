@@ -4,6 +4,7 @@ import Loader from '../../componets/Loader';
 import {  FaPlus, FaTrash ,FaPen,FaSave  } from 'react-icons/fa';
 import { MdCancel } from "react-icons/md";
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2'
 const ListForm = () => {
     const [isLoading,setIsLoading] = useState(true);
     const [form,setForm]= useState('');
@@ -43,6 +44,8 @@ const ListForm = () => {
         setUpdateRow(e.target.value)
       };
     const handleUpdate=async()=>{
+
+
         try {
             const dataPost = {form: updateRow};
             setIsLoading(pre => !pre)
@@ -56,14 +59,34 @@ const ListForm = () => {
         }
     }
     const handleDelete =async(id)=>{
-        try {
-            await apiTag.deleteForm(id);
-            setIsLoading(pre => !pre);
-            setIsRefresh(pre => !pre);
-            toast.success('Xoá thành công');
-        } catch (error) {
-            toast.error(error?.response.data.message)
-        }
+
+
+        Swal.fire({
+            title: "Bạn có chắc chắn xóa?",
+            text: "Bạn sẽ không thể hoàn tác hành động này!",  
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+          }).then( async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await apiTag.deleteForm(id);
+                    setIsLoading(pre => !pre);
+                    setIsRefresh(pre => !pre);
+                    toast.success('Xoá thành công');
+                } catch (error) {
+                    toast.error(error?.response.data.message)
+                }
+            }
+          });
+
+            
+
+
+
+      
     }
   return (
     <>

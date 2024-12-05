@@ -7,12 +7,14 @@ import images from '../../assets/indexImg'
 import apiTag from '../../api/apiTag';
 import { useEffect } from 'react';
 import { RiMoneyEuroCircleFill } from "react-icons/ri";
-
+import Checkbox from '@mui/material/Checkbox';
 export default function AddProduct(props){
   const inputFileRef = useRef();
   const [image, setImage] = useState("");
   const [audio,setAudio] = useState('');
-  const [pdf,setPdf] = useState('')
+  const [pdf,setPdf] = useState('');
+  const [audioPre,setAudioPre] = useState('');
+  const [pdfPre,setPdfPre] = useState('');
   const [imagePreview,setImagePreview] = useState('');
   const [selectCategory , setSelectCategory] = useState("");
   const [category, setCategory] = useState('');
@@ -28,7 +30,7 @@ export default function AddProduct(props){
   const [bookPrice , setBookPrice ]  = useState(''); 
   const [bookDetail, setBookDetail] = useState('');
   const [quantity, setQuantity] = useState('');
-
+  const [checked, setChecked] = useState(false);
   useEffect (() =>{
       flechData()
   },[])
@@ -65,6 +67,24 @@ export default function AddProduct(props){
       }
   }; reader.readAsDataURL(file);
   };
+  const handleFileAudioPreUpload =(e)=>{
+    const file =  e.target.files[0];
+    setAudioPre(file)
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+      }
+  }; reader.readAsDataURL(file);
+  }
+  const handleFilePdfPreUpload =(e)=>{
+    const file = e.target.files[0];
+    setPdfPre(file)
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+      }
+  }; reader.readAsDataURL(file);
+  }
   const handleFilePdfUpload = (e)=>{
     const file = e.target.files[0];
     setPdf(file)
@@ -76,16 +96,27 @@ export default function AddProduct(props){
   };
   const handleSave=(e)=>{
     e.preventDefault();
-    if (!image || !audio || !pdf ) {
-      alert("Vui lòng chọn một hình ảnh!");
+    if (!image || !audioPre || !pdfPre ) {
+      alert("Vui lòng chọn File!");
       return;
     };
 
     const formData = new FormData();
-      formData.append("image", image);
-      formData.append("audio", audio);
-      formData.append("pdf", pdf);
-
+      if (checked){
+        formData.append("audioUrl", audio);
+        formData.append("pdfUrl", pdf);        
+      }
+      formData.append("bookImage", image);
+      formData.append("audioUrlPresent", audioPre);
+      formData.append("pdfUrlPresent", pdfPre);
+      formData.append("bookName", bookName);
+      formData.append("category", selectCategory);
+      formData.append("author", author);
+      formData.append("publicCompany", selectPublicCompany);
+      formData.append("language", selectLanguage);
+      formData.append("form",selectForm );
+      formData.append("pageNumber",pageNumber );
+      formData.append("ebook",checked);
       for (const value of formData.values()) {
         console.log(value);
       }
@@ -154,10 +185,17 @@ export default function AddProduct(props){
               </label>
             </div>
           </div>
-          <div className="flex items-center mb-3">
-            <span className="w-[250px]">Tên sản phẩm: </span>
-            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setBookName(e.target.value)} placeholder="Tên sản phẩm" />
+
+            <div className="flex items-center mb-3">
+            <span className="w-[250px]">Sách phi vật lý </span>
+            <Checkbox
+            checked={checked}
+            onChange={(e)=> setChecked(e.target.checked) }
+            inputProps={{ 'aria-label': 'controlled' }}
+          />  
           </div>
+          {checked ? (
+            <>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">File Mp3 </span>
               <input type="file" className=" w-[500px]   outline-none " accept=".mp3" onChange={handleFileAudioUpload} placeholder="File audio book" />
@@ -165,6 +203,21 @@ export default function AddProduct(props){
           <div className="flex items-center mb-3">
             <span className="w-[250px]">File PDF </span>
               <input type="file" className=" w-[500px]  outline-none " accept='application/pdf' onChange={handleFilePdfUpload} placeholder="File PDF book" />
+          </div>
+            </>
+          ): ""}
+         
+          <div className="flex items-center mb-3">
+            <span className="w-[250px]">File Mp3 xem trước </span>
+              <input type="file" className=" w-[500px]   outline-none " accept=".mp3" onChange={handleFileAudioPreUpload} placeholder="File audio book" />
+          </div>
+          <div className="flex items-center mb-3">
+            <span className="w-[250px]">File PDF xem trước </span>
+              <input type="file" className=" w-[500px]  outline-none " accept='application/pdf' onChange={handleFilePdfPreUpload} placeholder="File PDF book" />
+          </div>
+          <div className="flex items-center mb-3">
+            <span className="w-[250px]">Tên sản phẩm: </span>
+            <input type="text" className=" w-[500px] outline-none h-[40px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303]  text-[17px]  p-[10px] rounded-[5px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5]"   onChange={(e)=>setBookName(e.target.value)} placeholder="Tên sản phẩm" />
           </div>
           <div className="flex items-center mb-3">
             <span className="w-[250px]">Thể loại </span>

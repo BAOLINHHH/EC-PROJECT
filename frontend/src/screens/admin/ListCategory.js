@@ -6,6 +6,7 @@ import AddCategory from "./AddCategory";
 import { toast } from 'react-toastify';
 import EditCategory from "./EditCategory";
 import images from '../../assets/indexImg'
+import Swal from 'sweetalert2'
 const ListCategory = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState("");
@@ -38,14 +39,38 @@ const ListCategory = () => {
     setDataEditCate('');
   };
   const handleDelete= async(id)=>{
-    try {
+
+
+    Swal.fire({
+      title: "Bạn có chắc chắn xóa?",
+      text: "Bạn sẽ không thể hoàn tác hành động này!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes"
+    }).then( async (result) => {
+      if (result.isConfirmed) {
+      try {
       await apiTag.deleteCategory(id)
       setIsLoading(pre => !pre);
       setIsRefresh(pre => !pre);
       toast.success(' Xóa thành công');
-    } catch (error) {
+     } catch (error) {
       toast.error(error?.response.data.message)
-    }
+      }
+      }
+    });
+
+
+    // try {
+    //   await apiTag.deleteCategory(id)
+    //   setIsLoading(pre => !pre);
+    //   setIsRefresh(pre => !pre);
+    //   toast.success(' Xóa thành công');
+    // } catch (error) {
+    //   toast.error(error?.response.data.message)
+    // }
   }
   return (
     <>

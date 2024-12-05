@@ -4,6 +4,7 @@ import Loader from '../../componets/Loader';
 import { toast } from 'react-toastify';
 import {  FaPlus, FaTrash ,FaPen,FaSave  } from 'react-icons/fa';
 import { MdCancel } from "react-icons/md";
+import Swal from 'sweetalert2'
 const ListLanguage = () => {
     const [language,setLanguage]= useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -52,14 +53,32 @@ const ListLanguage = () => {
         }
     }
     const handleDelete =async(id)=>{
-        try {
-            await apiTag.deleteLanguage(id);
-            setIsLoading(pre => !pre);
-            setIsRefresh(pre => !pre);
-            toast.success('Xoá thành công');
-        } catch (error) {
-            toast.error(error?.response.data.message)
-        }
+
+
+
+
+        Swal.fire({
+            title: "Bạn có chắc chắn xóa?",
+            text: "Bạn sẽ không thể hoàn tác hành động này!",  
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+          }).then( async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await apiTag.deleteLanguage(id);
+                    setIsLoading(pre => !pre);
+                    setIsRefresh(pre => !pre);
+                    toast.success('Xoá thành công');
+                } catch (error) {
+                    toast.error(error?.response.data.message)
+                }
+            }
+          });
+
+
     }
   return (
     <>

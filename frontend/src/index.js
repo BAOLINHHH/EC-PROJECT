@@ -37,7 +37,7 @@ import ListUsersAminScreen from './screens/admin/ListUsersAminScreen';
 import UpdateUserScreen from './screens/admin/UpdateUserScreen';
 import FavoriteScreen from './screens/FavoriteScreen';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
-import ChangePassword from './screens/ChangePassword';
+import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import AddressScreen from './screens/AddressScreen';
 import NewAddressScreen from './screens/NewAddressScreen';
 import ReadSampleScreen from './screens/ReadSampleScreen';
@@ -49,6 +49,7 @@ import CouponScreen from './screens/CouponScreen';
 import CategoryScreen from './screens/admin/CategoryScreen';
 import BillScreen from './screens/BillScreen';
 import CouponScreenAdmin from './screens/admin/CouponScreenAdmin';
+import ChangePasswordAdmin from './screens/admin/ChangePasswordAdmin';
 
 
 const router = createBrowserRouter(
@@ -75,7 +76,7 @@ const router = createBrowserRouter(
       <Route path='/profile' element ={<ProfileScreen/>}/>
       <Route path='/listorder' element ={<ListOrderScreen/>}/>
       <Route path='/favorite' element ={<FavoriteScreen/>}/>
-      <Route path='/changepassword' element ={<ChangePassword/>}/>
+      <Route path='/changepassword' element ={<ChangePasswordScreen/>}/>
       <Route path='/address' element ={<AddressScreen/>}/>
       <Route path='/coupon' element ={<CouponScreen/>}/>
       <Route path='/address/new' element ={<NewAddressScreen/>}/>
@@ -94,6 +95,7 @@ const router = createBrowserRouter(
       <Route path='/admin/product/:id/edit' element={<UpdateProdctScreen/>}/>
       <Route path='/admin/productlist' element={<ProductList/>}/>
       <Route path='/admin/userlist' element={<ListUsersAminScreen />}/>
+      <Route path='/admin/changePassword' element={<ChangePasswordAdmin/>}/>
       <Route path='/admin/Categorylist' element={<CategoryScreen />}/>
       <Route path='/admin/user/:id/edit' element={<UpdateUserScreen />}/>
       

@@ -1,6 +1,7 @@
 import { FaHome, FaUsers,FaArchive,FaReceipt  } from "react-icons/fa";
 import { RiCoupon2Fill } from "react-icons/ri";
 import { MdCategory } from "react-icons/md";
+import {  TbPasswordUser } from "react-icons/tb";
 export const sidebarAdminData=[
 
 
@@ -26,14 +27,15 @@ export const sidebarAdminData=[
     },
 
      {
-        title: 'Coupon',
+        title: 'Quản lý Coupon',
         icon: <RiCoupon2Fill/>,
         path: '/admin/coupon',
     },
-    // {
-    //     title: 'Receipt',
-    //     icon: <FaReceipt/>,
-    //     path: '/admin/aaaaa',
-    // },
+    {
+        title: 'Mật khẩu ',
+        icon: <TbPasswordUser/>,
+        path: '/admin/changePassword',
+    },
+
    
 ]

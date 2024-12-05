@@ -4,9 +4,8 @@ import { FaEdit, FaPlus, FaTrash ,FaEye,FaPen } from 'react-icons/fa';
 import { Link, useParams,useSearchParams } from 'react-router-dom';
 import SidebarAdmin from './SidebarAdmin';
 import { toast } from 'react-toastify';
-import Message from '../../componets/Message';
 import Loader from '../../componets/Loader';
-import { useGetProductsQuery,useCreateProductMutation,useDeleteProductMutation} from '../../slices/productsApiSlice';
+
 import AddProduct from './AddProduct';
 import { useState } from 'react';
 import listProduct from '../../api/productsAPI';
@@ -39,8 +38,7 @@ const ProductList = () => {
         toast.error(error?.response.data.message)
       }
     }
-    const [ createProduct,{isLoading: loadingCreate}] = useCreateProductMutation();
-    const [deleteProduct, { isLoading: loadingDelete }] =useDeleteProductMutation();
+
     
     const [isOpenAddProductDialog, setIsOpenAddProductDialog] = useState(false)
 

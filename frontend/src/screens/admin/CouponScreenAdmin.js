@@ -4,7 +4,7 @@ import { Link, useParams,useSearchParams } from 'react-router-dom';
 import SidebarAdmin from './SidebarAdmin';
 import { toast } from 'react-toastify';
 import Loader from '../../componets/Loader';
-import { useGetProductsQuery,useCreateProductMutation,useDeleteProductMutation} from '../../slices/productsApiSlice';
+// import { useGetProductsQuery,useCreateProductMutation,useDeleteProductMutation} from '../../slices/productsApiSlice';
 import { calculateRemainingDays } from '../../utils/calculateDayRemain';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -14,6 +14,7 @@ import couponApi from '../../api/couponApi';
 import dayjs from "dayjs";
 import AddCoupon from './AddCoupon';
 import EditCoupon from './EditCoupon';
+import Swal from 'sweetalert2'
 const CouponScreenAdmin = () => {
     const [coupon, setCoupon] = useState('');
     const [isOpenAddCoupontDialog, setIsOpenAddCouponDialog] = useState(false);
@@ -48,6 +49,28 @@ const CouponScreenAdmin = () => {
       setIsOpenEditCouponDialog(false);
       setDataEditCoupon('')
     };
+    const handleDelete = async(id)=>{
+      Swal.fire({
+        title: "Bạn có chắc chắn xóa?",
+        text: "Bạn sẽ không thể hoàn tác hành động này!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes"
+      }).then( async (result) => {
+        if (result.isConfirmed) {
+          setIsLoading(pre => !pre)
+          await couponApi.delete(id);
+          toast.success('Xóa thành công')
+          setIsRefresh(pre => !pre)
+        }else{
+          toast.error('Xóa không thành công')
+        }
+      });
+    }
+
+
   return (
     <>
      <div className='row'>
@@ -116,7 +139,7 @@ const CouponScreenAdmin = () => {
                        <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1 cursor-pointer"  onClick={()=> handleOpenEdit(item)}>
                        <FaPen/>
                        </div>
-                       <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer ">
+                       <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer " onClick={()=>handleDelete(item._id)}>
                          <FaTrash/>
                        </div>
                      </td>

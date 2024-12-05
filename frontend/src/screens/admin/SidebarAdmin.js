@@ -1,18 +1,34 @@
 import React, { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink,useNavigate } from 'react-router-dom'
 import Avatar from '@mui/material/Avatar';
 import { sidebarAdminData } from '../../utils/sidebarAdminData';
 import { IoIosLogOut } from "react-icons/io";
+import { useSelector, useDispatch} from 'react-redux'; 
+import { FaUser } from "react-icons/fa";
+import images from '../../assets/indexImg'
+import { removeToken } from '../../utils/authToken';
+import { logout } from '../../slices/authSlice';
 const SidebarAdmin = () => {
-   
+  const { userInfo} = useSelector ((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout =()=>{
+    try {
+      removeToken()
+      dispatch(logout())
+      navigate('/login')
+     } catch (err){
+      console.log(err)
+ }
+  }
   return (
     <>
-    <div className=" border-r-[0.5px] border-solid">
-      <div className="flex flex-col items-center">
-      <span className="relative left-[100px]"><IoIosLogOut size={20}/></span>
-        <Avatar>M</Avatar>
-        <span>name</span>
-        <span>name</span>
+    <div className=" border-r-[0.5px] border-solid ">
+      <div className="flex flex-col items-center mb-3">
+      <span className="relative left-[100px] cursor-pointer" onClick={handleLogout} ><IoIosLogOut size={20}/></span>
+        <Avatar className='mb-3' src={images.imgAvatarShop} > </Avatar>
+        <span className='mb-1'>{userInfo.email}</span>
+        <span >{userInfo.name}</span>
       </div>
       <hr />
       <div className="pl-[15px] mt-[10px]">
@@ -26,78 +42,9 @@ const SidebarAdmin = () => {
             </li>
             </NavLink>
           ))}
-          {/* <li className='flex mb-[5px] '>
-            <FaHome/>
-            <span>
-              dashboard
-            </span>
-          </li>
-        <li className="flex mb-[5px]">
-          <FaUsers/> 
-          <span>
-          Users
-          </span>
-        </li>
-        <li className="flex mb-[5px]">
-          <FaArchive/>
-          <span>
-            product
-          </span>
-        </li>
-        <li className="flex">
-          <FaReceipt/>
-          <span>
-          Receipt
-          </span>
-        </li>
-        <li className="flex">
-          <RiCoupon2Fill />
-          <span>
-          RiCoupon
-          </span>
-        </li> */}
-
       </ul>
       </div>
-      
-    </div>
-    
-        {/* <div className="sidebar-wrapper">
-            <nav id="sidebar">
-                <ul className="list-unstyled components">
-                    <li>
-                        <Link to="/admin/dashboard">Dashboard</Link>
-                    </li>
-                    <li> */}
-                        {/* <Link href="#productSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle-admin"> Products</Link>
-                        <ul className="collapse list-unstyled" id="productSubmenu">
-                            <li>
-                                <Link to="/admin/products"> All</Link>
-                            </li>
-
-                            <li>
-                                <Link to="/admin/product"> Create</Link>
-                            </li>
-                        </ul> */}
-                        {/* <Link to="/admin/productlist">Thông tin các sản phẩm</Link>
-                    </li>
-
-                    <li>
-                        <Link to="/admin/orderlist">Thông tin các đơn hàng</Link>
-                    </li>
-
-                    <li>
-                        <Link to="/admin/userlist">Thông tin các tài khoản</Link>
-                    </li> */}
-
-                    {/* <li>
-                        <Link to="/admin/reviews">Thông tin các đánh giá</Link>
-                    </li> */}
-
-                {/* </ul>
-            </nav>
-        </div> */}
-        
+    </div>    
     </>
   )
 }

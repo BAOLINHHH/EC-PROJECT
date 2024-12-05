@@ -1,5 +1,5 @@
 
-import ChangePassword from "../screens/ChangePassword";
+import ChangePassword from "../screens/ChangePasswordScreen";
 import { logout } from "../slices/authSlice";
 import axios  from "./axios";
 const userApi={
@@ -10,6 +10,18 @@ const userApi={
         console.log('Response from server: ', response); // Logs the response body
             return response;  // Return only the response body
        })
+    },
+    getAll(){
+        const url = 'users'
+        return axios.get(url);
+    },
+    updata(id, data){
+        const url = `users/${id}`
+        return axios.put(url,data);
+    },
+    delete(id){
+        const url = `users/${id}`
+        return axios.delete(url)
     },
     logout(){
         const url = 'users/logout'
