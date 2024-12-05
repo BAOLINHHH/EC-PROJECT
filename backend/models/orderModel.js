@@ -36,9 +36,24 @@ const orderSchema = mongoose.Schema(
       status: { type: String }, //paypal,...
       update_time: { type: String },
     },
-    status: {
-      status: { type: String }, //paypal,...
-      update_time: { type: String },
+    orderStatus: {
+      type: String,
+      required: true,
+      default: "Đã đặt hàng", // Trạng thái mặc định
+      enum: [
+        "Đã đặt hàng",
+        "Đang chờ đơn vị vận chuyển",
+        "Đang vận chuyển",
+        "Đơn hàng đã được giao",
+        "Đã hủy", // Trạng thái hủy đơn hàng
+      ],
+    },
+    cancelReason: {
+      type: String, // Lưu lý do hủy đơn hàng
+      required: false, // Không bắt buộc
+    },
+    canceledAt: {
+      type: Date, // Thời gian hủy đơn hàng
     },
     itemsPrice: {
       type: Number,

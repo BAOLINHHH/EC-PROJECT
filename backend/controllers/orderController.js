@@ -91,8 +91,8 @@ const addOrderItems = asyncHandler(async (req, res) => {
     // Kiểm tra và cập nhật số lượng sản phẩm
     for (const itemFromClient of orderItems) {
       const matchingItemFromDB = itemsFromDB.find(
-        (itemFromDB) =>
-          (itemFromDB) => itemFromDB._id.toString() === itemFromClient._id
+        (itemFromDB) => (itemFromDB) =>
+          itemFromDB._id.toString() === itemFromClient._id
       );
 
       if (!matchingItemFromDB) {
@@ -109,7 +109,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
       if (matchingItemFromDB.quantity < itemFromClient.qty) {
         res.status(400);
         throw new Error(
-          `Insufficient quantity for product ${matchingItemFromDB.name}`
+          `Rất tiếc, chúng tôi không đủ số lượng sản phẩm "${matchingItemFromDB.bookName}" trong kho để thực hiện đơn hàng của bạn. Hiện tại chỉ (còn ${matchingItemFromDB.quantity} sản phẩm).`
         );
       }
 
@@ -155,8 +155,31 @@ const addOrderItems = asyncHandler(async (req, res) => {
 // @route    GET /api/orders/mine
 // @access   Private
 const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id });
-  res.status(200).json(orders);
+  // Lấy các tham số phân trang từ query string, mặc định page = 1 và pageSize = 10
+  const page = parseInt(req.query.page) || 1; // Trang hiện tại
+  const pageSize = parseInt(req.query.pageSize) || 10; // Số lượng đơn hàng trên mỗi trang
+
+  // Tính toán số lượng đơn hàng cần bỏ qua
+  const skip = (page - 1) * pageSize;
+
+  // Tổng số đơn hàng của người dùng
+  const totalOrders = await Order.countDocuments({ user: req.user._id });
+
+  // Lấy dữ liệu đơn hàng với phân trang
+  const orders = await Order.find({ user: req.user._id })
+    .skip(skip)
+    .limit(pageSize)
+    .sort({ createdAt: -1 }); // Sắp xếp theo ngày tạo (mới nhất trước)
+
+  // Trả về kết quả với thông tin phân trang
+  res.status(200).json({
+    success: true,
+    page,
+    pageSize,
+    totalPages: Math.ceil(totalOrders / pageSize),
+    totalOrders,
+    orders,
+  });
 });
 
 // @desc     Get order by ID
@@ -263,56 +286,6 @@ const getOrderByTrackingCode = asyncHandler(async (req, res) => {
 // @route    POST /api/orders/create_payment_url
 // @access   Privie
 const createPaymentUrl = asyncHandler(async (req, res) => {
-  // var ipAddr =
-  //   req.headers["x-forwarded-for"] ||
-  //   req.connection.remoteAddress ||
-  //   req.socket.remoteAddress ||
-  //   req.connection.socket.remoteAddress;
-
-  // var date = new Date();
-  // var createDate = dateFormat(date, "yyyymmddHHmmss");
-  // var orderId = dateFormat(date, "HHmmss");
-  // var amount = req.body.amount;
-  // var bankCode = req.body.bankCode;
-
-  // var orderInfo = req.body.orderDescription;
-  // var orderType = req.body.orderType;
-  // var locale = req.body.language || "vn";
-  // var currCode = "VND";
-
-  // var vnp_Params = {
-  //   vnp_Version: "2.1.0",
-  //   vnp_Command: "pay",
-  //   vnp_TmnCode: process.env.VNP_TMNCODE,
-  //   vnp_Locale: locale,
-  //   vnp_CurrCode: currCode,
-  //   vnp_TxnRef: orderId,
-  //   vnp_OrderInfo: orderInfo,
-  //   vnp_OrderType: orderType,
-  //   vnp_Amount: amount * 100,
-  //   vnp_ReturnUrl: process.env.VNP_RETURNURL,
-  //   vnp_IpAddr: "127.0.0.1",
-  //   vnp_CreateDate: createDate,
-  // };
-
-  // if (bankCode) {
-  //   vnp_Params["vnp_BankCode"] = bankCode;
-  // }
-
-  // var signData = querystring.stringify(vnp_Params, { encode: false });
-  // var hmac = crypto.createHmac("sha512", process.env.VNP_HASHSECRET);
-  // var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-  // vnp_Params["vnp_SecureHash"] = signed;
-  // const paymentUrl =
-  //   process.env.VNP_URL +
-  //   "?" +
-  //   querystring.stringify(vnp_Params, { encode: false });
-
-  //   console.log("paymentUrl", paymentUrl)
-  //   console.log("vnp_Params", vnp_Params)
-
-  // res.redirect(paymentUrl);
-
   process.env.TZ = "Asia/Ho_Chi_Minh";
 
   let date = new Date();
@@ -383,6 +356,56 @@ const sortObject = (obj) => {
   }
   return sorted;
 };
+
+// @desc     update Order Status
+// @route    POST /api/orders/updateOrderStatus
+// @access   Privie
+const updateOrderStatus = async (req, res) => {
+  const { orderId, newStatus } = req.body;
+  const order = await Order.findById(orderId);
+
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  order.orderStatus = newStatus;
+  await order.save();
+
+  return order;
+};
+
+// @desc     cancel order
+// @route    POST /api/orders/cancelOrder
+// @access   Privie
+const cancelOrder = asyncHandler(async (req, res) => {
+  const { orderId, cancelReason } = req.body;
+
+  const order = await Order.findById(orderId);
+
+  if (!order) {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+
+  // Kiểm tra nếu đơn hàng đã giao thì không thể hủy
+  if (order.isDelivered) {
+    res.status(400);
+    throw new Error("Delivered orders cannot be canceled");
+  }
+
+  // Cập nhật trạng thái hủy
+  order.orderStatus = "Đã hủy";
+  order.cancelReason = cancelReason || "No reason provided";
+  order.canceledAt = Date.now();
+
+  await order.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Order has been canceled",
+    order,
+  });
+});
 
 export {
   addOrderItems,

@@ -8,6 +8,10 @@ const orderApi = {
     const url = `orders/${orderId}`;
     return axios.get(url);
   },
+  getMyOrders() {
+    const url = `orders/mine`;
+    return axios.get(url);
+  },
   updateOrderToPaid(orderId) {
     const url = `orders/${orderId}/pay`;
     return axios.put(url);

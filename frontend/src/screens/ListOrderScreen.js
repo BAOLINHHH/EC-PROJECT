@@ -1,76 +1,79 @@
-import React, { useEffect } from 'react'
-import { useGetMyOrderQuery } from '../slices/ordersSlice'
-import { Table,Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import Message from '../componets/Message';
-import Loader from '../componets/Loader';
-import { FaTimes } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import { useGetMyOrderQuery } from "../slices/ordersSlice";
+import { Table, Button } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import Message from "../componets/Message";
+import Loader from "../componets/Loader";
+import { FaTimes } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
-import SidebarUser from './SidebarUser';
+import SidebarUser from "./SidebarUser";
+import orderApi from "../api/orderApi";
 const ListOrderScreen = () => {
-    const {data: orders ,isLoading, error }= useGetMyOrderQuery();
+  // const {data: orders ,isLoading, error }= useGetMyOrderQuery();
 
-    useEffect(() => {
-      console.log("orders", orders)
-    }, [orders])
+  const [orders, setOrders] = useState();
+  const handleGetMyOrders = async () => {
+    const response = await orderApi.getMyOrders();
+    console.log("orders", response);
+    setOrders(response.orders);
+  };
+  useEffect(() => {
+    handleGetMyOrders();
+  }, []);
 
   return (
     <section>
       <div className="container">
-      <div className=" flex gap-[60px] ">
-                <div className="w-[280px] shadow-[1px_1px_7px_rgba(#00000029)]">
-                    <SidebarUser/>
-                </div>
-                <div className=" border-solid border-[1px] rounded-[6px] w-full bg-[#fff] p-[20px] shadow-[1px_1px_7px_rgba(#00000029)]">
-                  <div className='w-full py-4'>
-                    <h1 className="font-[600] text-[20px] p-[10px]">Đơn hàng của tôi</h1>
-                  </div>
-                <table  class="table">
-                <thead className="table-light">
-                <tr>  
+        <div className=" flex gap-[60px] ">
+          <div className="w-[280px] shadow-[1px_1px_7px_rgba(#00000029)]">
+            <SidebarUser />
+          </div>
+          <div className=" border-solid border-[1px] rounded-[6px] w-full bg-[#fff] p-[20px] shadow-[1px_1px_7px_rgba(#00000029)]">
+            <div className="w-full py-4">
+              <h1 className="font-[600] text-[20px] p-[10px]">
+                Đơn hàng của tôi
+              </h1>
+            </div>
+            <table class="table">
+              <thead className="table-light">
+                <tr>
                   <th className="capitalize leading-3 text-[17px]">ID</th>
                   <th className="capitalize leading-3 text-[17px]">Ngày đặt</th>
-                  <th className="capitalize leading-3 text-[17px]">Số lượng</th>
-                  <th className="capitalize leading-3 text-[17px]">Trạng thái </th>
-                  <th className="capitalize leading-3 text-[17px]">Tổng tiền</th>
+                  <th className="capitalize leading-3 text-[17px]">
+                    Trạng thái{" "}
+                  </th>
+                  <th className="capitalize leading-3 text-[17px]">
+                    Tổng tiền
+                  </th>
                   <th className="capitalize leading-3 text-[17px]"></th>
                 </tr>
               </thead>
               <tbody>
-              { orders?.map((order) =>
-               <tr>
-                <td className="align-middle">
-                {order._id}
-                </td>
-                <td className="align-middle">
-                <td>{order.orderItems.length}</td>
-                </td>
-                <td className="align-middle">
-                  <div className="border-solid border-[1px] rounded-[3px] bg-[#ffc107] flex justify-center w-[120px]">
-                    <p className="text-[#fff]">  hoan thanh </p>
-                  </div>
-                  </td>
-                <td className="align-middle">
-                  
-                  </td>
-                <td className="align-middle">
-                 
-                </td>
-                <td className="align-middle">
-                  <LinkContainer to
-                  ={`/order/${order._id}`}>
-                  <Button >
-                  <FaRegEye/>
-                   </Button>
-                  </LinkContainer>
-                </td>
-               </tr>               
-              ) 
-              }
+                {orders?.map((order) => (
+                  <tr>
+                    <td className="align-middle">{order._id}</td>
+                    <td className="align-middle">
+                      <td>{order.orderItems.length}</td>
+                    </td>
+                    <td className="align-middle">
+                      <div className="border-solid border-[1px] rounded-[3px] bg-[#ffc107] flex justify-center w-[120px]">
+                        <p className="text-[#fff]"> hoan thanh </p>
+                      </div>
+                    </td>
+                    <td className="align-middle">{order.itemsPrice}</td>
+                    <td className="align-middle">
+                      <LinkContainer to={`/order/${order._id}`}>
+                        <Button>
+                          <FaRegEye />
+                        </Button>
+                      </LinkContainer>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
-                </table>
-                </div>
-            </div>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -140,7 +143,7 @@ const ListOrderScreen = () => {
     //     </div>
     // </div>
     // </section>
-  )
-}
+  );
+};
 
-export default ListOrderScreen
+export default ListOrderScreen;

@@ -6,7 +6,7 @@ import { useCreateOrderMutation } from "../slices/ordersSlice";
 import { clearCartItems } from "../slices/cartSlice";
 import Loader from "../componets/Loader";
 import Spinner from "react-bootstrap/Spinner";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { optionCurrency, transform } from "../componets/money";
 import logoHome from "../imageshome/home.png";
 import logoOffice from "../imageshome/location.png";
@@ -92,8 +92,8 @@ const PaymentOrder = () => {
       totalPrice: totalItem.totalcalc,
     };
 
-    const response = await orderApi.createOrders(payload);
-    if (response) {
+    try {
+      const response = await orderApi.createOrders(payload);
       if (selectedPaymentMethodValue === "COD") {
         dispatch(clearCartItems());
         navigate("/order-success/" + response._id);
@@ -111,9 +111,18 @@ const PaymentOrder = () => {
           const { vnpUrl } = responseVNPay;
           navigate("/order-success/" + response._id);
           // Chuyển hướng tới VNPAY
-          window.open(vnpUrl, '_blank');
+          window.open(vnpUrl, "_blank");
         }
       }
+    } catch (error) {
+      console.error("Fetch Error:", error.message);
+
+      if(error.response.status === 400) {
+        setIsLoading(false);
+        toast.error(error.response.data.message)
+      }
+      // Hiển thị thông báo lỗi cho người dùng
+      // alert(error.message || "Đã có lỗi xảy ra");
     }
   };
 
@@ -269,6 +278,9 @@ const PaymentOrder = () => {
 
 
         </div> */}
+
+<ToastContainer />
+
       <section>
         <div className="container-sm">
           <div className="row ">

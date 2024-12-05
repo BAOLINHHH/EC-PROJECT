@@ -51,17 +51,17 @@ const getCouponByCode = async (req, res) => {
     }
 };
 
-// @desc     Update coupon by code
-// @route    PUT api/coupons/:code
+// @desc     Update coupon by id
+// @route    PUT api/coupons/:id
 // @access   Public
 const updateCoupon = async (req, res) => {
     try {
-        const { code } = req.params;
-        const { discount, maxDiscount, minOrderValue, expirationDate, status } = req.body;
+        const { id } = req.params;
+        const {code, discount, maxDiscount, minOrderValue, expirationDate, status } = req.body;
         
         const updatedCoupon = await Coupon.findOneAndUpdate(
-            { code },
-            { discount, maxDiscount, minOrderValue, expirationDate, status },
+            id ,
+            { code, discount, maxDiscount, minOrderValue, expirationDate, status },
             { new: true }
         );
 
@@ -78,14 +78,14 @@ const updateCoupon = async (req, res) => {
     }
 };
 
-// @desc     Delete coupon by code
-// @route    DELETE api/coupons/:code
+// @desc     Delete coupon by id
+// @route    DELETE api/coupons/:id
 // @access   Public
 const deleteCoupon = async (req, res) => {
     try {
-        const { code } = req.params;
+        const { id } = req.params;
 
-        const deletedCoupon = await Coupon.findOneAndDelete({ code });
+        const deletedCoupon = await Coupon.findOneAndDelete({ id });
 
         if (!deletedCoupon) {
             return res.status(404).json({ message: 'Coupon not found' });

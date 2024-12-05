@@ -101,7 +101,7 @@ const CartScreen = () => {
                                             <AiOutlineMinus/>
                                         </button>
                                         <input type="number" className="form-control count input-cart"  value={item.qty} readOnly/>
-                                        <button className="btn btn-outline-secondary px-3 " type="button"  onClick={ () =>increaseNewQty(item,item.qty,item.bookQuaranty)}>
+                                        <button className="btn btn-outline-secondary px-3 " type="button"  onClick={ () =>increaseNewQty(item,item.qty,item.quantity)}>
                                             <AiOutlinePlus/>
                                         </button>
                                       </div>
