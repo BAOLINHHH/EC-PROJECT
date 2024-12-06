@@ -117,9 +117,9 @@ const PaymentOrder = () => {
     } catch (error) {
       console.error("Fetch Error:", error.message);
 
-      if(error.response.status === 400) {
+      if (error.response.status === 400) {
         setIsLoading(false);
-        toast.error(error.response.data.message)
+        toast.error(error.response.data.message);
       }
       // Hiển thị thông báo lỗi cho người dùng
       // alert(error.message || "Đã có lỗi xảy ra");
@@ -279,7 +279,7 @@ const PaymentOrder = () => {
 
         </div> */}
 
-<ToastContainer />
+      <ToastContainer />
 
       <section>
         <div className="container-sm">
@@ -431,7 +431,7 @@ const PaymentOrder = () => {
                           </Accordion> */}
               </div>
             </div>
-            <div className=" col-lg-4 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] bg-[#ffff] border-[1px] border-solid rounded-[16px] p-[2rem]  gx-2">
+            <div className=" col-lg-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] bg-[#ffff] border-[1px] border-solid rounded-[16px] p-[2rem]  gx-2">
               <div className="mb-2">
                 <h4 className="text-[17px] capitalize leading-[28px] font-black">
                   Chi tiết đơn hàng
@@ -449,12 +449,10 @@ const PaymentOrder = () => {
                       {item.bookName}
                     </h2>
                     <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">
-                      {" "}
-                      {item.qty}{" "}
+                      <span className="font-semibold">Số lượng:</span> {item.qty}
                     </h6>
                     <span className="text-[#4b5966] text-[14px] font-bold mr-[7px]">
-                      {" "}
-                      {item.bookPrice}{" "}
+                      {transform(item.bookPrice, optionCurrency)}
                     </span>
                   </div>
                 </div>

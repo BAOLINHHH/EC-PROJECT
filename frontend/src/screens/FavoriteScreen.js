@@ -113,8 +113,8 @@ const FavoriteScreen = () => {
                   </td>
                 <td className="align-middle">
                   <div className="flex ">
-                     {item.product.bookQuaranty >0 ?  ( <button className='bg-[#5caf90]  h-[43px] w-[46px] text-[#ffff] text-[14px] border-[1px]  border-solid rounded-lg transition-all duration-[0.3s] ease-in-out hover:bg-[#4b5966]'
-                      type='button'><BsCart style={{marginLeft:'10px'}}  size={'25px'} /></button> ): null}
+                     {/* {item.product.bookQuaranty >0 ?  ( <button className='bg-[#5caf90]  h-[43px] w-[46px] text-[#ffff] text-[14px] border-[1px]  border-solid rounded-lg transition-all duration-[0.3s] ease-in-out hover:bg-[#4b5966]'
+                      type='button'><BsCart style={{marginLeft:'10px'}}  size={'25px'} /></button> ): null} */}
                     <button className="bg-[#4b5966] ml-[15px] h-[43px] w-[46px] text-[#ffff] text-[14px] border-[1px]  border-solid rounded-lg transition-all duration-[0.3s] ease-in-out hover:bg-[#5caf90]" onClick={() =>handleRemoveFavorite(item.product._id)} ><BsFillTrashFill style={{marginLeft:'10px'}} size={'25px'}/></button>
                   </div>
                 </td>

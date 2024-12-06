@@ -2,6 +2,7 @@ import { FaHome, FaUsers,FaArchive,FaReceipt  } from "react-icons/fa";
 import { RiCoupon2Fill } from "react-icons/ri";
 import { MdCategory } from "react-icons/md";
 import {  TbPasswordUser } from "react-icons/tb";
+import { BsFillWrenchAdjustableCircleFill, BsMinecartLoaded } from "react-icons/bs";
 export const sidebarAdminData=[
 
 
@@ -16,8 +17,13 @@ export const sidebarAdminData=[
         path: '/admin/userlist',
     },
     {
+        title: 'Quản lý đơn hàng',
+        icon: <BsMinecartLoaded/>,
+        path: '/admin/orderlist',
+    },
+    {
         title: 'Quản lý sản phẩm',
-        icon: <MdCategory/>,
+        icon: <BsFillWrenchAdjustableCircleFill  />,
         path: '/admin/productlist',
     },
     {

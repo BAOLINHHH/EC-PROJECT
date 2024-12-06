@@ -26,6 +26,7 @@ const orderSchema = mongoose.Schema(
       wards: { type: String, required: true },
       address: { type: String, required: true },
       phone: { type: String, required: true },
+      recipientName: { type: String, required: true },
     },
     paymentMethod: {
       type: String,
@@ -45,7 +46,7 @@ const orderSchema = mongoose.Schema(
         "Đang chờ đơn vị vận chuyển",
         "Đang vận chuyển",
         "Đơn hàng đã được giao",
-        "Đã hủy", // Trạng thái hủy đơn hàng
+        "Đã hủy"
       ],
     },
     cancelReason: {

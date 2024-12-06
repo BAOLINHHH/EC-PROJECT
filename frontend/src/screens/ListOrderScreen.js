@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Pagination } from "react-bootstrap";
+
 import { useGetMyOrderQuery } from "../slices/ordersSlice";
 import { Table, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
@@ -11,53 +13,64 @@ import orderApi from "../api/orderApi";
 const ListOrderScreen = () => {
   // const {data: orders ,isLoading, error }= useGetMyOrderQuery();
 
-  const [orders, setOrders] = useState();
-  const handleGetMyOrders = async () => {
-    const response = await orderApi.getMyOrders();
-    console.log("orders", response);
-    setOrders(response.orders);
+  const [orders, setOrders] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const handleGetMyOrders = async (currentPage = 1) => {
+    try {
+      const response = await orderApi.getMyOrders({
+        page: currentPage,
+        pageSize,
+      });
+      setOrders(response.orders);
+      setPage(response.page);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
+    }
   };
+
   useEffect(() => {
-    handleGetMyOrders();
-  }, []);
+    handleGetMyOrders(page);
+  }, [page]);
+
+  const handlePageChange = (pageNumber) => {
+    setPage(pageNumber);
+  };
 
   return (
     <section>
       <div className="container">
-        <div className=" flex gap-[60px] ">
+        <div className="flex gap-[60px]">
           <div className="w-[280px] shadow-[1px_1px_7px_rgba(#00000029)]">
             <SidebarUser />
           </div>
-          <div className=" border-solid border-[1px] rounded-[6px] w-full bg-[#fff] p-[20px] shadow-[1px_1px_7px_rgba(#00000029)]">
+          <div className="border-solid border-[1px] rounded-[6px] w-full bg-[#fff] p-[20px] shadow-[1px_1px_7px_rgba(#00000029)]">
             <div className="w-full py-4">
               <h1 className="font-[600] text-[20px] p-[10px]">
                 Đơn hàng của tôi
               </h1>
             </div>
-            <table class="table">
+            <table className="table">
               <thead className="table-light">
                 <tr>
-                  <th className="capitalize leading-3 text-[17px]">ID</th>
-                  <th className="capitalize leading-3 text-[17px]">Ngày đặt</th>
-                  <th className="capitalize leading-3 text-[17px]">
-                    Trạng thái{" "}
-                  </th>
-                  <th className="capitalize leading-3 text-[17px]">
-                    Tổng tiền
-                  </th>
-                  <th className="capitalize leading-3 text-[17px]"></th>
+                  <th>ID</th>
+                  <th>Ngày đặt</th>
+                  <th>Trạng thái</th>
+                  <th>Tổng tiền</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {orders?.map((order) => (
-                  <tr>
+                  <tr key={order._id}>
                     <td className="align-middle">{order._id}</td>
                     <td className="align-middle">
-                      <td>{order.orderItems.createdAt}</td>
+                      {new Date(order.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="align-middle">
-                        <p>{order.orderItems.orderStatus}</p>
-                    </td>
+                    <td className="align-middle">{order.orderStatus}</td>
                     <td className="align-middle">{order.itemsPrice}</td>
                     <td className="align-middle">
                       <LinkContainer to={`/order/${order._id}`}>
@@ -70,6 +83,52 @@ const ListOrderScreen = () => {
                 ))}
               </tbody>
             </table>
+
+            {/* Phân trang */}
+            {orders && totalPages > 1 && (
+              <Pagination>
+                {/* Always show the first page */}
+                <Pagination.Item
+                  key={1}
+                  active={1 === page}
+                  onClick={() => handlePageChange(1)}
+                >
+                  1
+                </Pagination.Item>
+
+                {/* Ellipsis for skipped pages at the beginning */}
+                {page > 3 && <Pagination.Ellipsis disabled />}
+
+                {/* Pages around the current page */}
+                {Array.from({ length: 5 }, (_, index) => {
+                  const pageNumber = page - 2 + index;
+                  if (pageNumber > 1 && pageNumber < totalPages) {
+                    return (
+                      <Pagination.Item
+                        key={pageNumber}
+                        active={pageNumber === page}
+                        onClick={() => handlePageChange(pageNumber)}
+                      >
+                        {pageNumber}
+                      </Pagination.Item>
+                    );
+                  }
+                  return null;
+                })}
+
+                {/* Ellipsis for skipped pages at the end */}
+                {page < totalPages - 2 && <Pagination.Ellipsis disabled />}
+
+                {/* Always show the last page */}
+                <Pagination.Item
+                  key={totalPages}
+                  active={totalPages === page}
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </Pagination.Item>
+              </Pagination>
+            )}
           </div>
         </div>
       </div>

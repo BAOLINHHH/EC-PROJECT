@@ -167,9 +167,9 @@ const getMyOrders = asyncHandler(async (req, res) => {
 
   // Lấy dữ liệu đơn hàng với phân trang
   const orders = await Order.find({ user: req.user._id })
+    .sort({ createdAt: -1 }) // Sắp xếp theo ngày tạo (mới nhất trước)
     .skip(skip)
-    .limit(pageSize)
-    .sort({ createdAt: -1 }); // Sắp xếp theo ngày tạo (mới nhất trước)
+    .limit(pageSize);
 
   // Trả về kết quả với thông tin phân trang
   res.status(200).json({
@@ -181,6 +181,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
     orders,
   });
 });
+
 
 // @desc     Get order by ID
 // @route    GET /api/orders/:id
@@ -259,9 +260,35 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @route    GET /api/orders
 // @access   Private/Admin
 const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({}).populate("user", "id name");
-  res.status(200).json(orders);
+  const { page = 1, pageSize = 10 } = req.query; // Default values for page and pageSize
+
+  // Convert to numbers since query params are strings by default
+  const pageNumber = Number(page);
+  const pageSizeNumber = Number(pageSize);
+
+  // Calculate the number of documents to skip
+  const skip = (pageNumber - 1) * pageSizeNumber;
+
+  // Fetch orders with pagination
+  const orders = await Order.find({})
+    .populate("user", "id name")
+    .skip(skip)
+    .limit(pageSizeNumber);
+
+  // Get total count of orders for pagination metadata
+  const totalOrders = await Order.countDocuments();
+
+  res.status(200).json({
+    orders,
+    pagination: {
+      currentPage: pageNumber,
+      pageSize: pageSizeNumber,
+      totalOrders,
+      totalPages: Math.ceil(totalOrders / pageSizeNumber),
+    },
+  });
 });
+
 
 // @desc     Get tracking
 // @route    GET /api/orders/tracking/:trackingCode
@@ -371,7 +398,7 @@ const updateOrderStatus = async (req, res) => {
   order.orderStatus = newStatus;
   await order.save();
 
-  return order;
+  res.json(order);
 };
 
 // @desc     cancel order
@@ -416,4 +443,6 @@ export {
   getOrders,
   getOrderByTrackingCode,
   createPaymentUrl,
+  updateOrderStatus,
+  cancelOrder
 };

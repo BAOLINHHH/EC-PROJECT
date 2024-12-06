@@ -5,6 +5,10 @@ import Category from '../models/categoryModel.js';
 // @access   Public
 const createCategory = async (req, res) => {
     try {   
+        console.log(req.file)
+        console.log(req.body)
+
+
         if (!req.body.categoryName) {
             return res.status(400).json({ message: "Category name is required" });
         }

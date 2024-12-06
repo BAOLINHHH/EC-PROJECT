@@ -1,390 +1,388 @@
-import {useEffect} from 'react'
-import { Link,useParams } from 'react-router-dom'
-import Message from '../componets/Message'
-import Loader from '../componets/Loader'
-import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js'
-import { Row, Col, ListGroup, Image, Card,Button} from 'react-bootstrap';
-import { useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
-import { useGetOrderDetailsQuery,usePayOrderMutation,useGetPayPalClientIdQuery,useDeliverOrderMutation} from '../slices/ordersSlice'
-const OrderScreen = () => {
-    const {id: orderId} = useParams()
-    const { data: order,refetch ,isLoading, error} = useGetOrderDetailsQuery(orderId)
-    
-     const {
-      data: paypal,
-      isLoading: loadingPayPal,
-      error: errorPayPal,
-    } = useGetPayPalClientIdQuery();
-    
-    const [ payOrder, {isLoading: loadingPay}] = usePayOrderMutation()
-    const { userInfo } = useSelector((state) => state.auth);
-    const [deliverOrder, {isLoading: loadingDeliver}]= useDeliverOrderMutation();
-    const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
-    
-    useEffect(() => {
-      if (!errorPayPal && !loadingPayPal && paypal.clientId) {
-        const loadPaypalScript = async () => {
-          paypalDispatch({
-            type: 'resetOptions',
-            value: {
-              'client-id': paypal.clientId,
-              currency: 'USD',
-            },
-          });
-          paypalDispatch({ type: 'setLoadingStatus', value: 'pending' });
-        };
-        if (order && !order.isPaid) {
-          if (!window.paypal) {
-            loadPaypalScript();
-          }
-        }
-      }
-    }, [order, paypal, paypalDispatch, loadingPayPal, errorPayPal]);
-    function onApprove(data, actions){
-      return actions.order.capture().then(async function(details){
-        try{
-            await payOrder({orderId,details});
-            refetch();
-            toast.success('Thanh toán thành công')
-        }catch (err){
-            toast.error('Thanh toán thất bại')
-        }
-      })
-    }
-  
-    function onError(){
-      toast.error('Thanh toán thất bại')
-    }
-    function createOrder(data, actions) {
-      return actions.order
-        .create({
-          purchase_units: [
-            {
-              amount: { value: order.totalPrice },
-            },
-          ],
-        })
-        .then((orderID) => {
-          return orderID;
-        });
-    }
-    const deliverHandler = async () => {
-      try{
-      await deliverOrder(orderId);
-      refetch();
-      toast.success('Cập nhật vận chuyển thành công')
-    } catch(err)
-    {
-      toast.error(err?.data?.message || err.message)
-    }
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+// import CheckoutSteps from "../componets/CheckoutSteps";
+import { useCreateOrderMutation } from "../slices/ordersSlice";
+import { clearCartItems } from "../slices/cartSlice";
+import Loader from "../componets/Loader";
+import Spinner from "react-bootstrap/Spinner";
+import { toast, ToastContainer } from "react-toastify";
+import { optionCurrency, transform } from "../componets/money";
+import orderApi from "../api/orderApi";
+import { Button, Modal, Form } from "react-bootstrap";
 
+const PaymentOrder = () => {
+  // const { cartItems, shippingAddress, paymentMethhod,itemsPrice,itemsShip,totalPrice} = useSelector((state) => state.cart)
+  const { id: orderId } = useParams();
+
+  const { userInfo } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [dataAddress, setDataAddress] = useState("");
+  const [order, setOrder] = useState([]);
+  const [orderItems, setOrderItems] = useState([]);
+  const [shippingAddress, seTshippingAddress] = useState([]);
+  const [steps, setSteps] = useState([]);
+  const [isReload, setIsReload] = useState(false);
+  const [cancelReason, setCancelReason] = useState(""); // State để lưu lý do hủy
+  const [loading, setLoading] = useState(false); // State để hiển thị loading khi submit
+
+  const [selectedPaymentMethodValue, setSelectedPaymentMethodValue] = useState(
+    "vnpay"
+  );
+  const [feeShip, setFeeShip] = useState(0);
+  // const [isLoading, setIsLoading] = useState(false);
+
+  const handleGetOrderById = async () => {
+    const response = await orderApi.getOrderById(orderId);
+    setOrder(response);
+    setOrderItems(response.orderItems);
+    seTshippingAddress(response.shippingAddress);
+
+    const orderStatus = response.orderStatus;
+    console.log("orderStatus", orderStatus);
+    setSteps([
+      {
+        label: "Đã tạo đơn đặt hàng",
+        active: orderStatus === "Đã tạo đơn đặt hàng",
+      },
+      {
+        label: "Đang chờ đơn vị vận chuyển",
+        active: orderStatus === "Đang chờ đơn vị vận chuyển",
+      },
+      { label: "Đang vận chuyển", active: orderStatus === "Đang vận chuyển" },
+      {
+        label: "Đơn hàng đã được giao",
+        active: orderStatus === "Đơn hàng đã được giao",
+      },
+    ]);
+  };
+
+  const handleUpdateOrderStatus = async () => {
+    const activeIndex = steps.findIndex((step) => step.active) + 1;
+    const data = {
+      orderId: orderId,
+      newStatus: steps[activeIndex].label,
     };
+    const response = await orderApi.updateOrderStatus(data);
+    if (response) {
+      setIsReload(true);
+    }
+  };
 
-    return (
-    //   <Loader />
-  
-    // ) : error ? (
-    //   <Message variant='danger'>{error}</Message>
-    // ) : (
-      <>
+  const [show, setShow] = useState(false);
+
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+
+  const handleCancelOrder = async () => {
+    const data = {
+      orderId: orderId,
+      cancelReason: cancelReason,
+    };
+    const response = await orderApi.updateOrderStatus(data);
+    if (response) {
+      setIsReload(true);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!cancelReason.trim()) {
+      toast.error("Vui lòng nhập lý do hủy đơn hàng!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = {
+        orderId: orderId,
+        cancelReason: cancelReason,
+      };
+
+      const response = await orderApi.cancelOrder(data);
+
+      if (response.status === 200) {
+        toast.success("Hủy đơn hàng thành công!");
+
+        setShow(false); // Đóng modal
+        setIsReload(true);
+      }
+    } catch (error) {
+      console.error("Lỗi khi hủy đơn hàng:", error);
+      toast.error("Đã xảy ra lỗi khi hủy đơn hàng.!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetOrderById();
+  }, []);
+
+  useEffect(() => {
+    if (isReload === true) {
+      handleGetOrderById();
+      setIsReload(false);
+    }
+  }, [isReload]);
+
+  useEffect(() => {
+    console.log("order", order);
+  }, [order]);
+
+  return (
+    <>
+      <ToastContainer />
+      {/* Modal for canceling order */}
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Hủy đơn hàng</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Lý do hủy đơn hàng:</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Nhập lý do hủy đơn hàng"
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose} disabled={loading}>
+            Đóng
+          </Button>
+          <Button variant="primary" onClick={handleSubmit} disabled={loading}>
+            {loading ? "Đang xử lý..." : "Xác nhận"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <h2 className="text-[19px] font-[700] mb-4">Chi tiết đơn hàng</h2>
+
       <section>
         <div className="container-sm">
-              <div>
-                <h1 className="text-[23px] text-[#1a0505] font-[800] capitalize pb-2">Thông tin chi tiết</h1>
-                <h4 className="text-[18px]  font-normal capitalize">Cảm ơn đã mua hàng</h4>
+          <div className="row">
+            <div className="w-full">
+              <div className="h-[260px] p-3">
+                <h2 className="text-[19px] font-[700]">Trạng thái đơn hàng</h2>
+                Mã đơn hàng: #{orderId} {" - "}
+                Ngày tạo: {" ("}
+                {new Date(order?.createdAt)
+                  .toLocaleString("vi-VN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                  .replace(",", "") // Loại bỏ dấu phẩy giữa thời gian và ngày
+                  .replace(/\//g, "-")}{" "}
+                {/* Chuyển dấu "/" thành "-" */}
+                {")"}
+                <p>
+                  {order?.isPaid === true ? "Đã thanh toán" : "Chưa thanh toán"}
+                </p>
+                {order?.orderStatus === "Đã hủy" ? (
+                  <div className="mt-4">
+                    <div className="bg-red-100 border border-red-500 text-red-700 p-4 rounded-lg">
+                      <h3 className="text-lg font-bold mb-2">
+                        Đơn hàng đã bị hủy
+                      </h3>
+                      <p className="text-sm">
+                        <span className="font-semibold">Lý do: </span>
+                        {order?.cancelReason || "Không có lý do cụ thể"}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                      <div className="flex items-center justify-between mt-4">
+                        {steps.map((step, index) => (
+                          <div key={index} className="flex items-center">
+                            <div className="flex flex-col items-center">
+                              {/* Hiển thị số bước */}
+                              <div
+                                className={`w-[40px] h-[40px] rounded-full flex items-center justify-center ${
+                                  step.active ||
+                                  index < steps.findIndex((s) => s.active)
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-300 text-gray-600"
+                                }`}
+                              >
+                                {index + 1}
+                              </div>
+
+                              {/* Hiển thị nhãn */}
+                              <span
+                                className={`mt-2 text-sm ${
+                                  step.active ||
+                                  index < steps.findIndex((s) => s.active)
+                                    ? "text-blue-600 font-semibold"
+                                    : "text-gray-600"
+                                }`}
+                              >
+                                {step.label}
+                              </span>
+                              {(index < 4 && userInfo.isAdmin === true)  ? (
+                                <span
+                                  className={`mt-2 text-sm ${
+                                    step.active
+                                      ? "text-blue-600 font-semibold"
+                                      : "text-gray-600"
+                                  }`}
+                                >
+                                  {step.active ? (
+                                    <>
+                                      <button
+                                        onClick={handleUpdateOrderStatus}
+                                        className="btn btn-primary mt-2 mr-1"
+                                      >
+                                        Hoàn thành
+                                      </button>
+                                      <button
+                                        onClick={handleShow}
+                                        className="btn btn-danger mt-2"
+                                      >
+                                        Hủy đơn hàng
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </span>
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+
+                            {/* Gạch nối giữa các bước */}
+                            {index !== steps.length - 1 && (
+                              <div
+                                className={`h-[2px] w-[60px] ${
+                                  index < steps.findIndex((s) => s.active)
+                                    ? "bg-blue-500"
+                                    : "bg-gray-300"
+                                }`}
+                              ></div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                  </>
+                )}
               </div>
-              <div>
-              <ListGroup variant='flush'>
-           <ListGroup.Item>
-              <div className='flex gap-x-16'>
-                  <div className="border-solid border-[2px] rounded-[6px] px-[20px] py-[10px]  shadow-[1px_1px_7px_rgba(#00000029)]">
-                    <div className="mb-[15px] ">
-                      <h3 className="tetx-[19px] font-[700]">  Thông Tin  đơn hằng</h3>
-                    </div>
-                      <div className="mb-[5px]">
-                        <p><strong>Mã đơn hàng: </strong>1111</p>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-7">
+              <div className="mb-3 ">
+                <div className="w-full border-solid border-[1px] rounded-[7px]">
+                  <div className="h-[120px] p-3">
+                    <h2 className="text-[19px] font-[700]">
+                      Địa chỉ giao hàng
+                    </h2>
+                    <hr />
+                    <div className="mt-1">
+                      <div className="flex ">
+                        <span className="font-normal">
+                          {" "}
+                          {dataAddress.recipientName}{" "}
+                        </span>
+                        <div className="border-solid border-r-[2px] border-[#ddd] mx-[8px]"></div>
+                        <span className="font-normal">
+                          {dataAddress.phone}
+                        </span>
                       </div>
-                      <div className="flex gap-x-[30px] mb-[5px]">
-                        <div>
-                          <strong className='tet-[17px]'>Ngày đặt</strong>
-                          <p className="text-[17px]">23/12/2022</p>
-                        </div>
-                        <div>
-                          <strong className="text-[17px]">Ngày hoàn thành</strong>
-                          <p className="text-[17px]">23/12/2022</p>
-                        </div>
-                      </div>
-
-                      <div className="mb-[5px]"> 
-                        <strong className="text-[17px]">Trạng thái đơn hàng</strong>
-                        <p className="text-[17px]">Mới đặt</p>
-                      </div>
-                      <div className="mb-[5px]"> 
-                        <strong className="text-[17px]">Phương thức thanh toán</strong>
-                        <p className="text-[17px]">Thanh toán khi nhập hàng</p>
-                      </div>
-                  </div>
-                  <div className="border-solid border-[2px] rounded-[6px] w-[340px] px-[20px] py-[10px] shadow-[1px_1px_7px_rgba(#00000029)]">
-                    <div className="mb-[15px]">
-                      <h3 className="tetx-[19px] font-[700]">Thông tin người nhận</h3>
-                    </div>
-                    <div>
-                        <p>Doan bao Linh</p>
-                        <p>0328297844</p>
-                        <p>khu pho 1, thiu tawrawrawr, adadasdas,asdasdasdas ,asdasdasdasda</p>
-                    </div>
-                  </div>
-                  <div className="border-solid border-[2px] rounded-[6px] w-[340px] px-[20px] py-[10px] shadow-[1px_1px_7px_rgba(#00000029)]">
-                    <div className="mb-[15px]">
-                      <h3 className="tetx-[19px] font-[700]">Tổng tiền đơn hàng</h3>
-                    </div>
-                    <div>
-                    <div className="mb-[5px]">
-                      <Row>
-                      <Col>Thành tiền</Col>
-                     <Col>132123 VND</Col>
-                    </Row>
-                    </div>
-                    <div className="mb-[5px]">
-                      <Row>
-                        <Col>Phí vận chuyển</Col>
-                        <Col>1231231 VND</Col>
-                      </Row>
-                    </div>
-                    <div className="mb-[5px]">
-                      <Row>
-                        <Col>Tổng Số Tiền</Col>
-                        <Col>1111111 VND</Col>
-                      </Row>
-                    </div>
-              {/* {!order.isPaid && (
-                <ListGroup.Item>
-                  {loadingPay && <Loader />}
-
-                  {isPending ? (
-                    <Loader />
-                  ) : (
-                    <div>
                       <div>
-                     
-                        <PayPalButtons
-                          createOrder={createOrder}
-                          onApprove={onApprove}
-                          onError={onError}
-                        ></PayPalButtons>
-                       
+                        <span className="font-normal">
+                          {" "}
+                          {dataAddress.address}, {shippingAddress?.wards}
+                          , {shippingAddress?.district}, {shippingAddress?.city}
+                        </span>
                       </div>
                     </div>
-                  )}
-                </ListGroup.Item>
-              )}
-
-                  {loadingDeliver && <Loader />}
-
-                  {userInfo &&
-                    userInfo.isAdmin &&
-                    order.isPaid &&
-                    !order.isDelivered && (
-                      <ListGroup.Item>
-                        <Button
-                          type='button'
-                          className='btn btn-block'
-                          onClick={deliverHandler}
-                        >
-                          Cập nhật trạng thái vận chuyển
-                        </Button>
-                      </ListGroup.Item>
-                    )} */}
-
-                    </div>
                   </div>
+                </div>
               </div>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <h2>Đơn Hàng</h2>
-              {/* {order.orderItems.length === 0 ? (
-                <Message>Order is empty</Message>
-              ) : ( */}
-                <ListGroup variant='flush'>
-                  {/* {order.orderItems.map((item, index) => ( */}
-                    {/* <ListGroup.Item key={index}> */}
-                    <ListGroup.Item >
-                      <Row>
-                        <Col md={1}>
-                          <Image
-                            // src={item.bookImage}
-                            // alt={item.bookName}
-                            // fluid
-                            // rounded
-                          />
-                        </Col>
-                        <Col>
-                          {/* <Link to={`/product/${item.product}`}>
-                            {item.bookName}
-                          </Link> */}
-                        </Col>
-                        <Col md={4}>
-                          {/* {item.qty} x {item.bookPrice} VND = {item.qty * item.bookPrice} VND */}
-                          2 x 5 VND = 1122121 VND
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                   {/* ))} */}
-                </ListGroup>
-              {/* )} */}
-            </ListGroup.Item>
-          </ListGroup>
+            </div>
+            <div className=" col-lg-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] bg-[#ffff] border-[1px] border-solid rounded-[16px] p-[2rem]  gx-2">
+              <div className="mb-2">
+                <h4 className="text-[17px] capitalize leading-[28px] font-black">
+                  Chi tiết đơn hàng
+                </h4>
+                <hr />
               </div>
+              {orderItems?.map((item) => (
+                <div className="flex flex-row items-center bg-[#ffffff] border-b-[1px] border-solid border-[#eee] p-[15px] mb-3 ">
+                  <div className="basis-[100px]">
+                    <img src={item?.bookImage} />
+                  </div>
+
+                  <div className=" w-[calc(100%-100px)] basis-[calc(100%-100px)] pl-3">
+                    <h2 className="font-normal  text-[17px] line-clamp-2 mb-[10px] leading-[28px] text-[#4b5966] capitalize hover:text-[#5caf90] ">
+                      {item?.bookName}
+                    </h2>
+                    <h6 className="font-normal text-[#999] text-[14px] mb-[10px] leading-[1.2] capitalize">
+                      <span className="font-semibold">Số lượng:</span>{" "}
+                      {item?.qty}
+                    </h6>
+                    <span className="text-[#4b5966] text-[14px] font-bold mr-[7px]">
+                      {transform(item?.bookPrice, optionCurrency)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+
+              <div className="row">
+                <div className="col-8 pb-1">
+                  <p>Phương thức thanh toán:</p>
+                </div>
+                <div className="col-4 pb-1">
+                  <span>
+                    {order?.paymentMethod === "COD"
+                      ? "Thanh toán khi nhận hàng"
+                      : "Thanh toán VNPay"}{" "}
+                  </span>
+                </div>
+                <div className="col-8 pb-1">
+                  <p>Thành tiền:</p>
+                </div>
+                <div className="col-4 pb-1">
+                  <span>
+                    {transform(parseInt(order?.itemsPrice), optionCurrency)}{" "}
+                  </span>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-8 pb-1">
+                  <p>Phí vận chuyển:</p>
+                </div>
+                <div className="col-4 pb-1">
+                  {/* <span>{ transform(totalItem.ship,optionCurrency) } </span> */}
+                  <span>
+                    {transform(parseInt(order?.shippingPrice), optionCurrency)}{" "}
+                  </span>
+                </div>
+              </div>
+              <div className="row pb-1 font-bold">
+                <div className="col-8">
+                  <p>Tổng thanh toán:</p>
+                </div>
+                <div className="col-4 text-[20px] text-[#9d1111]">
+                  <span>
+                    {transform(parseInt(order?.totalPrice), optionCurrency)}{" "}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-      {/* <Row>
-        <Col md={8}>
-        <h1 className="text-[23px] text-[#1a0505] font-[800] capitalize pb-2">Thông tin chi tiết</h1>
-        <h4 className="text-[18px]  font-normal capitalize">Cảm ơn đã mua hàng</h4>
-          <ListGroup variant='flush'>
-        
-            <ListGroup.Item>
-              <h2> THÔNG TIN </h2>
-              <p>
-                <strong>Mã đơn hàng: </strong>{order._id}
-              </p>
-              <p>
-                <strong>Tên: </strong>{order.user.name}
-              </p>
-              <p>
-                <strong>Số điện thoại: </strong>{order.shippingAddress.phone}
-              </p>
-              <p>
-                <strong>Email: </strong>{' '}
-                <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
-              </p>
-              <p>
-                <strong>Địa chỉ: </strong>
-                {order.shippingAddress.city}, {order.shippingAddress.district}, {order.shippingAddress.wards}, {order.shippingAddress.address} 
-              </p>
-              {order.isDelivered ? (
-                <Message variant='success'>
-                  Đã được vận chuyển vào {order.deliveredAt}
-                </Message>
-              ) : (
-                <Message variant='danger'>Chưa vận chuyển</Message>
-              )}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <h2>PHƯƠNG THỨC THANH TOÁN</h2>
-              <p>
-                <strong>Phương thức: </strong>
-                {order.paymentMethod}
-              </p>
-              {order.isPaid ? (
-                <Message variant='success'>Đã thanh toán vào {order.paidAt}</Message>
-              ) : (
-                <Message variant='danger'>Chưa thanh toán</Message>
-              )}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <h2>Đơn Hàng</h2>
-              {order.orderItems.length === 0 ? (
-                <Message>Order is empty</Message>
-              ) : (
-                <ListGroup variant='flush'>
-                  {order.orderItems.map((item, index) => (
-                    <ListGroup.Item key={index}>
-                      <Row>
-                        <Col md={1}>
-                          <Image
-                            src={item.bookImage}
-                            alt={item.bookName}
-                            fluid
-                            rounded
-                          />
-                        </Col>
-                        <Col>
-                          <Link to={`/product/${item.product}`}>
-                            {item.bookName}
-                          </Link>
-                        </Col>
-                        <Col md={4}>
-                          {item.qty} x {item.bookPrice} VND = {item.qty * item.bookPrice} VND
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
-              )}
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-        <Col md={4}>
-          <Card>
-          <ListGroup variant='flush'>
-          <ListGroup.Item>
-                <h2>Chi Tiết Đơn Hàng</h2>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Thành tiền</Col>
-                  <Col>{order.itemsPrice} VND</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Phí vận chuyển</Col>
-                  <Col>{order.shippingPrice} VND</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Tổng Số Tiền</Col>
-                  <Col>{order.totalPrice} VND</Col>
-                </Row>
-              </ListGroup.Item>
-              {!order.isPaid && (
-                <ListGroup.Item>
-                  {loadingPay && <Loader />}
+    </>
+  );
+};
 
-                  {isPending ? (
-                    <Loader />
-                  ) : (
-                    <div>
-                      <div>
-                     
-                        <PayPalButtons
-                          createOrder={createOrder}
-                          onApprove={onApprove}
-                          onError={onError}
-                        ></PayPalButtons>
-                       
-                      </div>
-                    </div>
-                  )}
-                </ListGroup.Item>
-              )}
-
-                  {loadingDeliver && <Loader />}
-
-                  {userInfo &&
-                    userInfo.isAdmin &&
-                    order.isPaid &&
-                    !order.isDelivered && (
-                      <ListGroup.Item>
-                        <Button
-                          type='button'
-                          className='btn btn-block'
-                          onClick={deliverHandler}
-                        >
-                          Cập nhật trạng thái vận chuyển
-                        </Button>
-                      </ListGroup.Item>
-                    )}
-
-          </ListGroup>
-          </Card>
-        </Col>
-      </Row> */}
-      </>
-    )
-}
-
-export default OrderScreen
+export default PaymentOrder;
