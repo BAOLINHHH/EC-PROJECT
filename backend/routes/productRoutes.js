@@ -21,28 +21,7 @@ import {
 import { protect, admin } from "../middleware/authMiddleware.js";
 import checkObjectId from "../middleware/checkObjectId.js";
 
-router.route("/").get(getProducts).post(protect, admin, uploadCloud.fields([
-{
-  name: "bookImage",
-  maxCount: 1
-},
-{
-  name: "audioUrlPresent",
-  maxCount: 1
-},
-{
-  name: "pdfUrlPresent ",
-  maxCount: 1
-},
-{
-  name: "audioUrl",
-  maxCount: 1
-},
-{
-  name: "pdfUrl",
-  maxCount: 1
-}
-]),createProduct);
+router.route("/").get(getProducts).post(protect, admin, uploadCloud.single("bookImage"), createProduct);
 router.route("/admin").get(protect, admin, getProductsAdmin);
 router.route("/getProducts1").get(protect, admin, getProducts1);
 router.route("/:id/reviews").post(protect, checkObjectId, createProductReview);

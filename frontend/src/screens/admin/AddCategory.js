@@ -35,14 +35,14 @@ export default function AddCategory(props) {
     }
     try {
       
-      const formData = new FormData();
-      formData.append("categoryName", category);
-      formData.append("image", image);
-      // for (const value of formData.values()) {
-      //   console.log(value);
-      // }
-      const response = await apiTag.AddCategory(formData);
+    const formData = new FormData();
+    formData.append("categoryName", category);
+    formData.append("image", image);
+     
+    await apiTag.AddCategory(formData);
+    toast.success('Thêm thành công')
     } catch (error) {
+      toast.error('Thêm Thất bại')
     }
   };
 

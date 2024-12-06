@@ -376,10 +376,10 @@ const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user) {
-    if (user.isAdmin) {
-      res.status(400);
-      throw new Error("Không thể xóa người dùng admin");
-    }
+    // if (user.isAdmin) {
+    //   res.status(400);
+    //   throw new Error("Không thể xóa người dùng admin");
+    // }
     await User.deleteOne({ _id: user._id });
     res.status(200).json({ message: "Xóa người dùng thành công" });
   } else {

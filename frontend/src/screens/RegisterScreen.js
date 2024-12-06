@@ -98,8 +98,8 @@ const RegisterScreen = () => {
 
                         <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Đăng Kí</p>    
                                 <form>
-                                <div className=" mb-4 px-md-4">
-                                    <div className="input-group flex-fill mb-0">
+                                <div className=" mb-2 px-md-3">
+                                    <div className="input-group flex-fill mb-0 ">
                                         <span className=' input-group-text' id= 'icon-envelope'><FaEnvelope/> </span>
                                         <input type="email" className="h-[37px] border-[1px] border-[#32e9e9] border-solid text-[#0f0303] text-[17px] w-[386px] p-[10px]  focus:ring-[#9b3bea] focus:border-[#3e3bd5] outline-none" aria-describedby="icon-envelope" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Địa chỉ email"/>
                                         <div className="input-group-text pb-1">
@@ -110,11 +110,11 @@ const RegisterScreen = () => {
                                         (
                                         <CircularProgress size={28} className="absolute right-[30px] z-[1]"/>
                                         )}
-                                        <button className="text-[17px] text-[#313eed]  relative" disabled={isLoading} onClick={sendOtp}>Giữ otp</button>
+                                        <button className="text-[17px] text-[#313eed]  relative" disabled={isLoading} onClick={sendOtp}>Gửi otp</button>
                                         </div>                                      
                                     </div>
-                                    <div className="flex justify-end mt-1">
-                                        <span className=" text-[17px] ">
+                                    <div className="flex justify-end  w-[490px] mt-1">
+                                        <span className=" text-[17px]  ">
                                             Thời gian hiện hiệu lực: <span className="text-[#313eed]"> {countdownTimer} </span>
                                         </span>
                                     </div>

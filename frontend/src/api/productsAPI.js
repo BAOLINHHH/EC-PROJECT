@@ -9,6 +9,10 @@ const listProduct =  {
         const url = `products/latest?category=${category}`;
         return axios.get(url)
     },
+    createReview(id,data){
+        const url = `products/${id}/reviews`
+        return axios.post(url,data);
+    },
     getAllAdminProduct(pageNumber){
         const url = `products/admin?pageNumber=${pageNumber}`
         return axios.get(url)

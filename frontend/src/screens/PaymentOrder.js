@@ -136,7 +136,7 @@ const PaymentOrder = () => {
       const response = await ghnApi.getFeeShip({
         from_district_id: 3695,
         from_ward_code: "90742",
-        service_id: 53320,
+        service_id: 53321,
         to_district_id: districtID,
         to_ward_code: WardCode,
         height: 10,

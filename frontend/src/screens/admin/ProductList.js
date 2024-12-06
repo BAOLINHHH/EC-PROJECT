@@ -16,6 +16,7 @@ import { optionCurrency,transform } from "../../componets/money"
 import formatCurrency from "../../utils/format"
 import dayjs from "dayjs";
 import images from '../../assets/indexImg'
+import EditProduct from './EditProduct';
 const ProductList = () => {
     // const {pageNumber} = useParams()
     const [searchParams] = useSearchParams()
@@ -23,6 +24,7 @@ const ProductList = () => {
     const [isLoading,setIsLoading] = useState(true);
     const [pageNumber, setPageNumber] = useState('');
     const [isRefresh, setIsRefresh] = useState(false);
+    const [dataEdit, setDataEdit] = useState('')
     // const pageParam = searchParams.get("pageNumber")||'';
     // const { data,  error, refetch } = useGetProductsQuery({pageNumber: (pageNumber||pageParam)});
     useEffect(()=>{
@@ -41,7 +43,7 @@ const ProductList = () => {
 
     
     const [isOpenAddProductDialog, setIsOpenAddProductDialog] = useState(false)
-
+    const [isOpenEditProductDialog, setIsOpenEditProductDialog] = useState(false);
     // const createProductHandler= async ()=> {
     //     if (window.confirm('Bạn có muốn thêm sản phẩm mới?')) {
     //         try {
@@ -62,6 +64,14 @@ const ProductList = () => {
       const currentPage = value ; 
         setPageNumber(currentPage)
     }
+    const handleOpenEdit=(item)=>{
+      setIsOpenEditProductDialog(true)
+      setDataEdit(item)
+    };
+    const handlingCloseEditCouponDialog = () => {
+      setIsOpenEditProductDialog(false);
+      setDataEdit('')
+    };
     const handleDelete = async(id) =>{
       try {
         await listProduct.deleteProduct(id)
@@ -101,6 +111,11 @@ const ProductList = () => {
                 <AddProduct
                 isOpen = {isOpenAddProductDialog}
                 handleClose={handlingCloseAddProductDialog}
+                />
+                <EditProduct
+                isOpen = {isOpenEditProductDialog}
+                handleClose={handlingCloseEditCouponDialog}
+                dataProduct = {dataEdit}
                 />
               </div>
               <table  class="table  border-[1px] border-solid">
@@ -176,7 +191,7 @@ const ProductList = () => {
                        <FaEye/>
                        </div>
                        </Link>
-                       <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1">
+                       <div className="border-solid border-[1px] rounded-[9px] bg-[#31bcf3] text-[#fff] flex justify-center items-center h-[25px] w-[50px] mb-1" onClick={()=> handleOpenEdit(item) }>
                        <FaPen/>
                        </div>
                        <div className="border-solid border-[1px] rounded-[9px] bg-[#dc4f36] text-[#fff] flex justify-center items-center h-[25px] w-[50px] cursor-pointer " onClick={()=>handleDelete(item._id)}>
