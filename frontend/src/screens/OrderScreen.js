@@ -289,17 +289,17 @@ const PaymentOrder = () => {
                       <div className="flex ">
                         <span className="font-normal">
                           {" "}
-                          {dataAddress.recipientName}{" "}
+                          {shippingAddress.recipientName}{" "}
                         </span>
                         <div className="border-solid border-r-[2px] border-[#ddd] mx-[8px]"></div>
                         <span className="font-normal">
-                          {dataAddress.phone}
+                          {shippingAddress.phone}
                         </span>
                       </div>
                       <div>
                         <span className="font-normal">
                           {" "}
-                          {dataAddress.address}, {shippingAddress?.wards}
+                          {shippingAddress.address}, {shippingAddress?.wards}
                           , {shippingAddress?.district}, {shippingAddress?.city}
                         </span>
                       </div>

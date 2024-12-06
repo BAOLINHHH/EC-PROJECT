@@ -85,6 +85,7 @@ const PaymentOrder = () => {
         wards: dataAddress.WardName,
         address: dataAddress.addressDetails,
         phone: dataAddress.phoneNumber,
+        recipientName: dataAddress.recipientName
       },
       paymentMethod: selectedPaymentMethodValue,
       itemsPrice: totalItem.total,
