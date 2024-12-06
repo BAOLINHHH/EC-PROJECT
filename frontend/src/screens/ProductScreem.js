@@ -20,6 +20,7 @@ import { FaHeart } from "react-icons/fa";
 import favoriteApi from '../api/favoriteApi';
 import listProduct from '../api/productsAPI';
 import cartApi from '../api/cartApi';
+
 import { addToDetailProduct } from '../slices/detailProductSlice';
 const ProductScreem = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const ProductScreem = () => {
   };
   const { userInfo } = useSelector((state) => state.auth);
   // const [createReview, { isLoading: loadingProductReview }] =useCreateReviewMutation();
+ const [isLoadingProductReview, setIsLoadingProductReview] = useState(true)
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [ qty, setQuantity] = useState(1);
@@ -144,21 +146,25 @@ const addToFavoriteHandler = async () =>{
       position: toast.POSITION.TOP_RIGHT,
     });
   };
-  // const submitHandler = async (e) => {
-  //   e.preventDefault();
+  const submitHandler = async (e) => {
+    e.preventDefault();
 
-  //   try {
-  //     await createReview({
-  //       productId,
-  //       rating,
-  //       comment,
-  //     }).unwrap();
-  //     refetch();
-  //     toast.success('Đánh giá thành công');
-  //   } catch (err) {
-  //     toast.error("Tài khoản đã đánh giá sản phẩm");
-  //   }
-  // };
+    try {
+      const postData= { rating : rating,
+        comment: comment 
+      }
+      await listProduct.createReview(id,postData)
+      // await createReview({
+      //   productId,
+      //   rating,
+      //   comment,
+      // }).unwrap();
+      // refetch();
+      toast.success('Đánh giá thành công');
+    } catch (err) {
+      toast.error("Tài khoản đã đánh giá sản phẩm");
+    }
+  };
 
   return (
    <>
@@ -446,6 +452,66 @@ const addToFavoriteHandler = async () =>{
                                         <TabPanel value='3'>
                                         <div className="review-product">
                                                 <div className="row">
+                                                {dataProduct.reviews.length === 0 && <Message>Không có đánh giá</Message>}
+                                                <ListGroup variant='flush'>
+                                                  {dataProduct.reviews.map((review) =>(
+                                                     <ListGroup.Item key={review._id}>
+                                                      <div className='flex flex-col gap-y-1'>
+                                                      <strong>{review.name}</strong>
+                                                      <Rating value={review.rating} />
+                                                      <p>{review.createdAt.substring(0, 10)}</p>
+                                                      <p>{review.comment}</p>
+                                                      </div>
+                                           
+                                                    </ListGroup.Item>
+                                                  ))}
+
+
+
+                                                <ListGroup.Item>
+                                                        <div className='d-flex '>
+                                                        <h3>VIẾT ĐÁNH GIÁ SẢN PHẨM</h3>
+                                                        </div>
+                                                        {/* {loadingProductReview && <Loader />} */}
+
+                                                        
+                                                          <Form onSubmit={submitHandler} >
+                                                            <Form.Group className='my-2' controlId='rating'>
+                                                              <Form.Label>Đánh giá</Form.Label>
+                                                              <Form.Control
+                                                                as='select'
+                                                                required
+                                                                value={rating}
+                                                                onChange={(e) => setRating(e.target.value)}
+                                                              >
+                                                                <option value=''>Lược chọn...</option>
+                                                                <option value='1'>1 - Kém</option>
+                                                                <option value='2'>2 - Khá</option>
+                                                                <option value='3'>3 - Tốt</option>
+                                                                <option value='4'>4 - Rất tốt</option>
+                                                                <option value='5'>5 - Xuất sác</option>
+                                                              </Form.Control>
+                                                            </Form.Group>
+                                                            <Form.Group className='my-2' controlId='comment'>
+                                                              <Form.Label>Bình luận</Form.Label>
+                                                              <Form.Control
+                                                                as='textarea'
+                                                                row='3'
+                                                                required
+                                                                value={comment}
+                                                                onChange={(e) => setComment(e.target.value)}
+                                                              ></Form.Control>
+                                                            </Form.Group>
+                                                            <Button
+                                                              // disabled={loadingProductReview}
+                                                              type='submit'
+                                                              variant='primary'
+                                                            >
+                                                              Gửi đánh giá
+                                                            </Button>
+                                                          </Form>
+                                                  </ListGroup.Item>
+                                                </ListGroup>
                                                     {/* <div className="col-12">   
                                                         <section className='home-wrapper-2'>
                      
