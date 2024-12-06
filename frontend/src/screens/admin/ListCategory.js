@@ -39,8 +39,6 @@ const ListCategory = () => {
     setDataEditCate('');
   };
   const handleDelete= async(id)=>{
-
-
     Swal.fire({
       title: "Bạn có chắc chắn xóa?",
       text: "Bạn sẽ không thể hoàn tác hành động này!",

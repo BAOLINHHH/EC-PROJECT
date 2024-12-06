@@ -36,10 +36,9 @@ const CartScreen = () => {
   }
   const totalItem = {
     total: cartItems.reduce((acc,item) =>acc + item.qty *item.bookPrice ,0) || 0,
-    ship: ((cartItems.reduce((acc,item) =>acc + item.qty *item.bookPrice ,0)) > 300000 ? 150000 : 30000) || 0,
     totalcalc: 0,
   }
-  totalItem.totalcalc = totalItem.total+totalItem.ship
+  totalItem.totalcalc = totalItem.total
   const checkoutHandler = () =>{
     // navigate('/login?redirect=/payment');
     navigate('/payment');
@@ -131,7 +130,7 @@ const CartScreen = () => {
                                   <span>{ transform(totalItem.total,optionCurrency) } </span>
                                   </div>
                                   </div>
-                                  <div className="row">
+                                  {/* <div className="row">
                                     <div className="col-8 pb-1">
                                   <p>Phí vận chuyển:  
                                   </p>
@@ -139,7 +138,7 @@ const CartScreen = () => {
                                   <div className="col-4 pb-1">
                                   <span>{ transform(totalItem.ship,optionCurrency) } </span>
                                   </div>
-                                  </div>
+                                  </div> */}
                                   <div className="row pb-1 font-bold" >
                                     <div className="col-8">
                                   <p>Tổng số tiền:  
